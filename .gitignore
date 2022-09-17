@@ -1,0 +1,7 @@
+**/__pycache__/
+venv/
+peers/
+logs/
+*.log
+.env
+.DS_Store
