@@ -13,6 +13,6 @@ class TaskManager():
     lw = LoopWrapper()
 
 
-    @lw.interval(seconds=86400)
+    @lw.interval(seconds=21600) # 4 times at day
     async def run_backups():
-        backupmanager.backup()
+        await backupmanager.backup()

@@ -1,10 +1,7 @@
-import os
-import shutil
 import logging
-import asyncio
 from pathlib import Path
-from datetime import datetime
 
+import logging.handlers as handlers
 
 class CustomFormatter(logging.Formatter):
     def __init__(self, name):
@@ -31,14 +28,15 @@ class CustomFormatter(logging.Formatter):
 
 class LoggingHandler():
     def __init__(self, name):
-        self.default_log_name = "latest.log"
+        self.default_log_name = "richiebot.log"
         self.default_logs_folder = Path("logs")
         self.latest_log_path = Path(self.default_logs_folder, self.default_log_name)
         self.default_logs_folder.mkdir(exist_ok=True)
         customformat = CustomFormatter(name)
         
-        filestream = logging.FileHandler(self.latest_log_path)
-        filestream.setFormatter(
+        handler = handlers.TimedRotatingFileHandler(self.latest_log_path, when="midnight", interval=1)
+        handler.suffix = "%Y%m%d"
+        handler.setFormatter(
             logging.Formatter(customformat.format_str)
         )
         
@@ -46,25 +44,6 @@ class LoggingHandler():
         console_stream.setFormatter(customformat)
         
         logging.basicConfig(encoding='utf-8', level=logging.INFO, handlers=[
-            filestream,
-            console_stream
+            console_stream,
+            handler
         ])
-
-
-    async def relocate_logs(self, sleep_time: int = 60) -> None:
-        while 1:
-            dt = datetime.now()
-            if dt.hour == 0 and dt.minute == 0:
-                logging.warning("latest.log was renewed")
-                date_string = dt.strftime('%d-%m-%Y')
-                
-                filelog_name = f"{date_string}.log"
-                new_log_path = Path(self.default_logs_folder, filelog_name)
-                    
-                if os.name == "posix":
-                    self.latest_log_path.rename(new_log_path)
-                else: #windows не даст удалить (переименовать) файл пока он открыт у нас
-                    shutil.copy(self.latest_log_path, new_log_path)
-                    
-                self.latest_log_path.write_text("")
-            await asyncio.sleep(sleep_time)

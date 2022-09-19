@@ -13,7 +13,9 @@ async def ban_list(event: Message) -> str:
         to_send = "Список забаненных:\n"
         for banner, details in ban_list.items():
             banned_user = details[0]
-            banner_user_name, banned_user_name = await display_nicknames([banner, banned_user])
+            banner_user_name, banned_user_name = await display_nicknames([banner, banned_user], name_case=['nom', 'gen'])
+            
             ban_time = details[1]
-            to_send += f"{banner_user_name} забанил {banned_user_name} {datetime.fromtimestamp(ban_time, tz)}"
+            ban_time_humanized = datetime.fromtimestamp(ban_time, tz).strftime("%d.%m.%y, %H:%M:%S")
+            to_send += f"{banner_user_name} забанил {banned_user_name} {ban_time_humanized}"
         await event.answer(to_send, disable_mentions=True)
