@@ -1,7 +1,10 @@
+from cProfile import label
 import os
 from typing import Union
+import time
 
 
+cached_commands = {}
 class Utils():
     @staticmethod
     def dir_empty(dir_path: str) -> bool:
@@ -9,24 +12,13 @@ class Utils():
     
     
     @staticmethod
-    def command_used(commands_list: list, text: str, return_command_name: bool = False) -> Union[bool, str]:
-        for command_elem in commands_list:
-            command_string = command_elem.split(" ")
-
-            total_matches = len(command_string)        
-            string_matches = 0
-
-            given_string_splited = text.split(" ")
-            try:
-                for i in range(len(given_string_splited)-1):
-                    if given_string_splited[i] == command_string[i]:
-                        string_matches += 1
-            except IndexError: 
-                continue
-
-            if string_matches == total_matches:
-                if return_command_name:
-                    return command_elem
-                else:
-                    return True
+    def command_used(lists: list, text: str, check_call = False) -> Union[bool, int]:
+        if check_call:
+            return any(map(lambda b: any(map(text.startswith, b)), lists))
+        else:
+            for i in enumerate(map(lambda b: map(text.startswith, b), lists)):
+                commands_indexes = list(i[1])
+                idx = i[0]
+                if True in commands_indexes:
+                    return lists[idx][commands_indexes.index(True)], idx
         return False

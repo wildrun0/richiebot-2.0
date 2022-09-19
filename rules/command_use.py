@@ -7,18 +7,18 @@ from utilities import Utils as utils
 class AdminCommandUse(ABCRule[Message]):
     async def check(self, event: Message) -> bool:
         command = event.text.lower()
-        return (
-            utils.command_used(bot_commands.admin_commands_notfull, command)
-            or
-            utils.command_used(bot_commands.admin_commands_full, command)
+        return(utils.command_used([
+                bot_commands.admin_commands_notfull,
+                bot_commands.admin_commands_full
+            ], command, True)
         )
 
 
 class CommandUse(ABCRule[Message]):
     async def check(self, event: Message) -> bool:
         command = event.text.lower()
-        return (
-            utils.command_used(bot_commands.all_commands_full, command)
-            or
-            utils.command_used(bot_commands.all_commands_notfull, command)
+        return(utils.command_used([
+                bot_commands.all_commands_notfull,
+                bot_commands.all_commands_full,
+            ], command, True)
         )

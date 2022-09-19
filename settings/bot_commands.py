@@ -18,7 +18,6 @@ administrative_commands_full = {
     "ричи сброс":                   commands.admin.reset_bot_peer,
     "ричи очистка":                 commands.admin.clear_msgs,
     "ричи удалить правила":         commands.admin.del_rules,
-    "ричи список забаненных":       commands.admin.ban_list
 }
 
 default_commands_notfull = {
@@ -43,11 +42,13 @@ default_commands_notfull = {
 }
 
 default_commands_full = {
+    "ричи привет":                  commands.richie.hello,
     "ричи донат":                   commands.richie.donate,
     "ричи об авторе":               commands.richie.about,
     "ричи актив":                   commands.richie.peer_active,
     "ричи правила":                 commands.richie.view_rules,
     "ричи браки":                   commands.richie.marry_list,
+    "ричи список забаненных":       commands.admin.ban_list,
 
     "ричи бросить кости":           commands.game.kosti,
     "ричи кости":                   commands.game.kosti,

@@ -17,12 +17,12 @@ class PeerHandler():
         self.admins = self.Admins(self)
         self.settings = self.Settings(self)
 
-        # logging.info("LOADING PEERS SETTINGS")
-        # for peer_object in self.peers_folder.rglob(self.peer_json_name):
-        #     peer_id = int(peer_object.parent.stem)
-        #     with peer_object.open("r", encoding="utf-8") as peer_info:
-        #         self.peer_settings[peer_id] = json.load(peer_info)
-        # logging.info(f"PEERS SETTINGS LOADED ({len(self.peer_settings)} units)")
+        logging.info("LOADING PEERS SETTINGS")
+        for peer_object in self.peers_folder.rglob(self.peer_json_name):
+            peer_id = int(peer_object.parent.stem)
+            with peer_object.open("r", encoding="utf-8") as peer_info:
+                self.peer_settings[peer_id] = json.load(peer_info)
+        logging.info(f"PEERS SETTINGS LOADED ({len(self.peer_settings)} units)")
 
 
     def load(self, peer_id: int):
@@ -34,7 +34,7 @@ class PeerHandler():
     def save(self, peer_id: int):
         self._check_peer_exist(peer_id)
 
-        with Path(peer_folder, self.peer_json_name).open(mode="w", encoding="utf-8") as fp:
+        with Path(self.peers_folder, str(peer_id), self.peer_json_name).open(mode="w", encoding="utf-8") as fp:
             json.dump(self.peer_settings[peer_id], fp, indent=4, ensure_ascii=False)
         logging.info(f"PEER ({peer_id}) SETTINGS SAVED")
 
@@ -42,13 +42,17 @@ class PeerHandler():
     def create_peer_unit(self, peer_id: int):
         self.peer_settings[peer_id] = peer_default_dict
         logging.info(f"Default settings added for new peer ({peer_id})")
-    
+
+
+    def get(self, peer_id: int, key: str):
+        return self.peer_settings[peer_id][key]
+
 
     def _edit_dict(self, peer_id: int, key: any, value: any):
         self.peer_settings[peer_id][key] = value
 
     
-    def _check_peer_exist(self, peer_id: int, return_folder: bool = False):
+    def _check_peer_exist(self, peer_id: int):
         peer_folder = Path(self.peers_folder, str(peer_id))
         if not peer_folder.is_dir():
             peer_folder.mkdir()
@@ -61,6 +65,10 @@ class PeerHandler():
         
         def set_greeting(self, peer_id: int, text: str):
             self.peerhandler._edit_dict(peer_id, "greeting", text)
+            self.peerhandler.save(peer_id)
+        
+        def set_rules(self, peer_id: int, text: str):
+            self.peerhandler._edit_dict(peer_id, "rules", text)
             self.peerhandler.save(peer_id)
 
 
