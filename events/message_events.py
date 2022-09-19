@@ -6,6 +6,8 @@ from loader import bot, peers_handler
 from utilities import Utils as utils
 from settings import bot_commands
 
+from types import ModuleType
+
 
 @bot.on.chat_message(ChatActionRule("chat_invite_user"))
 async def bot_invite(event: Message) -> None:
@@ -27,36 +29,38 @@ async def bot_invite(event: Message) -> None:
 @bot.on.chat_message(CommandUse())
 async def use_default_commands(event: Message) -> None:
     def_function_name = event.text.lower()
-    if command_name := utils.command_used(
-        bot_commands.all_commands_full, 
-        def_function_name,
-        return_command_name=True
-    ):
-        def_func = bot_commands.default_commands_full[command_name]
-    elif command_name := utils.command_used(
-        bot_commands.all_commands_notfull, 
-        def_function_name,
-        return_command_name=True
-    ):
-        def_func = bot_commands.default_commands_notfull[command_name]
+    command_name, command_type = utils.command_used([
+        bot_commands.all_commands_notfull,
+        bot_commands.all_commands_full
+    ], def_function_name)
 
-    await def_func(event)
+    if command_type == 0:
+        def_func = bot_commands.default_commands_notfull[command_name]
+    else:
+        def_func = bot_commands.default_commands_full[command_name]
+
+    if isinstance(def_func, ModuleType):
+        await event.answer("Команда есть. Не реализована.")
+    else:
+        event.text = event.text.replace(command_name, "").lstrip()
+        await def_func(event)
 
 
 @bot.on.chat_message(AdminCommandUse(), IsAdmin())
 async def use_admin_commands(event: Message) -> None:
     adm_function_name = event.text.lower()
-    if command_name := utils.command_used(
-        bot_commands.admin_commands_full, 
-        adm_function_name,
-        return_command_name=True
-    ):
-        adm_func = bot_commands.administrative_commands_full[command_name]
-    elif command_name := utils.command_used(
-        bot_commands.admin_commands_notfull, 
-        adm_function_name,
-        return_command_name=True
-    ):
-        adm_func = bot_commands.administrative_commands_notfull[command_name]
+    command_name, command_type = utils.command_used([
+        bot_commands.admin_commands_notfull,
+        bot_commands.admin_commands_full
+    ], adm_function_name)
 
-    await adm_func(event)
+    if command_type == 0:
+        adm_func = bot_commands.administrative_commands_notfull[command_name]
+    else:
+        adm_func = bot_commands.administrative_commands_full[command_name]
+
+    if isinstance(adm_func, ModuleType):
+        await event.answer("Команда есть. Не реализована.")
+    else:
+        event.text = event.text.replace(command_name, "").lstrip()
+        await adm_func(event)

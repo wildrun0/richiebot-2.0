@@ -3,6 +3,9 @@ peer_default_dict = {
     "rules": None,
     "admins": [],
     "clans": {},
+    "ban_list": {
+            # 397717739:  [320750004, ban_timestamp]
+    },
     "commands_timeouts":{
         "richie_who_whom":  300,
         "richie_infa":      300,
@@ -17,17 +20,17 @@ peer_default_dict = {
     "marriages":{
         "marriage_timeout": 180,
         "marriages_pending": [
-            # u1, u2, timestamp
+            # [u1, u2, timestamp]
         ],
         "couples": [
             # u1, u2
         ]
     },
     "voteban":{
-        "ban_list": {
-            # 397717739:  [320750004, "spam"]
-        },
-        "min_ban_votes": 5
+        "bans_pending": [
+            # [user_to_ban, votes(INT), voted(users dict)]
+        ],
+        "min_ban_votes": 10
     },
     "votekick":{
         # "last_kicked": [397717739, timestamp]
