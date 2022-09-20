@@ -1,1 +1,1 @@
-from .display_nicknames import *
+from .display_nicknames import display_nicknames
