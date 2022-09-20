@@ -6,7 +6,8 @@ import pytz
 
 tz = pytz.timezone("Europe/Moscow")
 
-async def ban_list(event: Message) -> str:
+TIME_FORMAT = "%d.%m.%y %H:%M"
+async def ban_list(event: Message) -> None:
     ban_list = peers_handler.get(event.peer_id, "ban_list")
     if ban_list:
         to_send = "Список забаненных:\n"
@@ -15,7 +16,7 @@ async def ban_list(event: Message) -> str:
             ban_time = details[1]
             
             banner_user_name, banned_user_name = await display_nicknames((banner, banned_user), name_case=('nom', 'acc'))
-            ban_time_humanized = datetime.fromtimestamp(ban_time, tz).strftime("%d.%m.%y %H:%M")
+            ban_time_humanized = datetime.fromtimestamp(ban_time, tz).strftime(TIME_FORMAT)
             
             to_send += f"{banner_user_name.name} забанил{'а' if banner_user_name.sex == 1 else ''} {banned_user_name.name} {ban_time_humanized}"
         await event.answer(to_send, disable_mentions=True)
