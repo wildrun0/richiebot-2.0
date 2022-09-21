@@ -34,8 +34,10 @@ class LoggingHandler():
         self.default_logs_folder.mkdir(exist_ok=True)
         customformat = CustomFormatter(name)
         
+        logging.getLogger().handlers.clear()
+        
         filehandler = handlers.TimedRotatingFileHandler(self.latest_log_path, when="midnight", interval=1)
-        filehandler.suffix = "%Y%m%d"
+        filehandler.suffix = "%Y-%m-%d"
         filehandler.setFormatter(
             logging.Formatter(customformat.format_str)
         )
@@ -45,5 +47,12 @@ class LoggingHandler():
         
         logging.basicConfig(encoding='utf-8', level=logging.INFO, handlers=[
             console_stream,
-            filehandler
+            filehandler,
         ])
+    
+    @staticmethod
+    def listen_func(func):
+        async def wrapper(*args, **kwargs):
+            logging.info(f"{func.__name__}() run: {args[1]}", stacklevel=3)
+            return await func(*args, **kwargs)
+        return wrapper

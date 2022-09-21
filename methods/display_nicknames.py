@@ -5,7 +5,7 @@ from datatypes import User
 
 
 # Функция возвращает строки (или map-объекты) типа '[id1|Павел Дуров] для дальнейшей вставки в сообщение
-@cached(ttl=60)
+@cached(ttl=300)
 async def display_nicknames(users_id: tuple|int, name_case: tuple|str = 'nom') -> list[User] | User:
     if isinstance(name_case, tuple):
         return ([

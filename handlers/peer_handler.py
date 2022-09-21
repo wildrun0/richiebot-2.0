@@ -1,11 +1,11 @@
 import json
 import logging
 from pathlib import Path
+from aiopathlib import AsyncPath
 from settings import peer_default_dict
 from vkbottle import VKAPIError
 from vkbottle import API
 from config.bot_cfg import BOT_TOKEN
-
 
 
 class PeerHandler():
@@ -24,18 +24,10 @@ class PeerHandler():
                 self.peer_settings[peer_id] = json.load(peer_info)
         logging.info(f"PEERS SETTINGS LOADED ({len(self.peer_settings)} units)")
 
-
-    def load(self, peer_id: int):
-        peer_path = Path(self.peers_folder, str(peer_id))
-        if not peer_path.is_dir():
-            peer_path.mkdir()
         
-        
-    def save(self, peer_id: int):
-        self._check_peer_exist(peer_id)
-
-        with Path(self.peers_folder, str(peer_id), self.peer_json_name).open(mode="w", encoding="utf-8") as fp:
-            json.dump(self.peer_settings[peer_id], fp, indent=4, ensure_ascii=False)
+    async def save(self, peer_id: int):
+        fp = AsyncPath(self.peers_folder, str(peer_id), self.peer_json_name)
+        await fp.write_json(self.peer_settings[peer_id], indent=4, ensure_ascii=False)
         logging.info(f"PEER ({peer_id}) SETTINGS SAVED")
 
 
@@ -44,7 +36,8 @@ class PeerHandler():
         logging.info(f"Default settings added for new peer ({peer_id})")
 
 
-    def get(self, peer_id: int, key: str):
+    async def get(self, peer_id: int, key: str):
+        await self._check_peer_exist(peer_id)
         return self.peer_settings[peer_id][key]
 
 
@@ -52,24 +45,35 @@ class PeerHandler():
         self.peer_settings[peer_id][key] = value
 
     
-    def _check_peer_exist(self, peer_id: int):
-        peer_folder = Path(self.peers_folder, str(peer_id))
-        if not peer_folder.is_dir():
-            peer_folder.mkdir()
+    async def _check_peer_exist(self, peer_id: int):
+        peer_folder = AsyncPath(self.peers_folder, str(peer_id))
+        if not await peer_folder.is_dir():
+            await peer_folder.mkdir()
             self.create_peer_unit(peer_id)
 
+
+    class Messages():
+        def __init__(self, parent):
+            self.peerhandler = parent
+            self.message_filename = "messages.json"
+
+
+        # def write(self, message, message_id, user_id, timestamp):
+            
 
     class Settings():
         def __init__(self, parent):
             self.peerhandler = parent
         
-        def set_greeting(self, peer_id: int, text: str):
+        async def set_greeting(self, peer_id: int, text: str):
+            await self.peerhandler._check_peer_exist(peer_id)
             self.peerhandler._edit_dict(peer_id, "greeting", text)
-            self.peerhandler.save(peer_id)
+            await self.peerhandler.save(peer_id)
         
-        def set_rules(self, peer_id: int, text: str):
+        async def set_rules(self, peer_id: int, text: str):
+            await self.peerhandler._check_peer_exist(peer_id)
             self.peerhandler._edit_dict(peer_id, "rules", text)
-            self.peerhandler.save(peer_id)
+            await self.peerhandler.save(peer_id)
 
 
     class Admins():
@@ -79,7 +83,7 @@ class PeerHandler():
 
 
         async def get_list(self, peer_id: int) -> list:
-            self.peerhandler._check_peer_exist(peer_id)
+            await self.peerhandler._check_peer_exist(peer_id)
             if not self.peerhandler.peer_settings[peer_id]["admins"]:
                 await self.renew(peer_id)
             return self.peerhandler.peer_settings[peer_id]["admins"]

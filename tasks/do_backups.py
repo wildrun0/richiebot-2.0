@@ -13,6 +13,7 @@ class BackupManger():
         self.default_folder.mkdir(exist_ok=True)
         self.date_format = "%d.%m.%Y"
         self.startup_date = datetime.today().date()
+        logging.info("BackupManager initialized")
 
 
     async def _backup(self):

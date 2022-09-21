@@ -8,7 +8,7 @@ tz = pytz.timezone("Europe/Moscow")
 
 TIME_FORMAT = "%d.%m.%y %H:%M"
 async def ban_list(event: Message) -> None:
-    ban_list = peers_handler.get(event.peer_id, "ban_list")
+    ban_list = await peers_handler.get(event.peer_id, "ban_list")
     if ban_list:
         to_send = "Список забаненных:\n"
         for banner, details in ban_list.items():
