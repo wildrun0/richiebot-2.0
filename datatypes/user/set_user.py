@@ -1,4 +1,3 @@
-from __future__ import annotations
 from aiopathlib import AsyncPath
 from loader import bot
 from aiocache import cached
@@ -8,7 +7,7 @@ from datatypes.user import NAME_TEMPLATE, User, users_folder
 async def set_user(user_id: int, name_case: str = 'nom', do_not_save: bool = False) -> User:
     usersget_data = (await bot.api.users.get(user_id, name_case=name_case, fields=['Sex']))
     if not usersget_data:
-        bot_name = await bot.api.groups.get_by_id(group_id=user_id)[0]["name"]
+        bot_name = (await bot.api.groups.get_by_id(group_id=abs(user_id)))[0].name
         user_datatype = User(
             nickname = bot_name,
             sex = 0,

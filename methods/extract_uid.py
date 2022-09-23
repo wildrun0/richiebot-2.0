@@ -1,10 +1,10 @@
 import re
 
 
-def extract_id(message: str) -> int:
-    id = re.findall(r'-?\d+', message)
-    if not id: return False
-    is_club = re.findall(r'\[club(.+)\|(.+)\]', message)
-    if is_club:
-        return -int(is_club[0][0])
-    return int(id[0])
+def extract_id(message: str) -> int | list:
+    id = [int(s) for s in re.findall(r'\[id(\d+)', message)]
+    clubs_ids = [-int(s) for s in re.findall(r'\[club(\d+)', message)]
+    all_ids = id + clubs_ids
+    if len(all_ids) == 1:
+        return all_ids[0]
+    return all_ids

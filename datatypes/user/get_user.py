@@ -12,7 +12,7 @@ async def get_user(user_id: int) -> User:
 
     if await user_data.is_file():
         data = User.from_dict(
-            await user_data.read_json()
+            await user_data.read_json(encoding="utf8")
         )
     else:
         data = await set_user(user_id)

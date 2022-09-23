@@ -1,6 +1,6 @@
 from vkbottle.bot import Message
-from loader import bot
 from datatypes import user
+
 
 async def hello(event: Message) -> None:
     usr_nickname = await user.get_users_nickname(event.from_id)

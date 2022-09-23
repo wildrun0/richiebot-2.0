@@ -9,10 +9,10 @@ NAME_TEMPLATE = f"[id%d|%s %s]"
 @dataclass_json
 @dataclass
 class User:
-    name: str # [id1|Павел Дуров]
-    id: int
     nickname: str = ""
-    sex: int = 2
+    name:     str = "[]" # [id1|Павел Дуров]
+    sex:      int = 2
+    id:       int = 0
 
 
 DEFAULT_FOLDER = "usersdata"
