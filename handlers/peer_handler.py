@@ -49,6 +49,11 @@ class PeerHandler():
         return self.peer_settings[peer_id][key]
 
 
+    async def add(self, peer_id: int, peer_key: str, value: dict):
+        await self._check_peer_exist(peer_id)
+        self.peer_settings[peer_id][peer_key].update(value)
+
+
     def _edit_dict(self, peer_id: int, key: any, value: any):
         self.peer_settings[peer_id][key] = value
 
@@ -121,9 +126,7 @@ class PeerHandler():
 
 
         def add(self, peer_id: int, user_id: int):
-            self.peerhandler._edit_dict(peer_id, "admins",
-                [*self.peerhandler.peer_settings[peer_id]["admins"], user_id]
-            )
+            self.peerhandler.add(peer_id, "admins", user_id)
 
 
         async def renew(self, peer_id: int):

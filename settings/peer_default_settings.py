@@ -32,9 +32,9 @@ peer_default_dict = {
         ],
         "min_ban_votes": 10
     },
-    "votekick":{
-        # "last_kicked": [397717739, timestamp]
-    },
+    "last_kicked": [
+        #uid, timestamp
+    ],
     "warns":{
         "max_warns": 5,
         "users":{
