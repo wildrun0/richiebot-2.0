@@ -1,5 +1,4 @@
 from __future__ import annotations
-from textwrap import indent
 from aiopathlib import AsyncPath
 from loader import bot
 from aiocache import cached
