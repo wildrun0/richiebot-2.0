@@ -18,6 +18,7 @@ administrative_commands_full = {
     "ричи сброс":                   commands.admin.reset_bot_peer,
     "ричи очистка":                 commands.admin.clear_msgs,
     "ричи удалить правила":         commands.admin.del_rules,
+    "ричи статистика":              commands.admin.stat
 }
 
 default_commands_notfull = {

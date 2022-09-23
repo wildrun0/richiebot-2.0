@@ -8,11 +8,6 @@ from settings import bot_commands
 
 from types import ModuleType
 
-
-from loader import lh
-from vkbottle.tools.dev.mini_types.base import BaseMessageMin
-BaseMessageMin.answer = lh.listen_func(BaseMessageMin.answer) # логгируем каждый execute of event.answer()
-
 @bot.on.chat_message(ChatActionRule("chat_invite_user"))
 async def bot_invite(event: Message) -> None:
     action = event.action
@@ -71,11 +66,12 @@ async def use_admin_commands(event: Message) -> None:
         event.text = event.text.replace(command_name, "").lstrip()
         await adm_func(event)
 
-# @bot.on.chat_message()
-# async def log_message(event: Message) -> None:
-#     peers_handler.messages.write(
-#         message = event.text, 
-#         message_id = event.message_id,
-#         user_id = event.from_id,
-#         timestamp = time.time()
-#     )
+@bot.on.chat_message()
+async def log_message(event: Message) -> None:
+    await peers_handler.messages.write(
+        message_text = event.text, 
+        cmid = event.message_id,
+        user_id = str(event.from_id),
+        peer_id = str(event.peer_id),
+        date = event.date
+    )

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from aiocache import cached
-from datatypes import set_user
-from datatypes import User
+from datatypes.user import User
+from datatypes.user import set_user
 
 
 # Функция возвращает строки (или map-объекты) типа '[id1|Павел Дуров] для дальнейшей вставки в сообщение
@@ -9,9 +9,9 @@ from datatypes import User
 async def display_nicknames(users_id: tuple|int, name_case: tuple|str = 'nom') -> list[User] | User:
     if isinstance(name_case, tuple):
         return ([
-            await set_user(uid, ncs) for uid, ncs in zip(users_id, name_case)
+            await set_user(uid, ncs, do_not_save=True) for uid, ncs in zip(users_id, name_case)
         ])
     else:
         if isinstance(users_id, str): #if only one
-            return await set_user(users_id)
-        return [await set_user(uid) for uid in users_id]
+            return await set_user(users_id, name_case)
+        return [await set_user(uid, name_case) for uid in users_id]

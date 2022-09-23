@@ -13,26 +13,34 @@ class PeerHandler():
         self.peers_folder = Path("peers")
         self.peers_folder.mkdir(exist_ok=True)
         self.peer_json_name = "main.json"
+        
         self.peer_settings = {}
+        self.peers_messages = {}
+        
         self.admins = self.Admins(self)
         self.settings = self.Settings(self)
+        self.messages = self.Messages(self)
 
         logging.info("LOADING PEERS SETTINGS")
-        for peer_object in self.peers_folder.rglob(self.peer_json_name):
+        for peer_object in self.peers_folder.rglob("*.json"):
             peer_id = int(peer_object.parent.stem)
             with peer_object.open("r", encoding="utf-8") as peer_info:
-                self.peer_settings[peer_id] = json.load(peer_info)
+                if peer_object.stem == "main":
+                    self.peer_settings[peer_id] = json.load(peer_info)
+                elif peer_object.stem == "messages":
+                    self.peers_messages[peer_id] = json.load(peer_info)
         logging.info(f"PEERS SETTINGS LOADED ({len(self.peer_settings)} units)")
 
         
     async def save(self, peer_id: int):
         fp = AsyncPath(self.peers_folder, str(peer_id), self.peer_json_name)
-        await fp.write_json(self.peer_settings[peer_id], indent=4, ensure_ascii=False)
+        await fp.write_json(self.peer_settings[peer_id], indent=4, encoding="utf8", ensure_ascii=False)
         logging.info(f"PEER ({peer_id}) SETTINGS SAVED")
 
 
-    def create_peer_unit(self, peer_id: int):
+    async def create_peer_unit(self, peer_id: int):
         self.peer_settings[peer_id] = peer_default_dict
+        await self.save(peer_id)
         logging.info(f"Default settings added for new peer ({peer_id})")
 
 
@@ -49,16 +57,39 @@ class PeerHandler():
         peer_folder = AsyncPath(self.peers_folder, str(peer_id))
         if not await peer_folder.is_dir():
             await peer_folder.mkdir()
-            self.create_peer_unit(peer_id)
+            await self.create_peer_unit(peer_id)
 
 
     class Messages():
         def __init__(self, parent):
             self.peerhandler = parent
+            self.messages = self.peerhandler.peers_messages
             self.message_filename = "messages.json"
 
 
-        # def write(self, message, message_id, user_id, timestamp):
+        async def _check_exist(self, peer_id: str, user_id: str = None):
+            if peer_id not in self.messages:
+                await self.peerhandler._check_peer_exist(int(peer_id))
+                self.messages.setdefault(peer_id, {})
+                self.messages[peer_id]["messages_count"] = 0
+            if user_id is not None:
+                if user_id not in self.messages[peer_id]:
+                    self.messages[peer_id].setdefault(user_id, {})
+                    self.messages[peer_id][user_id]["messages_count"] = 0
+                    self.messages[peer_id][user_id].setdefault("messages", [])
+
+
+        async def write(self, message_text: str, cmid: int, peer_id: str, user_id: str, date: float):
+            await self._check_exist(peer_id, user_id)
+            self.messages[peer_id][user_id]["messages"].append({
+                "message_text": message_text,
+                "cmid": cmid,
+                "date": date
+            })
+            self.messages[peer_id]["messages_count"] += 1
+            self.messages[peer_id][user_id]["messages_count"] += 1
+            fp = AsyncPath(self.peerhandler.peers_folder, peer_id, self.message_filename)
+            await fp.write_json(self.messages[peer_id], indent=4, encoding="utf8", ensure_ascii=False)
             
 
     class Settings():

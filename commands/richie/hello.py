@@ -1,5 +1,7 @@
 from vkbottle.bot import Message
 from loader import bot
+from datatypes import user
 
-async def hello(event: Message) -> str:
-    await event.answer(f"{(await bot.api.users.get(event.from_id))[0].first_name}, привет из киберпанка")
+async def hello(event: Message) -> None:
+    usr_nickname = await user.get_users_nickname(event.from_id)
+    await event.answer(f"{usr_nickname}, привет из киберпанка")

@@ -1,7 +1,7 @@
 import logging
+import logging.handlers as handlers
 from pathlib import Path
 
-import logging.handlers as handlers
 
 class CustomFormatter(logging.Formatter):
     def __init__(self, name):
@@ -36,7 +36,7 @@ class LoggingHandler():
         
         logging.getLogger().handlers.clear()
         
-        filehandler = handlers.TimedRotatingFileHandler(self.latest_log_path, when="midnight", interval=1)
+        filehandler = handlers.TimedRotatingFileHandler(self.latest_log_path, when="midnight", interval=1, encoding="utf8")
         filehandler.suffix = "%Y-%m-%d"
         filehandler.setFormatter(
             logging.Formatter(customformat.format_str)
@@ -47,12 +47,15 @@ class LoggingHandler():
         
         logging.basicConfig(encoding='utf-8', level=logging.INFO, handlers=[
             console_stream,
-            filehandler,
+            filehandler
         ])
-    
+        logging.captureWarnings(True)
+
     @staticmethod
     def listen_func(func):
         async def wrapper(*args, **kwargs):
-            logging.info(f"{func.__name__}() run: {args[1]}", stacklevel=3)
+            f_name = func.__name__
+            log_arg = args[1] if f_name == "answer" else args[0]
+            logging.info(f"{f_name}() run: {log_arg}", stacklevel=3)
             return await func(*args, **kwargs)
         return wrapper
