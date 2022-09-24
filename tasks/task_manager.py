@@ -9,10 +9,11 @@ from .do_backups import BackupManger
 
 backupmanager = BackupManger()
 
+
 class TaskManager():
     lw = LoopWrapper()
 
 
-    @lw.interval(seconds=3600) # every hour
+    @lw.interval(seconds=3600) # every hour scanning for backups
     async def run_backups():
-        await backupmanager.backup()
+        await backupmanager.check_for_backup(frequency="hourly")

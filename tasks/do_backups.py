@@ -1,3 +1,4 @@
+from typing import Literal
 import aioshutil
 import logging
 import utils
@@ -13,6 +14,13 @@ class BackupManger():
         self.default_folder.mkdir(exist_ok=True)
         self.date_format = "%d.%m.%Y"
         self.startup_date = datetime.today().date()
+
+        self.frequency_days = {
+            "monthly": 30,   #do not recommend at all. Бот столько не проработает без крашей)
+            "weekly": 7,
+            "daily": 1,
+            "hourly": 0.04 # просто затычка
+        }
         logging.info("BackupManager initialized")
 
 
@@ -26,14 +34,20 @@ class BackupManger():
             await aioshutil.copytree(Path(folder), Path(new_backup_folder, folder))
 
         end_time = datetime.timestamp(datetime.now())
-        logging.info(f"backup done, elapsed time: {end_time - start_time:.2f} sec.")
+        logging.warning(f"backup done, elapsed time: {end_time - start_time:.2f} sec.")
         self.last_backup = datetime.today().date()
 
 
-    async def backup(self):
+    async def check_for_backup(self, frequency: Literal["monthly", "weekly", "daily", "hourly"] = "daily"):
         if utils.dir_empty(self.default_folder): # можно было бы просто проверить len(backups_sorted) но это наибыстрейший (!) способ
-            logging.info("No backups found!")
-            gap = timedelta(days=1)
+            logging.warning("No backups found!")
+            match frequency:
+                case "weekly":
+                    gap = timedelta(weeks=1)
+                case "daily":
+                    gap = timedelta(days=1)
+                case "hourly":
+                    gap = timedelta(hours=1)
             self.last_backup = self.startup_date - gap # типа вчера был бэкап, нада новый будет!!
         else:
             backups_sorted = sorted(
@@ -42,6 +56,8 @@ class BackupManger():
             )
             self.last_backup = datetime.strptime(backups_sorted[0].name, self.date_format).date()
             logging.info(f"Last backup time: {self.last_backup}")
-
-        if (self.startup_date - self.last_backup).days >= 1:
+        backup_gap = (self.startup_date - self.last_backup)
+        if (backup_gap.days >= self.frequency_days[frequency]) if frequency != "hourly" else (backup_gap.hours >= 1):
             await self._backup()
+        else:
+            logging.info("No backup needed")
