@@ -1,10 +1,15 @@
 import json
 import logging
+
 from pathlib import Path
+
+from aiocache import cached
 from aiopathlib import AsyncPath
-from settings import peer_default_dict
+
 from vkbottle import VKAPIError
 from vkbottle import API
+
+from settings import peer_default_dict
 from config.bot_cfg import BOT_TOKEN
 
 
@@ -22,13 +27,11 @@ class PeerHandler():
         self.messages = self.Messages(self)
 
         logging.info("LOADING PEERS SETTINGS")
-        for peer_object in self.peers_folder.rglob("*.json"):
+        for peer_object in self.peers_folder.rglob("main.json"):
             peer_id = int(peer_object.parent.stem)
             with peer_object.open("r", encoding="utf-8") as peer_info:
                 if peer_object.stem == "main":
                     self.peer_settings[peer_id] = json.load(peer_info)
-                elif peer_object.stem == "messages":
-                    self.peers_messages[peer_id] = json.load(peer_info)
         logging.info(f"PEERS SETTINGS LOADED ({len(self.peer_settings)} units)")
 
         
@@ -68,33 +71,39 @@ class PeerHandler():
     class Messages():
         def __init__(self, parent):
             self.peerhandler = parent
-            self.messages = self.peerhandler.peers_messages
             self.message_filename = "messages.json"
 
 
-        async def _check_exist(self, peer_id: str, user_id: str = None):
-            if peer_id not in self.messages:
-                await self.peerhandler._check_peer_exist(int(peer_id))
-                self.messages.setdefault(peer_id, {})
-                self.messages[peer_id]["messages_count"] = 0
+        @cached(ttl=120)
+        async def _get_peer_messages(self, peer_id: str, user_id: str = None) -> dict:
+            await self.peerhandler._check_peer_exist(int(peer_id))
+            messages = {}
+            for peer_object in AsyncPath(self.peerhandler.peers_folder).rglob("messages.json"):
+                peer_id_folder = peer_object.parent.stem
+                if peer_id == peer_id_folder:
+                    messages[peer_id] = await AsyncPath(peer_object).read_json(encoding="utf8")
+            if peer_id not in messages.keys():
+                messages.setdefault(peer_id, {})
+                messages[peer_id]["messages_count"] = 0
             if user_id is not None:
-                if user_id not in self.messages[peer_id]:
-                    self.messages[peer_id].setdefault(user_id, {})
-                    self.messages[peer_id][user_id]["messages_count"] = 0
-                    self.messages[peer_id][user_id].setdefault("messages", [])
+                if user_id not in messages[peer_id]:
+                    messages[peer_id].setdefault(user_id, {})
+                    messages[peer_id][user_id]["messages_count"] = 0
+                    messages[peer_id][user_id].setdefault("messages", [])
+            return messages
 
-
+ 
         async def write(self, message_text: str, cmid: int, peer_id: str, user_id: str, date: float):
-            await self._check_exist(peer_id, user_id)
-            self.messages[peer_id][user_id]["messages"].append({
+            messages = await self._get_peer_messages(peer_id, user_id)
+            messages[peer_id][user_id]["messages"].append({
                 "message_text": message_text,
                 "cmid": cmid,
                 "date": date
             })
-            self.messages[peer_id]["messages_count"] += 1
-            self.messages[peer_id][user_id]["messages_count"] += 1
+            messages[peer_id]["messages_count"] += 1
+            messages[peer_id][user_id]["messages_count"] += 1
             fp = AsyncPath(self.peerhandler.peers_folder, peer_id, self.message_filename)
-            await fp.write_json(self.messages[peer_id], indent=4, encoding="utf8", ensure_ascii=False)
+            await fp.write_json(messages[peer_id], indent=4, encoding="utf8", ensure_ascii=False)
             
 
     class Settings():
