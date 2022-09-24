@@ -35,7 +35,7 @@ async def bot_invite(event: Message, peer_obj: PeerObject) -> None:
             Или используйте "ричи команды"
         """)
     else:
-        if member_id in peer_obj.data.ban_list:
+        if str(member_id) in peer_obj.data.ban_list:
             await event.ctx_api.messages.remove_chat_user(event.chat_id, member_id = member_id)
             await event.answer("Пользователь находится в бане")
 

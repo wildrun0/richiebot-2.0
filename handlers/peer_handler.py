@@ -59,8 +59,8 @@ class PeerObject:
         else:
             self.data = msgspec.json.decode(self.obj_file.read_bytes(), type=PeerClass)
         self.messages = Messages(self.data, self.peer_location)
-    
-    
+
+
     async def save(self):
         peer_class = msgspec.json.encode(self.data)
         await AsyncPath(self.obj_file).async_write(peer_class)

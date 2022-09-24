@@ -8,17 +8,16 @@ async def ban(event: Message, peer_obj: PeerObject):
         to_ban = onreply.from_id
     else:
         to_ban = extract_id(event.text, 1)
-    peer_id = event.peer_id
     if not to_ban:
         await event.answer("🚫Неправильно указан пользователь!")
     else:
         ban_list = peer_obj.data.ban_list
-        if to_ban in ban_list.keys():
+        if str(to_ban) in ban_list.keys():
             await event.answer("🚫Пользователь уже забанен!")
         else:
             try:
                 await event.ctx_api.messages.remove_chat_user(event.chat_id, member_id=to_ban)
-                peer_obj.data.ban_list[to_ban] = [event.from_id, event.date]
+                peer_obj.data.ban_list[str(to_ban)] = [event.from_id, event.date]
                 await peer_obj.save()
                 await event.answer("✅Успешно забанен!")
             except VKAPIError[935]:

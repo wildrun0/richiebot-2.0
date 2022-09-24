@@ -1,3 +1,4 @@
+import msgspec
 from aiopathlib import AsyncPath
 from loader import bot
 from aiocache import cached
@@ -22,5 +23,5 @@ async def set_user(user_id: int, name_case: str = 'nom', do_not_save: bool = Fal
         )
     if not do_not_save: # Иногда, нужно получить объект User с измененным name_case, но не сохранять его
         fp = AsyncPath(users_folder, f"{user_id}.dat")
-        await fp.write_json(user_datatype.to_dict(), indent=4, encoding="utf8", ensure_ascii=False)
+        await fp.async_write(msgspec.json.encode(user_datatype))
     return user_datatype
