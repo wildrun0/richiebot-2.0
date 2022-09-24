@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
 from pathlib import Path
-from loader import peers_handler
+from handlers.peer_handler import peers_folder
 
 NAME_TEMPLATE = "[id%d|%s %s]"
 DEFAULT_FOLDER = "usersdata"
@@ -17,7 +17,7 @@ class User:
     id:       int = 0    # 320750004
 
 
-if not (users_folder := Path(peers_handler.peers_folder, DEFAULT_FOLDER)).exists():
+if not (users_folder := Path(peers_folder, DEFAULT_FOLDER)).exists():
     import logging
-    logging.warning(f"{peers_handler.peers_folder}/{DEFAULT_FOLDER} not found. Creating a new one")
+    logging.warning(f"{peers_folder}/{DEFAULT_FOLDER} not found. Creating a new one")
     users_folder.mkdir()

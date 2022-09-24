@@ -19,7 +19,7 @@ class BackupManger():
             "monthly": 30,   #do not recommend at all. Бот столько не проработает без крашей)
             "weekly": 7,
             "daily": 1,
-            "hourly": 0.04 # просто затычка
+            "hourly": 0.04 # просто заглушка
         }
         logging.info("BackupManager initialized")
 
@@ -56,7 +56,9 @@ class BackupManger():
             )
             self.last_backup = datetime.strptime(backups_sorted[0].name, self.date_format).date()
             logging.info(f"Last backup time: {self.last_backup}")
+
         backup_gap = (self.startup_date - self.last_backup)
+
         if (backup_gap.days >= self.frequency_days[frequency]) if frequency != "hourly" else (backup_gap.hours >= 1):
             await self._backup()
         else:

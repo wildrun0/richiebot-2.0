@@ -1,4 +1,4 @@
-from loader import peers_handler
+from handlers.peer_handler import PeerObject
 from vkbottle.bot import Message
 from datetime import datetime
 from methods import display_nicknames
@@ -7,8 +7,8 @@ import pytz
 tz = pytz.timezone("Europe/Moscow")
 
 TIME_FORMAT = "%d.%m.%y %H:%M"
-async def ban_list(event: Message) -> None:
-    ban_list = await peers_handler.get(event.peer_id, "ban_list")
+async def ban_list(event: Message, peer_obj: PeerObject) -> None:
+    ban_list = peer_obj.data.ban_list
     if ban_list:
         to_send = "Список забаненных:\n"
         for banned_user, details in ban_list.items():

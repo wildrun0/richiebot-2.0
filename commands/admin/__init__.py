@@ -7,7 +7,7 @@ from .warn import *
 from .unwarn import *
 from .mute import *
 from .unmute import *
-from .renew_users_list import *
+from .renew_admin_list import *
 from .reset_bot_peer import *
 from .clear_msgs import *
 from .del_rules import *

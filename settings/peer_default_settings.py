@@ -4,7 +4,7 @@ peer_default_dict = {
     "admins": [],
     "clans": {},
     "ban_list": {
-            # 397717739:  [320750004, ban_timestamp]
+            # "397717739":  [320750004, ban_timestamp]
     },
     "commands_timeouts":{
         "richie_who_whom":  300,
@@ -28,7 +28,7 @@ peer_default_dict = {
     },
     "voteban":{
         "bans_pending": [
-            # [user_to_ban, votes(INT), voted(users dict)]
+            # [user_to_ban, votes INT , voted users list]
         ],
         "min_ban_votes": 10
     },
