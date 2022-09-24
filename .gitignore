@@ -2,6 +2,7 @@
 venv/
 peers/
 logs/
+backups/
 *.log
 .env
 .DS_Store

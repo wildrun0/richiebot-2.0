@@ -8,21 +8,31 @@ from settings import bot_commands
 
 from types import ModuleType
 
+from vkbottle.tools.dev.mini_types.base import BaseMessageMin
+# запись сообщений бота чтобы их очищать
+
+
+
 @bot.on.chat_message(ChatActionRule("chat_invite_user"))
 async def bot_invite(event: Message) -> None:
     action = event.action
     group_id = event.group_id
+    peer_id = event.peer_id
     if not action or not group_id:
         return
-    if action.member_id == -group_id:
-        logging.info(f"Bot invited in {event.peer_id}")
-        peers_handler.save(event.peer_id)
+    if (member_id := action.member_id) == -group_id:
+        logging.info(f"Bot invited in {peer_id}")
+        await peers_handler.save(peer_id)
         await event.answer(f"""
             👋Всем привет! Я - ричи, чатбот созданный для удобного администрирования бесед ВКонтакте! 
             (не забудьте назначить бота администратором беседы, иначе он не работает)
             Список команд - https://vk.com/@richie_bot-richi-komandy-ver3
             Или используйте "ричи команды"
         """)
+    else:
+        if member_id in (await peers_handler.get(peer_id, "ban_list")):
+            await event.ctx_api.messages.remove_chat_user(event.chat_id, member_id = member_id)
+            await event.answer("Пользователь находится в бане")
 
 
 @bot.on.chat_message(CommandUse())

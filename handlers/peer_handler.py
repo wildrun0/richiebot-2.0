@@ -44,7 +44,7 @@ class PeerHandler():
     async def create_peer_unit(self, peer_id: int):
         self.peer_settings[peer_id] = peer_default_dict
         await self.save(peer_id)
-        logging.info(f"Default settings added for new peer ({peer_id})")
+        logging.warning(f"{peer_id} - Default settings added for new peer")
 
 
     async def get(self, peer_id: int, key: str):

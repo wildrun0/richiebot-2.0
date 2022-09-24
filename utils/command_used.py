@@ -3,7 +3,7 @@ import itertools
 
 
 @cached(ttl=300)
-async def command_used(lists: tuple, text: str, check_call = False) -> tuple | bool:
+async def command_used(lists: tuple, text: str, check_call: bool = False) -> tuple | bool:
     if check_call:
         for notfull, full in itertools.zip_longest(*lists):
             if notfull:

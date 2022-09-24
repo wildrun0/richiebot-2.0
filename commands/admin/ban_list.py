@@ -20,3 +20,5 @@ async def ban_list(event: Message) -> None:
             
             to_send += f"{banner_user_name.name} забанил{'а' if banner_user_name.sex == 1 else ''} {banned_user_name.name} {ban_time_humanized}\n"
         await event.answer(to_send, disable_mentions=True)
+    else:
+        await event.answer("Список пуст! :(")
