@@ -1,10 +1,6 @@
 import logging
 import logging.handlers as handlers
-
 from pathlib import Path
-
-from config import BOT_ID
-from time import time
 
 
 class CustomFormatter(logging.Formatter):
@@ -59,19 +55,14 @@ class LoggingHandler():
         ])
         logging.captureWarnings(True)
 
+
     @staticmethod
     def listen_func(func):
         async def wrapper(*args, **kwargs):
             f_name = func.__name__
             f = await func(*args, **kwargs)            
             if f_name == "answer":
-                # from loader import peers_handler
                 log_arg = args[1]
-                # peer_id = str(args[0].peer_id)
-                # cmid = f.conversation_message_id
-                # await peers_handler.messages.write(
-                #     message_text="", cmid = cmid, peer_id = peer_id, user_id = str(BOT_ID), date = time()
-                # )   # нет смысла записывать текст, эти сообщения записываются только для дальнейшей очистки
             else:
                 log_arg = args[0]
             logging.debug(f"{f_name}() run: {log_arg}", stacklevel=3)

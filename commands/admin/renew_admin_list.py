@@ -4,7 +4,7 @@ from handlers.peer_handler import PeerObject
 from vkbottle import VKAPIError
 
 
-async def renew_admin_list(event: Message, peers_obj: PeerObject) -> list[int]:
+async def renew_admin_list(event: Message, peers_obj: PeerObject, params) -> list[int]:
     try:
         admins = (await event.ctx_api.messages.get_conversation_members(event.peer_id))
     except VKAPIError[917]: 

@@ -41,9 +41,7 @@ peer_default_dict = {
             # 397717739: warn_count
         }
     },
-    "mute":{
-        "users":{
-            # 39717739: до скольки мут(timestamp)
-        }
-    }
+    "mute":[
+        #[39717739, до скольки мут(timestamp)]
+    ]
 }

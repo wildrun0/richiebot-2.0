@@ -1,21 +1,31 @@
-from aiocache import cached
+import re
 import itertools
+from aiocache import cached
 
 
 @cached(ttl=300)
-async def command_used(lists: tuple, text: str, check_call: bool = False) -> tuple | bool:
+async def command_used(lists: tuple, text: str, check_call: bool = False) -> tuple[str, str, int] | bool:
+    from datatypes.user import get_user
     if check_call:
         for notfull, full in itertools.zip_longest(*lists):
             if notfull:
-                if text.startswith(notfull):
+                if re.findall(notfull, text):
                     return True
             if full:
                 if full == text:
                     return True
+        return False
     else:
-        for i in enumerate(map(lambda b: map(text.startswith, b), lists)):
-            commands_indexes = list(i[1])
-            idx = i[0]
-            if True in commands_indexes:
-                return lists[idx][commands_indexes.index(True)], idx
-    return False
+        for notfull, full in itertools.zip_longest(*lists):
+            if notfull:
+                if matches := re.findall(notfull, text):
+                    args = list(*matches) if isinstance(*matches, tuple) else matches
+                    if "\[(?:(id|club))(\d+)\|.+\]" in notfull:
+                        try:
+                            id = -int(args[1]) if args[0] == "club" else int(args[1])
+                            args = (await get_user(id), args[1:])
+                        except ValueError: pass
+                    return notfull, args, 0
+            if full:
+                if full == text:
+                    return full, "", 1

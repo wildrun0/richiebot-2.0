@@ -1,16 +1,16 @@
 import commands
-
-
+UID_REGEX = "\[(?:(id|club))(\d+)\|.+\]"
+ALL_REGES = "([\s\S]*)"
 administrative_commands_notfull = {
-    "ричи добавить приветствие":    commands.admin.add_greetings,
-    "ричи добавить правила":        commands.admin.add_rules,
-    "!kick":                        commands.admin.kick,
-    "забанить":                     commands.admin.ban,
-    "разбанить":                    commands.admin.unban,
-    "варн":                         commands.admin.warn,
-    "снять варны":                  commands.admin.unwarn,
-    "мут":                          commands.admin.mute,
-    "размутить":                    commands.admin.unmute
+    f"ричи добавить приветствие {ALL_REGES}":   commands.admin.add_greetings,
+    f"ричи добавить правила {ALL_REGES}":       commands.admin.add_rules,
+    f"!kick {UID_REGEX}":                       commands.admin.kick,
+    f"забанить {UID_REGEX}":                    commands.admin.ban,
+    f"разбанить {UID_REGEX}":                   commands.admin.unban,
+    f"варн {UID_REGEX}":                        commands.admin.warn,
+    f"снять варны {UID_REGEX}":                 commands.admin.unwarn,
+    f"мут (?:{UID_REGEX})?\s?(\d+) (год|лет|месяц|недел|час|минут|секунд)": commands.admin.mute,
+    f"размутить {UID_REGEX}":                   commands.admin.unmute
 }
 
 administrative_commands_full = {

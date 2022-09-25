@@ -8,14 +8,11 @@ from rules import AdminCommandUse, CommandUse, IsAdmin
 
 from loader import bot
 from methods import get_peer_object
+from datatypes.user.get_user import get_user
 from handlers.peer_handler import PeerObject
 from settings import bot_commands
 
-
 from types import ModuleType
-from vkbottle.tools.dev.mini_types.base import BaseMessageMin
-# запись сообщений бота чтобы их очищать
-
 
 
 @bot.on.chat_message(ChatActionRule("chat_invite_user"))
@@ -44,10 +41,15 @@ async def bot_invite(event: Message, peer_obj: PeerObject) -> None:
 @get_peer_object
 async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     def_function_name = event.text.lower()
-    command_name, command_type = await utils.command_used((
+    command_name, command_args, command_type = await utils.command_used((
         bot_commands.all_commands_notfull, # command_type 0
         bot_commands.all_commands_full     # command_type 1
     ), def_function_name)
+
+    if command_args and not command_args[0]:
+        if onreply := event.reply_message:
+            command_args[0] = await get_user(onreply.from_id)
+        else: return
 
     match command_type:
         case 0:
@@ -59,17 +61,22 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
         await event.answer("Команда есть. Не реализована.")
     else:
         event.text = event.text.replace(command_name, "").lstrip()
-        await def_func(event, peer_obj)
+        await def_func(event, peer_obj, command_args)
 
 
 @bot.on.chat_message(AdminCommandUse(), IsAdmin())
 @get_peer_object
 async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
     adm_function_name = event.text.lower()
-    command_name, command_type = await utils.command_used((
+    command_name, command_args, command_type = await utils.command_used((
         bot_commands.admin_commands_notfull,
         bot_commands.admin_commands_full
     ), adm_function_name)
+
+    if command_args and not command_args[0]:
+        if onreply := event.reply_message:
+            command_args[0] = await get_user(onreply.from_id)
+        else: return
 
     match command_type:
         case 0:
@@ -81,7 +88,7 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
         await event.answer("Команда есть. Не реализована.")
     else:
         event.text = event.text.replace(command_name, "").lstrip()
-        await adm_func(event, peer_obj)
+        await adm_func(event, peer_obj, command_args)
 
 
 @bot.on.chat_message()

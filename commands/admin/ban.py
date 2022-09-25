@@ -3,7 +3,7 @@ from vkbottle.bot import Message
 from methods import extract_id
 from vkbottle import VKAPIError
 
-async def ban(event: Message, peer_obj: PeerObject):
+async def ban(event: Message, peer_obj: PeerObject, params):
     if onreply := event.reply_message:
         to_ban = onreply.from_id
     else:

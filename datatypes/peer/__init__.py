@@ -1,1 +1,1 @@
-from .Peer import PeerClass
+from .Peer import PeerClass, mute_struct
