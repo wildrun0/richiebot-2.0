@@ -1,8 +1,5 @@
 import msgspec
 
-class mute_struct(msgspec.Struct):
-    users: dict[str, float]
-
 
 class warns_struct(msgspec.Struct):
     max_warns: int = 5
@@ -36,6 +33,7 @@ class PeerClass(msgspec.Struct):
     greeting:           str|None = None
     rules:              str|None = None
     admins:             list[int] = []
+    users:              list[int] = []
     clans:              dict[str, dict] = {}
     ban_list:           dict[str, list] = {}
     commands_timeouts:  commands_timeouts_struct = {}

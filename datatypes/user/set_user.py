@@ -6,6 +6,7 @@ from datatypes.user import NAME_TEMPLATE, User, users_folder
 
 @cached(ttl=120)
 async def set_user(user_id: int, name_case: str = 'nom', do_not_save: bool = False) -> User:
+    if user_id == 0: return None
     usersget_data = (await bot.api.users.get(user_id, name_case=name_case, fields=['Sex']))
     if not usersget_data:
         bot_name = (await bot.api.groups.get_by_id(group_id=abs(user_id)))[0].name

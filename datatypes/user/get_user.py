@@ -6,6 +6,7 @@ cached_users = {}
 
 
 async def get_user(user_id: int) -> User:
+    if user_id == 0: return None
     if user_id in cached_users: return cached_users[user_id]
     user_data = AsyncPath(users_folder, f"{user_id}.dat")
 

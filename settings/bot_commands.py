@@ -1,6 +1,8 @@
 import commands
+
 UID_REGEX = "\[(?:(id|club))(\d+)\|.+\]"
 ALL_REGEX = "([\s\S]*)"
+
 administrative_commands_notfull = {
     f"ричи добавить приветствие {ALL_REGEX}":   commands.admin.add_greetings,
     f"ричи добавить правила {ALL_REGEX}":       commands.admin.add_rules,
@@ -14,7 +16,7 @@ administrative_commands_notfull = {
 }
 
 administrative_commands_full = {
-    "ричи обновить пользователей":  commands.admin.renew_admin_list,
+    "ричи обновить пользователей":  commands.admin.renew_users_list,
     "ричи сброс":                   commands.admin.reset_bot_peer,
     "ричи очистка":                 commands.admin.clear_msgs,
     "ричи удалить правила":         commands.admin.del_rules,

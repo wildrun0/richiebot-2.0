@@ -1,24 +1,25 @@
 from handlers.peer_handler import PeerObject
 from vkbottle.bot import Message
-from methods import extract_id
+from datatypes.user import User
 from vkbottle import VKAPIError
 
-async def ban(event: Message, peer_obj: PeerObject, params):
-    if onreply := event.reply_message:
-        to_ban = onreply.from_id
-    else:
-        to_ban = extract_id(event.text, 1)
-    if not to_ban:
-        await event.answer("🚫Неправильно указан пользователь!")
+
+async def ban(event: Message, peer_obj: PeerObject, params: tuple[User, list]):
+    usr_to_ban = params[0]
+    if not usr_to_ban:
+        status = "🚫Неправильно указан пользователь!"
     else:
         ban_list = peer_obj.data.ban_list
-        if str(to_ban) in ban_list.keys():
-            await event.answer("🚫Пользователь уже забанен!")
+        if str(usr_to_ban.id) in ban_list.keys():
+            status = "🚫Пользователь уже забанен!"
         else:
             try:
-                await event.ctx_api.messages.remove_chat_user(event.chat_id, member_id=to_ban)
-                peer_obj.data.ban_list[str(to_ban)] = [event.from_id, event.date]
+                await event.ctx_api.messages.remove_chat_user(event.chat_id, member_id=usr_to_ban.id)
+                peer_obj.data.ban_list[str(usr_to_ban.id)] = [event.from_id, event.date]
                 await peer_obj.save()
-                await event.answer("✅Успешно забанен!")
+                status = "✅Успешно забанен!"
             except VKAPIError[935]:
-                await event.answer("🚫Пользователь не состоит в беседе!")
+                status = "🚫Пользователь не состоит в беседе!"
+            except VKAPIError[15]:
+                status = "🚫Невозможно забанить администратора"
+    await event.answer(status)

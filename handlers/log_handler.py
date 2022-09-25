@@ -1,6 +1,8 @@
 import logging
 import logging.handlers as handlers
+
 from pathlib import Path
+from config import DEBUG_STATUS
 
 
 class CustomFormatter(logging.Formatter):
@@ -29,10 +31,12 @@ class CustomFormatter(logging.Formatter):
 
 class LoggingHandler():
     def __init__(self, name):
-        self.default_log_name = "richiebot.log"
-        self.default_logs_folder = Path("logs")
-        self.latest_log_path = Path(self.default_logs_folder, self.default_log_name)
-        self.default_logs_folder.mkdir(exist_ok=True)
+        self.log_name = "richiebot.log"
+        self.logs_folder = Path("logs")
+        self.log_path = Path(self.logs_folder, self.log_name)
+        self.logs_folder.mkdir(exist_ok=True)
+        
+        log_level = DEBUG_STATUS and logging.DEBUG  or logging.INFO
         customformat = CustomFormatter(name)
         
         logging.getLogger("vkbottle").setLevel(logging.INFO)
@@ -40,7 +44,7 @@ class LoggingHandler():
         
         logging.getLogger().handlers.clear()
         
-        filehandler = handlers.TimedRotatingFileHandler(self.latest_log_path, when="midnight", interval=1, encoding="utf8")
+        filehandler = handlers.TimedRotatingFileHandler(self.log_path, when="midnight", interval=1, encoding="utf8")
         filehandler.suffix = "%Y-%m-%d"
         filehandler.setFormatter(
             logging.Formatter(customformat.format_str)
@@ -49,7 +53,7 @@ class LoggingHandler():
         console_stream = logging.StreamHandler()
         console_stream.setFormatter(customformat)
         
-        logging.basicConfig(encoding='utf-8', level=logging.DEBUG, handlers=[
+        logging.basicConfig(encoding='utf-8', level=log_level, handlers=[
             console_stream,
             filehandler
         ])
