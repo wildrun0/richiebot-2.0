@@ -48,7 +48,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
 
     if command_args and not command_args[0]:
         if onreply := event.reply_message:
-            command_args[0] = await get_user(onreply.from_id)
+            command_args = await get_user(onreply.from_id), command_args[2:]
         else: return
 
     match command_type:
@@ -75,7 +75,7 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
 
     if command_args and not command_args[0]:
         if onreply := event.reply_message:
-            command_args[0] = await get_user(onreply.from_id)
+            command_args = await get_user(onreply.from_id), command_args[2:]
         else: return
 
     match command_type:

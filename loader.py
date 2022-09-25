@@ -5,7 +5,7 @@ from handlers import LoggingHandler
 import pytz
 
 tz = pytz.timezone("Europe/Moscow")
-TIME_FORMAT = "%d.%m.%y %H:%M"
+TIME_FORMAT = "%d.%m.%y %H:%M:%S"
 
 lh = LoggingHandler(name="RICHIEBOT")
 

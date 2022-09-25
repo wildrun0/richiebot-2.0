@@ -10,7 +10,7 @@ class IsAdmin(ABCRule[Message]):
     async def check(self, event: Message) -> bool:
         if not (peer_id := event.peer_id) in peers_objs:
             peer_obj = PeerObject(peer_id)
-            await renew_admin_list(event, peer_obj, "")
+            await renew_admin_list(event, peer_obj)
             peers_objs[peer_id] = peer_obj
 
         admins = peers_objs[peer_id].data.admins
