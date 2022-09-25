@@ -11,6 +11,6 @@
 Когда-то у бота присутствовал сайт, но в связи с ситуацией, дальнейшее содержание домена было невозможно. В связи с этим, сайта у бота больше нет.
 Но когда был, выглядел он так:
 
-![mobile_richiebotcom](http://109.200.123.70/files/richiebot/website_promo.jpg)
-![desktop_richiebotcom](http://109.200.123.70/files/richiebot/website_promo2.jpg)
-![desktop2_richiebotcom](http://109.200.123.70/files/richiebot/website_promo3.jpg)
+Мобильная версия           |  Главная страница | Личный кабинет
+:-------------------------:|:-------------------------:|:-------------------------:
+![mobile_richiebotcom](http://109.200.123.70/files/richiebot/website_promo.jpg) | ![desktop_richiebotcom](http://109.200.123.70/files/richiebot/website_promo2.jpg) | ![desktop2_richiebotcom](http://109.200.123.70/files/richiebot/website_promo3.jpg)

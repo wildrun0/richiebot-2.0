@@ -1,5 +1,4 @@
 from __future__ import annotations
-from time import time as timestamp
 import msgspec
 
 
@@ -7,7 +6,7 @@ class ParentPeer(msgspec.Struct):
     peer_id: PeerClass
 
 class mute_struct(msgspec.Struct):
-    users: dict[str, timestamp]
+    users: dict[str, float]
 
 class warns_struct(msgspec.Struct):
     max_warns: int = 5

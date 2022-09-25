@@ -4,7 +4,7 @@ import psutil
 
 process = psutil.Process(os.getpid())
 
-async def stat(event: Message) -> None:
+async def stat(event: Message, peer_obj) -> None:
     memory_usage = round(process.memory_info()[0] / 2**20, 2) #in MB
     memory_percent = round(process.memory_percent(), 2)
     

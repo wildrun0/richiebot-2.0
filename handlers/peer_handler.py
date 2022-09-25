@@ -12,11 +12,9 @@ peers_folder.mkdir(exist_ok=True)
 
 
 class Messages():
-    def __init__(self, parent: PeerClass, peer_location: Path):
-        self.peerhandler = parent
-        self.peer_location = peer_location
+    def __init__(self, peer_location: Path):
         self.message_filename = "messages.json"
-        self.default_location = AsyncPath(self.peer_location, self.message_filename)
+        self.default_location = AsyncPath(peer_location, self.message_filename)
 
 
     async def _get_peer_messages(self, peer_id: str, user_id: str = None) -> MessagesClass:
@@ -58,7 +56,7 @@ class PeerObject:
             )
         else:
             self.data = msgspec.json.decode(self.obj_file.read_bytes(), type=PeerClass)
-        self.messages = Messages(self.data, self.peer_location)
+        self.messages = Messages(self.peer_location)
 
 
     async def save(self):
