@@ -8,8 +8,8 @@ DEFAULT_FOLDER = "usersdata"
 
 
 class User(msgspec.Struct):
-    nickname: str = ""   # Пашка Дуров
-    name:     str = "[]" # [id1|Павел Дуров]
+    nickname: str = "" # [id1|Пашок]
+    name:     str = ""  # [id1|Павел Дуров]
     sex:      int = 0    # 0 = не указан, 1 - жен, 2 - муж.
     id:       int = 0    # 320750004
 

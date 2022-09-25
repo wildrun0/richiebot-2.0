@@ -1,9 +1,5 @@
-from __future__ import annotations
 import msgspec
 
-
-class ParentPeer(msgspec.Struct):
-    peer_id: PeerClass
 
 class mute_struct(msgspec.Struct):
     users: dict[str, float]
@@ -48,5 +44,3 @@ class PeerClass(msgspec.Struct):
     last_kicked:        list[int] = []
     warns:              warns_struct = {}
     mute:               dict[str, dict] = {}
-    
-    

@@ -14,6 +14,8 @@ class IsAdmin(ABCRule[Message]):
             peers_objs[peer_id] = peer_obj
 
         admins = peers_objs[peer_id].data.admins
+        if not admins:
+            admins = await renew_admin_list(event, peers_objs[peer_id])
         if event.from_id in admins:
             return True
         elif not admins:

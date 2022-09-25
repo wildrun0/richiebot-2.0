@@ -1,4 +1,3 @@
-from __future__ import annotations
 from aiocache import cached
 from datatypes.user import User, set_user
 

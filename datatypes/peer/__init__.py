@@ -1,1 +1,1 @@
-from .Peer import PeerClass, ParentPeer
+from .Peer import PeerClass

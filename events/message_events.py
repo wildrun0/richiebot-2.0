@@ -91,6 +91,5 @@ async def log_message(event: Message, peer_obj: PeerObject) -> None:
         message_text = event.text, 
         cmid = event.message_id,
         user_id = str(event.from_id),
-        peer_id = str(event.peer_id),
         date = event.date
     )

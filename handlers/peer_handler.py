@@ -17,7 +17,7 @@ class Messages():
         self.default_location = AsyncPath(peer_location, self.message_filename)
 
 
-    async def _get_peer_messages(self, peer_id: str, user_id: str = None) -> MessagesClass:
+    async def _get_peer_messages(self, user_id: str = None) -> MessagesClass:
         if not await self.default_location.exists():
             messages = MessagesClass()
         else:
@@ -27,8 +27,8 @@ class Messages():
         return messages
 
 
-    async def write(self, message_text: str, cmid: int, peer_id: str, user_id: str, date: float):
-        messages = await self._get_peer_messages(peer_id, user_id)
+    async def write(self, message_text: str, cmid: int, user_id: str, date: float):
+        messages = await self._get_peer_messages(user_id)
         messages.users[user_id].messages.append(
             UserMessage(message_text, cmid, date)
         )
