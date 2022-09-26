@@ -1,7 +1,7 @@
 from vkbottle.bot import Message
 from vkbottle.dispatch.rules import ABCRule
 from handlers.peer_handler import PeerObject
-from methods.peer_object import peer_object
+from methods import peer_object
 
 from settings import bot_commands
 from commands.admin import renew_users_list
@@ -9,6 +9,7 @@ from commands.admin import renew_users_list
 class IsAdmin(ABCRule[Message]):
     def __init__(self, status: bool = None):
         self.status = status
+
 
     @peer_object
     async def check(self, event: Message, peer_obj: PeerObject) -> bool:

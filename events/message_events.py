@@ -55,7 +55,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     command_name, command_args, command_type = await utils.command_used((
         bot_commands.all_commands_notfull, # command_type 0
         bot_commands.all_commands_full     # command_type 1
-    ), def_function_name)
+    ), def_function_name, peer_obj)
 
     if command_args and not command_args[0]:
         if onreply := event.reply_message:
@@ -74,6 +74,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
         event.text = event.text.replace(command_name, "").lstrip()
         await def_func(event, peer_obj, command_args)
 
+
 @bot.on.chat_message(regexp=(*bot_commands.admin_commands_notfull, *bot_commands.admin_commands_full), is_admin=True)
 @peer_object
 async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
@@ -81,7 +82,7 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
     command_name, command_args, command_type = await utils.command_used((
         bot_commands.admin_commands_notfull,
         bot_commands.admin_commands_full
-    ), adm_function_name)
+    ), adm_function_name, peer_obj)
 
     if command_args and not command_args[0]:
         if onreply := event.reply_message:

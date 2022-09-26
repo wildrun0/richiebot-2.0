@@ -1,7 +1,7 @@
-from handlers import PeerObject
-from commands.admin import renew_users_list
 from vkbottle.bot import MessageMin
 
+from handlers import PeerObject
+from commands.admin import renew_users_list
 
 peers_objs = {}
 def peer_object(func):
