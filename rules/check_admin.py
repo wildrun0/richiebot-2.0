@@ -1,21 +1,18 @@
 from vkbottle.bot import Message
 from vkbottle.dispatch.rules import ABCRule
 from handlers.peer_handler import PeerObject
-from methods.peer_object import peers_objs
+from methods.peer_object import peer_object
 
 from settings import bot_commands
 from commands.admin import renew_users_list
 
 class IsAdmin(ABCRule[Message]):
-    async def check(self, event: Message) -> bool:
-        if not (peer_id := event.peer_id) in peers_objs:
-            peer_obj = PeerObject(peer_id)
-            await renew_users_list(event, peer_obj)
-            peers_objs[peer_id] = peer_obj
+    def __init__(self, status: bool = None):
+        self.status = status
 
-        admins = peers_objs[peer_id].data.admins
-        if not admins:
-            admins, _ = await renew_users_list(event, peers_objs[peer_id])
+    @peer_object
+    async def check(self, event: Message, peer_obj: PeerObject) -> bool:
+        admins = peer_obj.data.admins
         if event.from_id in admins:
             return True
         elif not admins:

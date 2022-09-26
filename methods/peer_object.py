@@ -1,11 +1,12 @@
-from handlers.peer_handler import PeerObject
+from handlers import PeerObject
 from commands.admin import renew_users_list
+from vkbottle.bot import MessageMin
 
 
 peers_objs = {}
 def peer_object(func):
     async def wrapper(*args, **kwargs):
-        event = args[0]
+        event = isinstance(args[0], MessageMin) and args[0] or args[1]
         if (peer_id := event.peer_id) in peers_objs:
             peer_obj = peers_objs[peer_id]
         else:

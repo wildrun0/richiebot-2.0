@@ -1,6 +1,6 @@
 from . import MAX_STRING_LENGTH
 from vkbottle.bot import Message
-from handlers.peer_handler import PeerObject
+from handlers import PeerObject
 
 
 async def add_greetings(event: Message, peer_object: PeerObject, params: list[str]) -> None:

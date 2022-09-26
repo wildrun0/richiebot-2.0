@@ -1,9 +1,10 @@
-from vkbottle.bot import Message
 import os
 import psutil
 
-process = psutil.Process(os.getpid())
+from vkbottle.bot import Message
 
+
+process = psutil.Process(os.getpid())
 async def stat(event: Message, peer_obj, params) -> None:
     memory_usage = round(process.memory_info()[0] / 2**20, 2) #in MB
     memory_percent = round(process.memory_percent(), 2)

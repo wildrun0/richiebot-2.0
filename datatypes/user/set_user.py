@@ -1,7 +1,9 @@
 import msgspec
+
 from aiopathlib import AsyncPath
-from loader import bot
 from aiocache import cached
+
+from loader import bot
 from datatypes.user import NAME_TEMPLATE, User, users_folder
 
 @cached(ttl=120)

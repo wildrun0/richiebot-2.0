@@ -2,21 +2,24 @@ import logging
 import utils
 
 from vkbottle.bot import Message
-from vkbottle.dispatch.rules.base import ChatActionRule
 from vkbottle import VKAPIError
 
-from rules import AdminCommandUse, CommandUse, IsAdmin
+from settings import bot_commands
+from rules import IsAdmin
 
 from loader import bot
 from methods import peer_object
-from datatypes.user.get_user import get_user
-from handlers.peer_handler import PeerObject
+from datatypes.user import get_user
+from handlers import PeerObject
 from settings import bot_commands
 
 from types import ModuleType
 
 
-@bot.on.chat_message(ChatActionRule("chat_invite_user"))
+bot.labeler.custom_rules["is_admin"] = IsAdmin
+
+
+@bot.on.chat_message(action=["chat_invite_user", "chat_kick_user"])
 @peer_object
 async def bot_invite(event: Message, peer_obj: PeerObject) -> None:
     action = event.action
@@ -45,7 +48,7 @@ async def bot_invite(event: Message, peer_obj: PeerObject) -> None:
                 await event.answer(greeting)
 
 
-@bot.on.chat_message(CommandUse())
+@bot.on.chat_message(regexp=(*bot_commands.all_commands_full, *bot_commands.all_commands_notfull))
 @peer_object
 async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     def_function_name = event.text.lower()
@@ -71,8 +74,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
         event.text = event.text.replace(command_name, "").lstrip()
         await def_func(event, peer_obj, command_args)
 
-
-@bot.on.chat_message(AdminCommandUse(), IsAdmin())
+@bot.on.chat_message(regexp=(*bot_commands.admin_commands_notfull, *bot_commands.admin_commands_full), is_admin=True)
 @peer_object
 async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
     adm_function_name = event.text.lower()

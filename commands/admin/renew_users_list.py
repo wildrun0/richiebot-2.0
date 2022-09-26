@@ -1,6 +1,6 @@
 import logging
 from vkbottle.bot import Message
-from handlers.peer_handler import PeerObject
+from handlers import PeerObject
 from vkbottle import VKAPIError
 
 
@@ -12,11 +12,12 @@ async def renew_users_list(event: Message, peers_obj: PeerObject, params: None =
         logging.info(f"Не могу получить админов в беседе {event.peer_id}")
         return [], []
 
-    adms = list(filter(None, [x.is_admin and x.member_id for x in users.items]))
     usrs = [x.member_id for x in users.items]
+    adms = list(filter(None, [x.is_admin and x.member_id for x in users.items]))
 
     peers_obj.data.users = usrs
     peers_obj.data.admins = adms
 
     await peers_obj.save()
+    if params: await event.answer("Пользователи обновлены")
     return adms, users
