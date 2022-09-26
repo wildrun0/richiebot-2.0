@@ -1,5 +1,5 @@
 from . import MAX_STRING_LENGTH
-from handlers import PeerObject
+from datatypes import PeerObject
 from vkbottle.bot import Message
 
 

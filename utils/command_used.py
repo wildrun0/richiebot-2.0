@@ -2,12 +2,12 @@ import re
 import itertools
 
 from aiocache import cached
-from handlers.peer_handler import PeerObject
+from datatypes import User, PeerObject
+from datatypes.user import get_user
 
 
 @cached(ttl=300)
-async def command_used(lists: tuple, text: str, peer_object: PeerObject) -> tuple[str, tuple, int] | bool:
-    from datatypes.user import get_user
+async def command_used(lists: tuple, text: str, peer_object: PeerObject) -> tuple[str, tuple[User|None, list[str]], int] | tuple[str, str, int]:
     for notfull, full in itertools.zip_longest(*lists):
         if notfull:
             if matches := re.findall(notfull, text):

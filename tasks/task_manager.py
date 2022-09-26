@@ -1,5 +1,5 @@
 from vkbottle import LoopWrapper
-from .do_backups import BackupManger
+from .functions import BackupManger
 
 """
 Хочу оправдаться за этот мерзкий дизайн ход - я хочю чтобы все фоновые процессы

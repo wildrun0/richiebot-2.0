@@ -1,9 +1,10 @@
-from typing import Literal
-import aioshutil
+import os
 import logging
-import utils
-from datetime import datetime, timedelta
+import aioshutil
+
 from pathlib import Path
+from typing import Literal
+from datetime import datetime, timedelta
 
 
 class BackupManger():
@@ -39,7 +40,7 @@ class BackupManger():
 
 
     async def check_for_backup(self, frequency: Literal["monthly", "weekly", "daily", "hourly"] = "daily"):
-        if utils.dir_empty(self.default_folder): # можно было бы просто проверить len(backups_sorted) но это наибыстрейший (!) способ
+        if not next(os.scandir(self.default_folder), None):
             logging.warning("No backups found!")
             match frequency:
                 case "weekly":

@@ -1,7 +1,7 @@
 import msgspec
 
 from pathlib import Path
-from handlers.peer_handler import peers_folder
+from datatypes.peer import peers_folder
 
 NAME_TEMPLATE = "[id%d|%s %s]"
 DEFAULT_FOLDER = "usersdata"

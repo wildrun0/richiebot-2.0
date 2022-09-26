@@ -1,6 +1,6 @@
-from handlers import PeerObject
 from vkbottle.bot import Message
 from datetime import datetime
+from datatypes import PeerObject
 from methods import display_nicknames
 from loader import tz, TIME_FORMAT
 

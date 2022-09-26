@@ -1,6 +1,5 @@
 from vkbottle.bot import Message
-from datatypes.user.User import User
-from handlers.peer_handler import PeerObject
+from datatypes import User, PeerObject
 from datetime import datetime
 from loader import tz, TIME_FORMAT
 

@@ -10,7 +10,7 @@ from rules import IsAdmin
 from loader import bot
 from methods import peer_object
 from datatypes.user import get_user
-from handlers import PeerObject
+from datatypes import PeerObject
 from settings import bot_commands
 
 from types import ModuleType
@@ -18,6 +18,8 @@ from types import ModuleType
 
 bot.labeler.custom_rules["is_admin"] = IsAdmin
 
+non_adm_commands = (*bot_commands.all_commands_full, *bot_commands.all_commands_notfull)
+adm_commands = (*bot_commands.admin_commands_notfull, *bot_commands.admin_commands_full)
 
 @bot.on.chat_message(action=["chat_invite_user", "chat_kick_user"])
 @peer_object
@@ -48,7 +50,7 @@ async def bot_invite(event: Message, peer_obj: PeerObject) -> None:
                 await event.answer(greeting)
 
 
-@bot.on.chat_message(regexp=(*bot_commands.all_commands_full, *bot_commands.all_commands_notfull))
+@bot.on.chat_message(regexp=non_adm_commands)
 @peer_object
 async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     def_function_name = event.text.lower()
@@ -75,7 +77,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
         await def_func(event, peer_obj, command_args)
 
 
-@bot.on.chat_message(regexp=(*bot_commands.admin_commands_notfull, *bot_commands.admin_commands_full), is_admin=True)
+@bot.on.chat_message(regexp=adm_commands, is_admin=True)
 @peer_object
 async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
     adm_function_name = event.text.lower()

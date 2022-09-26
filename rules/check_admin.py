@@ -1,6 +1,6 @@
 from vkbottle.bot import Message
 from vkbottle.dispatch.rules import ABCRule
-from handlers.peer_handler import PeerObject
+from datatypes import PeerObject
 from methods import peer_object
 
 from settings import bot_commands

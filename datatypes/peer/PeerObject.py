@@ -40,7 +40,7 @@ class Messages():
 
 class PeerObject:
     def __init__(self, peer_id: int):
-        logging.info("LOAD PEER SETTINGS")
+        logging.info(f"{peer_id} - LOAD PEER SETTINGS")
         self.peer_json_name = "main.json"
         self.peer_id = peer_id
         self.data = None
@@ -62,4 +62,4 @@ class PeerObject:
     async def save(self):
         peer_class = msgspec.json.encode(self.data)
         await AsyncPath(self.obj_file).async_write(peer_class)
-        logging.info(f"PEER ({self.peer_id}) SETTINGS SAVED")
+        logging.info(f"{self.peer_id} PEER SETTINGS SAVED")

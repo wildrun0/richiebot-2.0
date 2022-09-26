@@ -1,6 +1,5 @@
-from handlers import PeerObject
 from vkbottle.bot import Message
-from datatypes.user import User
+from datatypes import User, PeerObject
 from vkbottle import VKAPIError
 
 
