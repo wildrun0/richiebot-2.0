@@ -8,12 +8,12 @@ async def ban(event: Message, peer_obj: PeerObject, params: tuple[User, list]):
     if not usr_to_ban:
         status = "🚫Неправильно указан пользователь!"
     else:
-        ban_list = peer_obj.data.ban_list
-        if str(usr_to_ban.id) in ban_list.keys():
+        if str(usr_to_ban.id) in peer_obj.data.ban_list:
             status = "🚫Пользователь уже забанен!"
         else:
             try:
                 await event.ctx_api.messages.remove_chat_user(event.chat_id, member_id=usr_to_ban.id)
+                peer_obj.data.users.remove(usr_to_ban.id)
                 peer_obj.data.ban_list[str(usr_to_ban.id)] = [event.from_id, event.date]
                 await peer_obj.save()
                 status = "✅Успешно забанен!"

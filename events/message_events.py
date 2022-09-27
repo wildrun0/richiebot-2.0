@@ -1,31 +1,33 @@
 import logging
-import utils
+import methods
 
+from types import ModuleType
 from vkbottle.bot import Message
-from vkbottle import VKAPIError
 
 from settings import bot_commands
 from rules import IsAdmin
-
 from loader import bot
 from methods import decorators
 from datatypes.user import get_user
 from datatypes import PeerObject
-from settings import bot_commands
-
-from types import ModuleType
 
 
 bot.labeler.custom_rules["is_admin"] = IsAdmin
 
 FULL_COMMAND_REGEX = "^%s$"
-non_adm_commands = (*(FULL_COMMAND_REGEX % i for i in bot_commands.all_commands_full), *bot_commands.all_commands_notfull)
-adm_commands = (*bot_commands.admin_commands_notfull, *(FULL_COMMAND_REGEX % i for i in bot_commands.admin_commands_full))
+non_adm_commands = (
+    *(FULL_COMMAND_REGEX % i for i in bot_commands.all_commands_full), 
+    *bot_commands.all_commands_notfull
+)
+adm_commands = (
+    *(FULL_COMMAND_REGEX % i for i in bot_commands.admin_commands_full),
+    *bot_commands.admin_commands_notfull
+)
 logging.debug(f"Regex ({FULL_COMMAND_REGEX}) set for 'full' commands")
 
 @bot.on.chat_message(action=["chat_invite_user", "chat_kick_user"])
 @decorators.peer_manager
-async def bot_invite(event: Message, peer_obj: PeerObject) -> None:
+async def invite_event(event: Message, peer_obj: PeerObject) -> None:
     action = event.action
     group_id = event.group_id
     peer_id = event.peer_id
@@ -41,15 +43,9 @@ async def bot_invite(event: Message, peer_obj: PeerObject) -> None:
         """)
     else:
         peer_obj.data.users.append(member_id)
-        if str(member_id) in peer_obj.data.ban_list:
-            try:
-                await event.ctx_api.messages.remove_chat_user(event.chat_id, member_id = member_id)
-                peer_obj.data.users.remove(member_id)
-                await event.answer("Пользователь находится в бане")
-            except VKAPIError[925]: pass
-        else:
-            if (greeting := peer_obj.data.greeting):
-                await event.answer(greeting)
+        if (greeting := peer_obj.data.greeting):
+            await event.answer(greeting)
+        await peer_obj.save()
 
 
 @bot.on.chat_message(regexp=non_adm_commands)
@@ -61,7 +57,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
         command_name = def_function_name
         command_args = None
     except KeyError:
-        command_name, command_args = await utils.command_used(
+        command_name, command_args = await methods.get_command_arguments(
             bot_commands.all_commands_notfull, 
             def_function_name, peer_obj
         )
@@ -89,7 +85,7 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
         command_name = adm_function_name
         command_args = None
     except KeyError:
-        command_name, command_args = await utils.command_used(
+        command_name, command_args = await methods.get_command_arguments(
             bot_commands.admin_commands_notfull, 
             adm_function_name, peer_obj
         )

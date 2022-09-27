@@ -3,7 +3,7 @@ from vkbottle.bot import Message
 from vkbottle import VKAPIError
 
 from datatypes import PeerObject
-from methods import check_muted
+from methods import check_muted, check_banned
 from commands.admin import renew_users_list
 
 
@@ -13,17 +13,30 @@ peers_objs = {}
 def peer_manager(func):
     async def wrapper(*context_event: tuple[Message|Callable, Message|None], **kwargs):
         event = isinstance(context_event[0], Message) and context_event[0] or context_event[1]
+        print(event)
         if (peer_id := event.peer_id) in peers_objs:
             peer_obj = peers_objs[peer_id]
         else:
             peer_obj = PeerObject(peer_id)
             await renew_users_list(event, peer_obj) # обновляем при каждой инициализации беседы (один раз на запуск)
             peers_objs[peer_id] = peer_obj
-
         if await check_muted(event, peer_obj):
             try:
-                await event.ctx_api.messages.delete(cmids=event.message_id, delete_for_all=True, peer_id=event.peer_id)
-            except VKAPIError[15]: pass
+                await event.ctx_api.messages.delete(
+                    cmids = event.message_id, 
+                    peer_id = event.peer_id,
+                    delete_for_all = True
+                )
+            except (VKAPIError[15], VKAPIError[917]): pass
+        if event.action:
+            if await check_banned(member_id := event.action.member_id, peer_obj):
+                try:
+                    await event.ctx_api.messages.remove_chat_user(
+                        chat_id = event.chat_id,
+                        member_id = member_id
+                    )
+                    await event.answer("Пользователь находится в бане")
+                except VKAPIError[925]: pass
         f = await func(*context_event, peer_obj, **kwargs)
         return f
     return wrapper
