@@ -18,8 +18,10 @@ from types import ModuleType
 
 bot.labeler.custom_rules["is_admin"] = IsAdmin
 
-non_adm_commands = (*bot_commands.all_commands_full, *bot_commands.all_commands_notfull)
-adm_commands = (*bot_commands.admin_commands_notfull, *bot_commands.admin_commands_full)
+FULL_COMMAND_REGEX = "^%s$"
+non_adm_commands = (*(FULL_COMMAND_REGEX % i for i in bot_commands.all_commands_full), *bot_commands.all_commands_notfull)
+adm_commands = (*bot_commands.admin_commands_notfull, *(FULL_COMMAND_REGEX % i for i in bot_commands.admin_commands_full))
+logging.debug(f"Regex ({FULL_COMMAND_REGEX}) set for 'full' commands")
 
 @bot.on.chat_message(action=["chat_invite_user", "chat_kick_user"])
 @peer_object
@@ -54,21 +56,22 @@ async def bot_invite(event: Message, peer_obj: PeerObject) -> None:
 @peer_object
 async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     def_function_name = event.text.lower()
-    command_name, command_args, command_type = await utils.command_used((
-        bot_commands.all_commands_notfull, # command_type 0
-        bot_commands.all_commands_full     # command_type 1
-    ), def_function_name, peer_obj)
+    try:
+        def_func = bot_commands.default_commands_full[def_function_name]
+        command_name = def_function_name
+        command_args = None
+    except KeyError:
+        command_name, command_args = await utils.command_used(
+            bot_commands.all_commands_notfull, 
+            def_function_name, peer_obj
+        )
 
-    if command_args and not command_args[0]:
-        if onreply := event.reply_message:
-            command_args = await get_user(onreply.from_id), command_args[2:]
-        else: return
+        if command_args and not command_args[0]:
+            if onreply := event.reply_message:
+                command_args = await get_user(onreply.from_id), command_args[2:]
+            else: return
 
-    match command_type:
-        case 0:
-            def_func = bot_commands.default_commands_notfull[command_name]
-        case 1:
-            def_func = bot_commands.default_commands_full[command_name]
+        def_func = bot_commands.default_commands_notfull[command_name]
 
     if isinstance(def_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")
@@ -81,21 +84,22 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
 @peer_object
 async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
     adm_function_name = event.text.lower()
-    command_name, command_args, command_type = await utils.command_used((
-        bot_commands.admin_commands_notfull,
-        bot_commands.admin_commands_full
-    ), adm_function_name, peer_obj)
+    try:
+        bot_commands.administrative_commands_full[adm_function_name]
+        command_name = adm_function_name
+        command_args = None
+    except KeyError:
+        command_name, command_args = await utils.command_used(
+            bot_commands.admin_commands_notfull, 
+            adm_function_name, peer_obj
+        )
 
-    if command_args and not command_args[0]:
-        if onreply := event.reply_message:
-            command_args = await get_user(onreply.from_id), command_args[2:]
-        else: return
+        if command_args and not command_args[0]:
+            if onreply := event.reply_message:
+                command_args = await get_user(onreply.from_id), command_args[2:]
+            else: return
 
-    match command_type:
-        case 0:
-            adm_func = bot_commands.administrative_commands_notfull[command_name]
-        case 1:
-            adm_func = bot_commands.administrative_commands_full[command_name]
+        adm_func = bot_commands.administrative_commands_notfull[command_name]
 
     if isinstance(adm_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")

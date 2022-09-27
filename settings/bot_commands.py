@@ -6,13 +6,13 @@ ALL_REGEX = "([\s\S]*)"
 administrative_commands_notfull = {
     f"ричи добавить приветствие {ALL_REGEX}":   commands.admin.add_greetings,
     f"ричи добавить правила {ALL_REGEX}":       commands.admin.add_rules,
-    f"!kick {UID_REGEX}":                       commands.admin.kick,
-    f"забанить {UID_REGEX}":                    commands.admin.ban,
+    f"!kick\s?{UID_REGEX}":                       commands.admin.kick,
+    f"забанить\s?(?:{UID_REGEX})?":                    commands.admin.ban,
     f"разбанить {UID_REGEX}":                   commands.admin.unban,
-    f"варн {UID_REGEX}":                        commands.admin.warn,
-    f"снять варны {UID_REGEX}":                 commands.admin.unwarn,
+    f"варн\s?{UID_REGEX}":                        commands.admin.warn,
+    f"снять варны\s?{UID_REGEX}":                 commands.admin.unwarn,
     f"мут (?:{UID_REGEX})?\s?(\d+) (год|лет|мес|нед|час|мин|сек)": commands.admin.mute,
-    f"размутить {UID_REGEX}":                   commands.admin.unmute
+    f"размутить\s?{UID_REGEX}":                   commands.admin.unmute
 }
 
 administrative_commands_full = {

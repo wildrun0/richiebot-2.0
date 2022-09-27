@@ -14,28 +14,27 @@ peers_folder.mkdir(exist_ok=True)
 class Messages():
     def __init__(self, peer_location: Path):
         self.message_filename = "messages.json"
-        self.default_location = AsyncPath(peer_location, self.message_filename)
-
-
-    async def _get_peer_messages(self, user_id: str = None) -> MessagesClass:
-        if not await self.default_location.exists():
-            messages = MessagesClass()
+        self.default_location = Path(peer_location, self.message_filename)
+        if not self.default_location.exists():
+            self.messages = MessagesClass()
         else:
-            messages = msgspec.json.decode(await self.default_location.read_bytes(), type=MessagesClass)
-        if user_id not in messages.users:
-            messages.users[user_id] = UserProfile()
-        return messages
+            self.messages = msgspec.json.decode(self.default_location.read_bytes(), type=MessagesClass)
+
+
+    def _check_user(self, user_id: str):
+        if user_id not in self.messages.users:
+            self.messages.users[user_id] = UserProfile()
 
 
     async def write(self, message_text: str, cmid: int, user_id: str, date: float):
-        messages = await self._get_peer_messages(user_id)
-        messages.users[user_id].messages.append(
+        self._check_user(user_id)
+        self.messages.users[user_id].messages.append(
             UserMessage(message_text, cmid, date)
         )
-        messages.users[user_id].messages_count += 1
-        messages.messages_count += 1
+        self.messages.users[user_id].messages_count += 1
+        self.messages.messages_count += 1
 
-        await self.default_location.async_write(msgspec.json.encode(messages))
+        self.default_location.write_bytes(msgspec.json.encode(self.messages))
 
 
 class PeerObject:
@@ -57,9 +56,10 @@ class PeerObject:
         else:
             self.data = msgspec.json.decode(self.obj_file.read_bytes(), type=PeerClass)
         self.messages = Messages(self.peer_location)
+        logging.info(f"{peer_id} - PEER SETTINGS LOADED")
 
 
     async def save(self):
         peer_class = msgspec.json.encode(self.data)
         await AsyncPath(self.obj_file).async_write(peer_class)
-        logging.info(f"{self.peer_id} PEER SETTINGS SAVED")
+        logging.info(f"{self.peer_id} - PEER SETTINGS SAVED")

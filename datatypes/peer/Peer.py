@@ -41,4 +41,4 @@ class PeerClass(msgspec.Struct):
     voteban:            voteban_struct = {}
     last_kicked:        list[int] = []
     warns:              warns_struct = {}
-    mute:               list[tuple] = []
+    mute:               list[tuple[int, float]] = []

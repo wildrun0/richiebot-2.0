@@ -66,7 +66,7 @@ class LoggingHandler():
             f_name = func.__name__
             f = await func(*args, **kwargs)            
             if f_name == "answer":
-                log_arg = args[1]
+                log_arg = repr(args[1])
             else:
                 log_arg = args[0]
             logging.debug(f"{f_name}() run: {log_arg}", stacklevel=3)

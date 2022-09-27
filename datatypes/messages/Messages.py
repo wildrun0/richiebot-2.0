@@ -15,4 +15,3 @@ class UserProfile(msgspec.Struct):
 class MessagesClass(msgspec.Struct):
     users: dict[str, UserProfile] = {}
     messages_count: int = 0
-    

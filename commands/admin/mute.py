@@ -21,15 +21,15 @@ async def mute(event: Message, peer_obj: PeerObject, params: tuple[User, tuple[i
         if to_mute.id in mute_users:
             await event.answer("Пользователь уже в муте!")
             return
-    
     unmute_date_multiplier = int(params[1][0])
     unmute_date_timedelta = params[1][1]
-    
     unmute_date_timestamp = unmute_date_multiplier * time_seconds[unmute_date_timedelta]
-    
     unmute_date = event.date + unmute_date_timestamp
-    unmute_date_humanized = datetime.fromtimestamp(unmute_date, tz).strftime(TIME_FORMAT)
-    
+    try:
+        unmute_date_humanized = datetime.fromtimestamp(unmute_date, tz).strftime(TIME_FORMAT)
+    except OSError:
+        await event.answer("Указан неправильный срок мута!")
+        return
     peer_obj.data.mute.append((to_mute.id, unmute_date))
     
     await peer_obj.save()
