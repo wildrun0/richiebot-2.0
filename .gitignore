@@ -1,9 +1,9 @@
 **/__pycache__/
-venv/
+virtualenv/
 peers/
 logs/
 backups/
 *.log
-.env
+settings.ini
 .DS_Store
 test.py

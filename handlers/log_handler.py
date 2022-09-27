@@ -2,7 +2,7 @@ import logging
 import logging.handlers as handlers
 
 from pathlib import Path
-from config import DEBUG_STATUS
+from settings.config import DEBUG_STATUS
 
 
 class CustomFormatter(logging.Formatter):
@@ -36,7 +36,7 @@ class LoggingHandler():
         self.log_path = Path(self.logs_folder, self.log_name)
         self.logs_folder.mkdir(exist_ok=True)
         
-        log_level = DEBUG_STATUS and logging.DEBUG  or logging.INFO
+        log_level = DEBUG_STATUS and logging.DEBUG or logging.INFO
         customformat = CustomFormatter(name)
         
         logging.getLogger("vkbottle").setLevel(logging.INFO)

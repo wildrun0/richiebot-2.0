@@ -3,7 +3,7 @@ from vkbottle.bot import Bot
 
 lh = LoggingHandler(name="RICHIEBOT")
 
-from config import BOT_TOKEN
+from settings.config import BOT_TOKEN
 from tasks import TaskManager
 from pytz import timezone
 

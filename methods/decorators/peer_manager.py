@@ -13,7 +13,6 @@ peers_objs = {}
 def peer_manager(func):
     async def wrapper(*context_event: tuple[Message|Callable, Message|None], **kwargs):
         event = isinstance(context_event[0], Message) and context_event[0] or context_event[1]
-        print(event)
         if (peer_id := event.peer_id) in peers_objs:
             peer_obj = peers_objs[peer_id]
         else:
