@@ -1,5 +1,4 @@
 import re
-import itertools
 
 from aiocache import cached
 from datatypes import User, PeerObject

@@ -8,7 +8,7 @@ from settings import bot_commands
 from rules import IsAdmin
 
 from loader import bot
-from methods import peer_object
+from methods import decorators
 from datatypes.user import get_user
 from datatypes import PeerObject
 from settings import bot_commands
@@ -24,7 +24,7 @@ adm_commands = (*bot_commands.admin_commands_notfull, *(FULL_COMMAND_REGEX % i f
 logging.debug(f"Regex ({FULL_COMMAND_REGEX}) set for 'full' commands")
 
 @bot.on.chat_message(action=["chat_invite_user", "chat_kick_user"])
-@peer_object
+@decorators.peer_manager
 async def bot_invite(event: Message, peer_obj: PeerObject) -> None:
     action = event.action
     group_id = event.group_id
@@ -53,7 +53,7 @@ async def bot_invite(event: Message, peer_obj: PeerObject) -> None:
 
 
 @bot.on.chat_message(regexp=non_adm_commands)
-@peer_object
+@decorators.peer_manager
 async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     def_function_name = event.text.lower()
     try:
@@ -81,11 +81,11 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
 
 
 @bot.on.chat_message(regexp=adm_commands, is_admin=True)
-@peer_object
+@decorators.peer_manager
 async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
     adm_function_name = event.text.lower()
     try:
-        bot_commands.administrative_commands_full[adm_function_name]
+        adm_func = bot_commands.administrative_commands_full[adm_function_name]
         command_name = adm_function_name
         command_args = None
     except KeyError:
@@ -109,7 +109,7 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
 
 
 @bot.on.chat_message()
-@peer_object
+@decorators.peer_manager
 async def log_message(event: Message, peer_obj: PeerObject) -> None:
     await peer_obj.messages.write(
         message_text = event.text, 

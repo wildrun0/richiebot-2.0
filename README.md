@@ -1,7 +1,7 @@
 # ![richiebot logo](http://109.200.123.70/files/richiebot/pic_logo.png) richiebot-2.0
 Вторая итерация бота Ричи
 
-Версия Python - `3.10.5+`
+Версия Python - `3.10+`
 
 
 Значительно переписан весь бот, полностью (или от части :D) асинхронный, но все еще *heavily under-development*.
