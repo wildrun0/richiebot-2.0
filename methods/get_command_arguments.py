@@ -15,9 +15,11 @@ async def get_command_arguments(
         if matches := re.findall(command, msg_candidate):
             args = list(*matches) if isinstance(*matches, tuple) else matches
             if UID_REGEX in command:
-                id = -int(args[1]) if args[0] == "club" else int(args[1])
-                if id in peer_object.data.users:
-                    args = (await get_user(id), args[2:])
-                else:
-                    args = (None, args[2:])
-            return command, args
+                try:
+                    id = -int(args[1]) if args[0] == "club" else int(args[1])
+                    if id in peer_object.data.users:
+                        args = (await get_user(id), args[2:])
+                    else:
+                        args = (None, args[2:])
+                except ValueError: pass # если команда имеет необязательный UID_REGEX
+            return command, args        # напр., если она берет пользователя из onreply - event

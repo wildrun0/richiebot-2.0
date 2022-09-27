@@ -19,6 +19,7 @@ def peer_manager(func):
             peer_obj = PeerObject(peer_id)
             await renew_users_list(event, peer_obj) # обновляем при каждой инициализации беседы (один раз на запуск)
             peers_objs[peer_id] = peer_obj
+        ### реагируем на ивенты
         if await check_muted(event, peer_obj):
             try:
                 await event.ctx_api.messages.delete(
@@ -26,6 +27,7 @@ def peer_manager(func):
                     peer_id = event.peer_id,
                     delete_for_all = True
                 )
+                return None # чтобы бот не реагировал
             except (VKAPIError[15], VKAPIError[917]): pass
         if event.action:
             if await check_banned(member_id := event.action.member_id, peer_obj):

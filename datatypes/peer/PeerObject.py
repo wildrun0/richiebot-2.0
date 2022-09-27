@@ -43,10 +43,10 @@ class PeerObject:
         self.peer_json_name = "main.json"
         self.peer_id = peer_id
         self.data = None
-        
+
         self.peer_location = Path(peers_folder, str(self.peer_id))
         self.obj_file = Path(self.peer_location, self.peer_json_name)
-        
+
         if not (peer_dir := self.peer_location).exists():
             peer_dir.mkdir()
             self.data = PeerClass()
