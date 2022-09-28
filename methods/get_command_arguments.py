@@ -18,7 +18,7 @@ async def get_command_arguments(
                 try:
                     id = -int(args[1]) if args[0] == "club" else int(args[1])
                     if id in peer_object.data.users:
-                        args = (await get_user(id), args[2:])
+                        args = (await get_user(id, peer_object.peer_id), args[2:])
                     else:
                         args = (None, args[2:])
                 except ValueError: pass # если команда имеет необязательный UID_REGEX

@@ -1,5 +1,6 @@
 from vkbottle.bot import Message
 from datatypes import User, PeerObject
+from datatypes import user
 from datetime import datetime
 from loader import tz, TIME_FORMAT
 
@@ -31,6 +32,6 @@ async def mute(event: Message, peer_obj: PeerObject, params: tuple[User, tuple[i
         await event.answer("Указан неправильный срок мута!")
         return
     peer_obj.data.mute.append((to_mute.id, unmute_date))
-    
     await peer_obj.save()
-    await event.answer(f"{to_mute.nickname and to_mute.nickname or to_mute.name} замьючен{'a' if to_mute.sex == 1 else ''} до {unmute_date_humanized}")
+    usr_nickname = await user.get_users_nickname(to_mute.id, event.peer_id)
+    await event.answer(f"{usr_nickname} замьючен{'a' if to_mute.sex == 1 else ''} до {unmute_date_humanized}")

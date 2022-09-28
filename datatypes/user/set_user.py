@@ -1,22 +1,32 @@
-import msgspec
+from datetime import datetime
 
-from aiopathlib import AsyncPath
-from aiocache import cached
+from loader import bot, TIME_FORMAT, tz
+from datatypes.user import NAME_TEMPLATE, User, users_folder, peers_struct
 
-from loader import bot
-from datatypes.user import NAME_TEMPLATE, User, users_folder
 
-@cached(ttl=120)
-async def set_user(user_id: int, name_case: str = 'nom', do_not_save: bool = False) -> User:
+async def set_user(user_id: int, peer_id: str|int = None, name_case: str = 'nom', do_not_save: bool = False) -> User:
     if user_id == 0: return None
     usersget_data = (await bot.api.users.get(user_id, name_case=name_case, fields=['Sex']))
+    
+    peer_members = (await bot.api.messages.get_conversation_members(peer_id=peer_id)).items
+    if peer_id:
+        join_date = [
+            date for date in 
+            [user.member_id == user_id and user.join_date for user in peer_members] 
+            if date != False
+        ][0]
+
     if not usersget_data:
         bot_name = (await bot.api.groups.get_by_id(group_id=abs(user_id)))[0].name
         user_datatype = User(
-            nickname = f"[club{abs(user_id)}|{bot_name}]",
+            name = f"[club{abs(user_id)}|{bot_name}]",
             sex = 0,
             id = user_id
         )
+        if peer_id:
+            user_datatype.peers[str(peer_id)] = peers_struct(
+                peer_join_date = datetime.fromtimestamp(join_date, tz).strftime(TIME_FORMAT),
+            )
     else:
         x = usersget_data[0]
         user_datatype = User(
@@ -24,7 +34,10 @@ async def set_user(user_id: int, name_case: str = 'nom', do_not_save: bool = Fal
             sex = x.sex,
             id = x.id
         )
+        if peer_id:
+            user_datatype.peers[str(peer_id)] = peers_struct(
+                peer_join_date = datetime.fromtimestamp(join_date).strftime(TIME_FORMAT),
+            )
     if not do_not_save: # Иногда, нужно получить объект User с измененным name_case, но не сохранять его
-        fp = AsyncPath(users_folder, f"{user_id}.dat")
-        await fp.async_write(msgspec.json.encode(user_datatype))
+        user_datatype.save()
     return user_datatype

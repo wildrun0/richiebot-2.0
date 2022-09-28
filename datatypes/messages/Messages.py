@@ -8,7 +8,6 @@ class UserMessage(msgspec.Struct):
 
 
 class UserProfile(msgspec.Struct):
-    messages_count: int = 0
     messages: list[UserMessage] = []
 
 
