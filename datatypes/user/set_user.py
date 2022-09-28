@@ -18,7 +18,7 @@ async def set_user(user_id: int, peer_id: str|int = None, name_case: str = 'nom'
     if not usersget_data:
         bot_name = (await bot.api.groups.get_by_id(group_id=abs(user_id)))[0].name
         user_datatype = User(
-            name = NAME_TEMPLATE % ("club", abs(user_id), bot_name,"")
+            name = NAME_TEMPLATE % ("club", abs(user_id), bot_name, ""),
             sex = 0,
             id = user_id
         )

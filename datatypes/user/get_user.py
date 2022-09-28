@@ -9,7 +9,7 @@ from datatypes.user import User, set_user, users_folder, peers_struct
 cached_users = {}
 async def get_user(user_id: int, peer_id: int) -> User:
     if user_id == 0: return None
-    user_data = AsyncPath(users_folder, f"{user_id}.dat")
+    user_data = AsyncPath(users_folder, f"{user_id}.json")
 
     if user_id in cached_users:
         data = cached_users[user_id]

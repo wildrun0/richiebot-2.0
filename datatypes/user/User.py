@@ -29,7 +29,7 @@ class User(msgspec.Struct):
     peers:      dict[str, peers_struct] = {}
 
     def save(self):
-        fp = Path(users_folder, f"{self.id}.dat")
+        fp = Path(users_folder, f"{self.id}.json")
         fp.write_bytes(msgspec.json.encode(self))
 
 

@@ -3,9 +3,8 @@ import msgspec
 
 from pathlib import Path
 from aiopathlib import AsyncPath
-from datatypes import peer
 
-from datatypes.peer import Peer, PeerClass
+from datatypes.peer import PeerClass
 from datatypes.messages import MessagesClass, UserProfile, UserMessage
 
 peers_folder = Path("peers")
@@ -14,6 +13,7 @@ peers_folder.mkdir(exist_ok=True)
 
 class Messages():
     def __init__(self, peer_id: int, default_location: AsyncPath, messages: MessagesClass):
+        # в этом классе используем msgpack для экономии занимаемого места
         self.peer_id = peer_id
         self.default_location = default_location
         self.messages = messages
@@ -22,12 +22,12 @@ class Messages():
     @classmethod
     async def init(self, peer_id: int, peer_location: Path):
         logging.info(f"{peer_id} - INIT MESSAGES")
-        message_filename = "messages.json"
+        message_filename = "messages.dat"
         default_location = AsyncPath(peer_location, message_filename)
-        if not (await default_location.exists()):
+        if not await default_location.exists():
             messages = MessagesClass()
         else:
-            messages = msgspec.json.decode(
+            messages = msgspec.msgpack.decode(
                 await default_location.read_bytes(), 
                 type=MessagesClass
             )
@@ -49,7 +49,7 @@ class Messages():
         user.save()
         self.messages.messages_count += 1
 
-        await self.default_location.async_write(msgspec.json.encode(self.messages))
+        await self.default_location.async_write(msgspec.msgpack.encode(self.messages))
 
 
 class PeerObject:
