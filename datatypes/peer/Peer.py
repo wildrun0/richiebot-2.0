@@ -29,7 +29,7 @@ class commands_timeouts_struct(msgspec.Struct):
     richie_duel:    int = 300
 
 
-class PeerClass(msgspec.Struct):
+class PeerClass(msgspec.Struct, omit_defaults=True):
     greeting:           str|None = None
     rules:              str|None = None
     admins:             list[int] = []

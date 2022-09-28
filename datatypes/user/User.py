@@ -22,7 +22,7 @@ class peers_struct(msgspec.Struct):
     nickname:       str = "" # [id1|Пашок]
 
 
-class User(msgspec.Struct):
+class User(msgspec.Struct, omit_defaults=True):
     name:       str = "" # [id1|Павел Дуров]
     sex:        int = 0  # 0 = не указан, 1 - жен, 2 - муж.
     id:         int = 0  # 320750004

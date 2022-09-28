@@ -1,16 +1,16 @@
 import msgspec
 
 
-class UserMessage(msgspec.Struct):
-    message_text: str
+class UserMessage(msgspec.Struct, array_like=True):
+    message_text: bytes
     cmid: int
-    date: float
+    date: int
 
 
 class UserProfile(msgspec.Struct):
     messages: list[UserMessage] = []
 
 
-class MessagesClass(msgspec.Struct):
+class MessagesClass(msgspec.Struct, array_like=True):
     users: dict[str, UserProfile] = {}
     messages_count: int = 0

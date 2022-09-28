@@ -1,5 +1,7 @@
 import logging
 import msgspec
+import zlib
+import sys
 
 from pathlib import Path
 from aiopathlib import AsyncPath
@@ -11,17 +13,17 @@ peers_folder = Path("peers")
 peers_folder.mkdir(exist_ok=True)
 
 
+# в этом классе используем msgpack для экономии занимаемого места
 class Messages():
-    def __init__(self, peer_id: int, default_location: AsyncPath, messages: MessagesClass):
-        # в этом классе используем msgpack для экономии занимаемого места
+    def __init__(self, peer_id: str, default_location: AsyncPath, messages: MessagesClass):
         self.peer_id = peer_id
         self.default_location = default_location
         self.messages = messages
 
 
     @classmethod
-    async def init(self, peer_id: int, peer_location: Path):
-        logging.info(f"{peer_id} - INIT MESSAGES")
+    async def init(self, peer_id: str, peer_location: Path):
+        logging.debug(f"{peer_id} - INIT MESSAGES")
         message_filename = "messages.dat"
         default_location = AsyncPath(peer_location, message_filename)
         if not await default_location.exists():
@@ -31,7 +33,7 @@ class Messages():
                 await default_location.read_bytes(), 
                 type=MessagesClass
             )
-        logging.info(f"{peer_id} - INIT MESSAGES DONE")
+        logging.debug(f"{peer_id} - INIT MESSAGES DONE")
         return Messages(peer_id, default_location, messages)
 
 
@@ -42,10 +44,16 @@ class Messages():
 
     async def write(self, message_text: str, cmid: int, user_id: str, date: float, user):
         self._check_user(user_id)
+        compressed_str = zlib.compress(message_text.encode("utf-8"))
+        
+        og_string_size, compressed_str_size = sys.getsizeof(message_text), sys.getsizeof(compressed_str)
+        compression_percent = round((abs(compressed_str_size - og_string_size) / og_string_size) * 100.0, 2)
+        logging.debug(f"String compressed {og_string_size} -> {compressed_str_size} ({compression_percent}%)")
+        
         self.messages.users[user_id].messages.append(
-            UserMessage(message_text, cmid, date)
+            UserMessage(compressed_str, cmid, date)
         )
-        user.peers[str(self.peer_id)].total_messages += 1
+        user.peers[self.peer_id].total_messages += 1
         user.save()
         self.messages.messages_count += 1
 
@@ -75,7 +83,7 @@ class PeerObject:
             )
         else:
             data = msgspec.json.decode(await obj_file.read_bytes(), type=PeerClass)
-        messages = await Messages.init(peer_id, peer_location)
+        messages = await Messages.init(str(peer_id), peer_location)
         logging.info(f"{peer_id} - PEER SETTINGS LOADED")
         return PeerObject(peer_id, obj_file, data, messages)
 
