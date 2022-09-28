@@ -66,7 +66,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     except KeyError:
         command_name, command_args = await methods.get_command_arguments(
             bot_commands.all_commands_notfull, 
-            def_function_name, peer_obj
+            def_function_name, peer_obj, event.from_id
         )
 
         if command_args and not command_args[0]:
@@ -94,7 +94,7 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
     except KeyError:
         command_name, command_args = await methods.get_command_arguments(
             bot_commands.admin_commands_notfull, 
-            adm_function_name, peer_obj
+            adm_function_name, peer_obj, event.from_id
         )
 
         if command_args and not command_args[0]:

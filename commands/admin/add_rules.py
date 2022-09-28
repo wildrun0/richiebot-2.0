@@ -1,12 +1,11 @@
-from . import MAX_STRING_LENGTH
+from settings.config import MAX_RULES_LENGTH
+from methods import check
 from datatypes import PeerObject
 from vkbottle.bot import Message
 
 
-async def add_rules(event: Message, peers_object: PeerObject, params: list[str]) -> None:
-    if len(rules := params[0]) > MAX_STRING_LENGTH:
-        await event.answer(f"🚫Недопустимая длина ({len(rules)}>{MAX_STRING_LENGTH})")
-    else:
-        peers_object.data.rules = params[0]
-        await peers_object.save()
+async def add_rules(event: Message, peer_object: PeerObject, params: list[str]) -> None:
+    if await check.length(event, rules := params[0], MAX_RULES_LENGTH):
+        peer_object.data.rules = rules
+        await peer_object.save()
         await event.answer("✅Правила установлены", disable_mentions=True)

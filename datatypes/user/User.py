@@ -3,7 +3,7 @@ import msgspec
 from pathlib import Path
 from datatypes.peer import peers_folder
 
-NAME_TEMPLATE = "[id%d|%s %s]"
+NAME_TEMPLATE = "[%s%d|%s %s]"
 DEFAULT_FOLDER = "usersdata"
 
 

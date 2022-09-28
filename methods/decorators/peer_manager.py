@@ -5,7 +5,7 @@ from vkbottle import VKAPIError
 from vkbottle_types.objects import MessagesMessageActionStatus
 
 from datatypes import PeerObject
-from methods import check_muted
+from methods import check
 from commands.admin import renew_users_list
 
 
@@ -22,7 +22,7 @@ def peer_manager(func):
             await renew_users_list(event, peer_obj) # обновляем при каждой инициализации беседы (один раз на запуск)
             peers_objs[peer_id] = peer_obj
         ### реагируем на ивенты
-        if await check_muted(event, peer_obj):
+        if await check.muted(event, peer_obj):
             try:
                 await event.ctx_api.messages.delete(
                     cmids = event.message_id, 

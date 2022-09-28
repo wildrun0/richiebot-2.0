@@ -1,0 +1,16 @@
+import re
+from vkbottle.bot import Message
+from methods import check
+from datatypes import PeerObject, User
+from datatypes.user import NAME_TEMPLATE
+from settings.config import MAX_NICKNAME_LENGTH
+
+async def set_nickname(event: Message, peer_obj: PeerObject, params: tuple[User, str]) -> None:
+    user, nickname_candidate = params
+    if await check.length(event, nickname_candidate, MAX_NICKNAME_LENGTH):
+        if re.search("\[(id|club)(\d+)\|.+\]", nickname_candidate):
+            await event.answer("🚫Нельзя указывать пользователей в кличке!")
+        else:
+            user.peers[str(peer_obj.peer_id)].nickname = NAME_TEMPLATE % ("club" if user.id < 0 else "id", user.id, nickname_candidate, "")
+            user.save()
+            await event.answer(f"{user.peers[str(peer_obj.peer_id)].nickname}, ✅Кличка добавлена", disable_mentions=True)

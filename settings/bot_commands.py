@@ -27,7 +27,7 @@ administrative_commands_full = {
 default_commands_notfull = {
     "ричи кто":                     commands.richie.who,
     "ричи кого":                    commands.richie.who,
-    "ричи добавить кличку":         commands.richie.set_nickname,
+    f"ричи добавить кличку {CATCH_ALL_REGEX}":         commands.richie.set_nickname,
     "ричи инфа":                    commands.richie.infa,
     "ричи свадьба":                 commands.richie.marry,
 

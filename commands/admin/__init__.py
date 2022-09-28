@@ -1,5 +1,3 @@
-MAX_STRING_LENGTH = 140
-
 from .add_greetings import *
 from .add_rules import *
 from .kick import *
