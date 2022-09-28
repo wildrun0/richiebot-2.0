@@ -1,6 +1,8 @@
 from typing import Callable
+
 from vkbottle.bot import Message
 from vkbottle import VKAPIError
+from vkbottle_types.objects import MessagesMessageActionStatus
 
 from datatypes import PeerObject
 from methods import check_muted
@@ -29,12 +31,12 @@ def peer_manager(func):
                 )
                 return None # чтобы бот не реагировал
             except (VKAPIError[15], VKAPIError[917]): pass
-        if event.action:
+        if event.action and event.action.type != MessagesMessageActionStatus.CHAT_KICK_USER:
             if peer_obj.data.ban_list.get(member_id := str(event.action.member_id)):
                 try:
                     await event.ctx_api.messages.remove_chat_user(
                         chat_id = event.chat_id,
-                        member_id = int(member_id)
+                        member_id = member_id
                     )
                     await event.answer("Пользователь находится в бане")
                     return None

@@ -7,7 +7,7 @@ class warns_struct(msgspec.Struct):
 
 
 class voteban_struct(msgspec.Struct):
-    bans_pending:   tuple[int, int, list[int]] = []
+    bans_pending:   list[tuple[int, int, list[int]]] = []
     min_ban_votes:  int = 10
 
 

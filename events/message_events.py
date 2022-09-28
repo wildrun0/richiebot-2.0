@@ -31,7 +31,7 @@ async def invite_event(event: Message, peer_obj: PeerObject) -> None:
     group_id = event.group_id
     peer_id = event.peer_id
     member_id = action.member_id
-    if action.type == MessagesMessageActionStatus.CHAT_INVITE_USER:
+    if action.type != MessagesMessageActionStatus.CHAT_KICK_USER:
         if not action or not group_id:
             return
         if member_id == -group_id:
