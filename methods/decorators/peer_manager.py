@@ -3,7 +3,7 @@ from vkbottle.bot import Message
 from vkbottle import VKAPIError
 
 from datatypes import PeerObject
-from methods import check_muted, check_banned
+from methods import check_muted
 from commands.admin import renew_users_list
 
 
@@ -30,13 +30,14 @@ def peer_manager(func):
                 return None # чтобы бот не реагировал
             except (VKAPIError[15], VKAPIError[917]): pass
         if event.action:
-            if await check_banned(member_id := event.action.member_id, peer_obj):
+            if peer_obj.data.ban_list.get(member_id := str(event.action.member_id)):
                 try:
                     await event.ctx_api.messages.remove_chat_user(
                         chat_id = event.chat_id,
-                        member_id = member_id
+                        member_id = int(member_id)
                     )
                     await event.answer("Пользователь находится в бане")
+                    return None
                 except VKAPIError[925]: pass
         f = await func(*context_event, peer_obj, **kwargs)
         return f

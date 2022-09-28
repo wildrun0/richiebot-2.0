@@ -1,4 +1,6 @@
 from vkbottle.bot import Message
+from datetime import datetime
+from loader import tz, TIME_FORMAT
 from datatypes import User, PeerObject
 from vkbottle import VKAPIError
 
@@ -13,8 +15,11 @@ async def ban(event: Message, peer_obj: PeerObject, params: tuple[User, list]):
         else:
             try:
                 await event.ctx_api.messages.remove_chat_user(event.chat_id, member_id=usr_to_ban.id)
+
                 peer_obj.data.users.remove(usr_to_ban.id)
-                peer_obj.data.ban_list[str(usr_to_ban.id)] = [event.from_id, event.date]
+                ban_time = datetime.fromtimestamp(event.date, tz).strftime(TIME_FORMAT)
+
+                peer_obj.data.ban_list[str(usr_to_ban.id)] = [event.from_id, ban_time]
                 await peer_obj.save()
                 status = "✅Успешно забанен!"
             except VKAPIError[935]:

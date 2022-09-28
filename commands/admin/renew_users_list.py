@@ -13,8 +13,11 @@ async def renew_users_list(event: Message, peers_obj: PeerObject, params: None =
         logging.info(f"{peer_id} - Не могу получить админов в беседе")
         return [], []
     users = [user.id for user in chat.profiles]
+    if chat.groups:
+        users = users + [-bot.id for bot in chat.groups]
     adms = chat.items[0].chat_settings.admin_ids
-
+    adms.append(chat.items[0].chat_settings.owner_id)
+    
     peers_obj.data.users = users
     peers_obj.data.admins = adms
 

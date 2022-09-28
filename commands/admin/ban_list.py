@@ -1,8 +1,6 @@
+import methods
 from vkbottle.bot import Message
-from datetime import datetime
 from datatypes import PeerObject
-from methods import display_nicknames
-from loader import tz, TIME_FORMAT
 
 
 async def ban_list(event: Message, peer_obj: PeerObject, params: None = None) -> None:
@@ -13,10 +11,9 @@ async def ban_list(event: Message, peer_obj: PeerObject, params: None = None) ->
             banner = details[0]
             ban_time = details[1]
 
-            banner_user_name, banned_user_name = await display_nicknames((banner, banned_user), name_case=('nom', 'acc'))
-            ban_time_humanized = datetime.fromtimestamp(ban_time, tz).strftime(TIME_FORMAT)
+            banner_user_name, banned_user_name = await methods.display_nicknames((banner, banned_user), name_case=('nom', 'acc'))
             
-            to_send += f"{banner_user_name.name} забанил{'а' if banner_user_name.sex == 1 else ''} {banned_user_name.name} {ban_time_humanized}\n"
+            to_send += f"{banner_user_name.name} забанил{'а' if banner_user_name.sex == 1 else ''} {banned_user_name.name} {ban_time}\n"
         await event.answer(to_send, disable_mentions=True)
     else:
         await event.answer("Список пуст! :(")

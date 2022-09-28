@@ -7,7 +7,7 @@ class warns_struct(msgspec.Struct):
 
 
 class voteban_struct(msgspec.Struct):
-    bans_pending:   list[int] = []
+    bans_pending:   tuple[int, int, list[int]] = []
     min_ban_votes:  int = 10
 
 
@@ -35,7 +35,7 @@ class PeerClass(msgspec.Struct):
     admins:             list[int] = []
     users:              list[int] = []
     clans:              dict[str, dict] = {}
-    ban_list:           dict[str, list] = {}
+    ban_list:           dict[str, tuple[int, str]] = {}
     commands_timeouts:  commands_timeouts_struct = {}
     marriages:          marriages_struct = {}
     voteban:            voteban_struct = {}

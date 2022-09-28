@@ -1,15 +1,14 @@
 from datetime import datetime
 
 from loader import bot, TIME_FORMAT, tz
-from datatypes.user import NAME_TEMPLATE, User, users_folder, peers_struct
+from datatypes.user import NAME_TEMPLATE, User, peers_struct
 
 
 async def set_user(user_id: int, peer_id: str|int = None, name_case: str = 'nom', do_not_save: bool = False) -> User:
     if user_id == 0: return None
     usersget_data = (await bot.api.users.get(user_id, name_case=name_case, fields=['Sex']))
-    
-    peer_members = (await bot.api.messages.get_conversation_members(peer_id=peer_id)).items
     if peer_id:
+        peer_members = (await bot.api.messages.get_conversation_members(peer_id=peer_id)).items
         join_date = [
             date for date in 
             [user.member_id == user_id and user.join_date for user in peer_members] 
@@ -23,10 +22,6 @@ async def set_user(user_id: int, peer_id: str|int = None, name_case: str = 'nom'
             sex = 0,
             id = user_id
         )
-        if peer_id:
-            user_datatype.peers[str(peer_id)] = peers_struct(
-                peer_join_date = datetime.fromtimestamp(join_date, tz).strftime(TIME_FORMAT),
-            )
     else:
         x = usersget_data[0]
         user_datatype = User(
@@ -34,10 +29,10 @@ async def set_user(user_id: int, peer_id: str|int = None, name_case: str = 'nom'
             sex = x.sex,
             id = x.id
         )
-        if peer_id:
-            user_datatype.peers[str(peer_id)] = peers_struct(
-                peer_join_date = datetime.fromtimestamp(join_date).strftime(TIME_FORMAT),
-            )
+    if peer_id:
+        user_datatype.peers[str(peer_id)] = peers_struct(
+            peer_join_date = datetime.fromtimestamp(join_date, tz).strftime(TIME_FORMAT),
+        )
     if not do_not_save: # Иногда, нужно получить объект User с измененным name_case, но не сохранять его
         user_datatype.save()
     return user_datatype

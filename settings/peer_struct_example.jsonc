@@ -23,7 +23,7 @@
             // [u1, u2, timestamp]
         ],
         "couples": [
-            // u1, u2
+            // u1, u2, start_date_timestamp
         ]
     },
     "voteban":{
