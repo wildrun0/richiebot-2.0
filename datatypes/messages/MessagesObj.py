@@ -1,5 +1,5 @@
-import zlib
 import sys
+import zlib
 import logging
 import msgspec
 
@@ -43,7 +43,7 @@ class MessagesObj():
         og_string_size, compressed_str_size = sys.getsizeof(message_text), sys.getsizeof(compressed_str)
         compression_percent = round((abs(compressed_str_size - og_string_size) / og_string_size) * 100.0, 2)
         logging.debug(f"String compressed {og_string_size} -> {compressed_str_size} ({compression_percent}%)")
-        
+
         self.messages.users[user_id].messages.append(
             UserMessage(compressed_str, cmid, date)
         )

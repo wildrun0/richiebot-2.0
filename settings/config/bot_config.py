@@ -7,11 +7,11 @@ config = configparser.ConfigParser()
 config.read(DEFAULT_SETTINGS_FILE)
 
 if not config.sections():
-    config.add_section("BOT_INFO")
-    config['BOT_INFO']['TOKEN'] = 'token'
-    config['BOT_INFO']['ID'] = '-id'
-    config['BOT_INFO']['BACKUP_TIME'] = 'daily'
-    config["BOT_INFO"]["; = Принимаемые значения: 'hourly', 'daily', 'weekly', 'monthly'"] = ""
+    config.add_section("SETTINGS")
+    config['SETTINGS']['TOKEN'] = 'token'
+    config['SETTINGS']['ID'] = '-id'
+    config['SETTINGS']['BACKUP_TIME'] = 'daily'
+    config["SETTINGS"]["; = Принимаемые значения: 'hourly', 'daily', 'weekly', 'monthly'"] = ""
     
     config.add_section("LIMITS")
     config['LIMITS']["MAX_GREETING_LENGTH"] = "140"
@@ -33,13 +33,13 @@ if not config.sections():
     logging.critical("Прежде чем использовать бота, необходимо ввести токен в BOT_TOKEN= и BOT_ID=")
     exit()
 else:
-    BOT_TOKEN = config.get("BOT_INFO", "TOKEN")
+    BOT_TOKEN = config.get("SETTINGS", "TOKEN")
     if BOT_TOKEN == "token":
         logging.critical("Прежде чем использовать бота, необходимо ввести токен в BOT_TOKEN= и BOT_ID=")
         exit()
     
-    BOT_ID = config.getint("BOT_INFO", "ID")
-    BACKUP_TIME = config.get("BOT_INFO", "BACKUP_TIME")
+    BOT_ID = config.getint("SETTINGS", "ID")
+    BACKUP_TIME = config.get("SETTINGS", "BACKUP_TIME")
     
     DEBUG_STATUS = config.getboolean("DEBUG", "ENABLED")
     
