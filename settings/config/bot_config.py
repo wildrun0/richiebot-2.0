@@ -10,6 +10,8 @@ if not config.sections():
     config.add_section("BOT_INFO")
     config['BOT_INFO']['TOKEN'] = 'token'
     config['BOT_INFO']['ID'] = '-id'
+    config['BOT_INFO']['BACKUP_TIME'] = 'daily'
+    config["BOT_INFO"]["; = Принимаемые значения: 'hourly', 'daily', 'weekly', 'monthly'"] = ""
     
     config.add_section("LIMITS")
     config['LIMITS']["MAX_GREETING_LENGTH"] = "140"
@@ -37,6 +39,8 @@ else:
         exit()
     
     BOT_ID = config.getint("BOT_INFO", "ID")
+    BACKUP_TIME = config.get("BOT_INFO", "BACKUP_TIME")
+    
     DEBUG_STATUS = config.getboolean("DEBUG", "ENABLED")
     
     MAX_GREETING_LENGTH = config.getint("LIMITS", "MAX_GREETING_LENGTH")

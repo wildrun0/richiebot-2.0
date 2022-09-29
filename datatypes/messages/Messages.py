@@ -7,7 +7,7 @@ class UserMessage(msgspec.Struct, array_like=True):
     date: int
 
 
-class UserProfile(msgspec.Struct):
+class UserProfile(msgspec.Struct, array_like=True):
     messages: list[UserMessage] = []
 
 

@@ -22,19 +22,11 @@ class CustomFormatter(logging.Formatter):
             logging.ERROR: red + self.format_str + reset,
             logging.CRITICAL: bold_red + self.format_str + reset
         }
-        self.last_line = ""
-        self.counter = 0
 
 
     def format(self, record):
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt)
-        if record.msg == self.last_line:
-            self.counter += 1
-            record.msg = record.msg + f" [x{self.counter}]\x1b[1A"
-        else:
-            self.last_line = record.msg
-            self.counter = 0
         return formatter.format(record)
 
 class LoggingHandler():
