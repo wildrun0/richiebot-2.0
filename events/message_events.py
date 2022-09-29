@@ -1,4 +1,3 @@
-import logging
 import methods
 
 from types import ModuleType
@@ -7,7 +6,7 @@ from vkbottle_types.objects import MessagesMessageActionStatus
 
 from settings import bot_commands
 from rules import IsAdmin
-from loader import bot
+from loader import bot, logger
 from methods import decorators
 from datatypes import PeerObject, user
 
@@ -22,7 +21,7 @@ adm_commands = (
     *(FULL_COMMAND_REGEX % i for i in bot_commands.admin_commands_full),
     *bot_commands.admin_commands_notfull
 )
-logging.debug(f"Regex ({FULL_COMMAND_REGEX}) set for 'full' commands")
+logger.debug(f"Regex ({FULL_COMMAND_REGEX}) set for 'full' commands")
 
 @bot.on.chat_message(action=["chat_invite_user", "chat_kick_user"])
 @decorators.peer_manager
@@ -35,7 +34,7 @@ async def invite_event(event: Message, peer_obj: PeerObject) -> None:
         if not action or not group_id:
             return
         if member_id == -group_id:
-            logging.info(f"{peer_id} - BOT INVITED")
+            logger.info("BOT INVITED",id=peer_id)
             await event.answer(f"""
                 👋Всем привет! Я - ричи, чатбот созданный для удобного администрирования бесед ВКонтакте! 
                 (не забудьте назначить бота администратором беседы, иначе он не работает)

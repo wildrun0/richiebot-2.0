@@ -1,4 +1,4 @@
-import logging
+from loader import logger
 from vkbottle.bot import Message
 from datatypes import PeerObject
 from vkbottle import VKAPIError
@@ -6,11 +6,11 @@ from vkbottle import VKAPIError
 
 async def renew_users_list(event: Message, peers_obj: PeerObject, params: None = None) -> tuple[list[int], list[int]]:
     peer_id = event.peer_id
-    logging.info(f"{peer_id} - USER LIST RENEWAL IN PEER")
+    logger.info("USER LIST RENEWAL IN PEER", id=peer_id)
     try:
         chat = await event.ctx_api.messages.get_conversations_by_id(peer_id, extended=True, fields=["id", "bdate"])
     except VKAPIError[917]: 
-        logging.info(f"{peer_id} - Не могу получить админов в беседе")
+        logger.info("Не могу получить админов в беседе", id=peer_id)
         return [], []
     users = [user.id for user in chat.profiles]
     if chat.groups:

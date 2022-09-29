@@ -3,7 +3,9 @@ from vkbottle.bot import Bot
 from vkbottle import CtxStorage
 
 ctx_storage = CtxStorage()
+
 lh = LoggingHandler(name="RICHIEBOT")
+logger = lh.logger
 
 from settings.config import BOT_TOKEN
 from tasks import TaskManager

@@ -5,6 +5,15 @@ from pathlib import Path
 from settings.config import DEBUG_STATUS
 
 
+class CustomAdapter(logging.LoggerAdapter):
+    def process(self, msg, kwargs):
+        my_context = kwargs.pop('id', self.extra['id'])
+        if my_context:
+            return '%d - %s' % (my_context, msg), kwargs
+        else:
+            return '%s' % (msg), kwargs
+
+
 class CustomFormatter(logging.Formatter):
     __slots__ = 'grey', 'yellow', 'red', 'blue', 'bold_red', 'reset', 'format_str'
     def __init__(self, name):
@@ -14,7 +23,7 @@ class CustomFormatter(logging.Formatter):
         blue = "\x1b[36;20m"
         bold_red = "\x1b[31;1m"
         reset = "\x1b[0m"
-        self.format_str = f"%(asctime)s - [{name}] - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+        self.format_str = f"%(asctime)s - [{name}] - %(levelname)5s - %(message)s (%(filename)s:%(lineno)d)"
 
         self.FORMATS = {
             logging.DEBUG: blue + self.format_str + reset,
@@ -30,8 +39,9 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
-class LoggingHandler():
-    __slots__ = 'log_name', 'logs_folder', 'log_path', 'logs_folder', 'log_level', 'customformat', 'filehandler', 'console_stream'
+
+class LoggingHandler:
+    __slots__ = 'log_name', 'logs_folder', 'log_path', 'logs_folder', 'logger'
     def __init__(self, name):
         self.log_name = "richiebot.log"
         self.logs_folder = Path("logs")
@@ -44,9 +54,12 @@ class LoggingHandler():
         logging.getLogger("vkbottle").setLevel(logging.INFO)
         logging.getLogger("aiocache").setLevel(logging.INFO)
         
+        self.logger = logging.getLogger(__name__)
+        self.logger = CustomAdapter(self.logger, {"id": ''})
+
         logging.getLogger().handlers.clear()
         
-        filehandler = handlers.TimedRotatingFileHandler(self.log_path, when="midnight", interval=1, encoding="utf8")
+        filehandler = handlers.TimedRotatingFileHandler(self.log_path, when="midnight", interval=1, encoding="utf8", delay=DEBUG_STATUS)
         filehandler.suffix = "%Y-%m-%d"
         filehandler.setFormatter(
             logging.Formatter(customformat.format_str)

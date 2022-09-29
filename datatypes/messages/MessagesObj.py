@@ -7,7 +7,7 @@ from pathlib import Path
 from aiopathlib import AsyncPath
 from datatypes.messages import MessagesClass, UserProfile, UserMessage
 
-class MessagesObj():
+class MessagesObj:
     __slots__ = 'peer_id', 'default_location', 'messages'
     def __init__(self, peer_id: str, default_location: AsyncPath, messages: MessagesClass):
         self.peer_id = peer_id

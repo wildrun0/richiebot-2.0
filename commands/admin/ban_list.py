@@ -1,9 +1,9 @@
 import methods
 from vkbottle.bot import Message
-from datatypes import PeerObject
+from datatypes import PeerObject, User
 
 
-async def ban_list(event: Message, peer_obj: PeerObject, params: None = None) -> None:
+async def ban_list(event: Message, peer_obj: PeerObject, params: tuple[User, str]) -> None:
     ban_list = peer_obj.data.ban_list
     if ban_list:
         to_send = "Список забаненных:\n"

@@ -3,11 +3,12 @@ import logging
 import aioshutil
 
 from pathlib import Path
+from loader import logger
 from typing import Literal
 from datetime import datetime, timedelta
 
 
-class BackupManger():
+class BackupManger:
     __slots__ = 'last_backup', 'dirs_to_backup', 'default_folder', 'date_format', 'frequency_days', 'startup_date'
     def __init__(self):
         self.last_backup = None
@@ -22,12 +23,12 @@ class BackupManger():
             "daily":    86400,
             "hourly":   3600
         }
-        logging.info("BackupManager initialized")
+        logger.info("BackupManager initialized")
 
 
     async def _backup(self):
         start_time = datetime.timestamp(datetime.now())
-        logging.info("backup in process..")
+        logger.info("backup in process..")
         backup_folder_name = datetime.strftime(self.startup_date, self.date_format)
         new_backup_folder = Path(self.default_folder, backup_folder_name)
 

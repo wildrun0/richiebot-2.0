@@ -2,7 +2,7 @@ import logging
 from vkbottle import LoopWrapper
 from tasks.functions import BackupManger
 from settings.config import BACKUP_TIME
-from loader import ctx_storage
+from loader import ctx_storage, logger
 
 """
 Хочу оправдаться за этот мерзкий дизайн ход - я хочю чтобы все фоновые процессы
@@ -13,7 +13,7 @@ from loader import ctx_storage
 backupmanager = BackupManger()
 
 
-class TaskManager():
+class TaskManager:
     lw = LoopWrapper()
 
 
@@ -27,10 +27,10 @@ class TaskManager():
 
 
     async def onshutdown():
-        logging.info("Shutting down...")
+        logger.info("Shutting down...")
         for objs in ctx_storage.storage.values():
             await objs.save()
-        logging.info("BYE :'(")
+        logger.info("BYE :'(")
 
 
     lw.on_startup.append(run_backups())
