@@ -7,13 +7,13 @@ NAME_TEMPLATE = "[%s%d|%s %s]"
 DEFAULT_FOLDER = "usersdata"
 
 
-class peer_achievments(msgspec.Struct):
+class peer_achievments(msgspec.Struct, omit_defaults=True):
     kosti_wins:     int = 0
     math_solved:    int = 0
     duels_winned:   int = 0
 
 
-class peers_struct(msgspec.Struct):
+class peers_struct(msgspec.Struct, omit_defaults=True):
     peer_join_date: str
     voice_messages: int = 0
     total_messages: int = 0
@@ -28,9 +28,16 @@ class User(msgspec.Struct, omit_defaults=True):
     id:         int = 0  # 320750004
     peers:      dict[str, peers_struct] = {}
 
+
     def save(self):
         fp = Path(users_folder, f"{self.id}.json")
         fp.write_bytes(msgspec.json.encode(self))
+
+    
+    def get_nickname(self, peer_id: str|int) -> str:
+        if peer_nickname := self.peers[str(peer_id)].nickname:
+            return peer_nickname
+        else: return self.name
 
 
 users_folder = Path(peers_folder, DEFAULT_FOLDER)

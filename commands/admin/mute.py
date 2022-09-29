@@ -33,5 +33,5 @@ async def mute(event: Message, peer_obj: PeerObject, params: tuple[User, tuple[i
         return
     peer_obj.data.mute.append((to_mute.id, unmute_date))
     await peer_obj.save()
-    usr_nickname = await user.get_users_nickname(to_mute.id, event.peer_id)
+    usr_nickname = to_mute.get_nickname(event.peer_id)
     await event.answer(f"{usr_nickname} замьючен{'a' if to_mute.sex == 1 else ''} до {unmute_date_humanized}")
