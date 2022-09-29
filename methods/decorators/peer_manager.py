@@ -6,27 +6,27 @@ from vkbottle_types.objects import MessagesMessageActionStatus
 
 from datatypes import PeerObject
 from methods import check
+from loader import ctx_storage
 from commands.admin import renew_users_list
 
 
 # Насчет Callable. Вместо ивента сюда может прилететь что угодно,
 # если декоратор вызывается не на ивенте, а в любом другом месте помимо
-peers_objs = {}
 def peer_manager(func):
     async def wrapper(*context_event: tuple[Message|Callable, Message|None], **kwargs):
         event = isinstance(context_event[0], Message) and context_event[0] or context_event[1]
-        if (peer_id := event.peer_id) in peers_objs:
-            peer_obj = peers_objs[peer_id]
-        else:
+        peer_id = event.peer_id
+        peer_obj = ctx_storage.get(peer_id)
+        if not peer_obj:
             peer_obj = await PeerObject.init(peer_id)
             await renew_users_list(event, peer_obj) # обновляем при каждой инициализации беседы (один раз на запуск)
-            peers_objs[peer_id] = peer_obj
+            ctx_storage.set(peer_id, peer_obj)
         ### реагируем на ивенты
         if await check.muted(event, peer_obj):
             try:
                 await event.ctx_api.messages.delete(
                     cmids = event.message_id, 
-                    peer_id = event.peer_id,
+                    peer_id = peer_id,
                     delete_for_all = True
                 )
                 return None # чтобы бот не реагировал

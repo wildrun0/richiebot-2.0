@@ -1,7 +1,6 @@
 import os
 import psutil
-from methods.decorators.peer_manager import peers_objs
-from datatypes.user.get_user import cached_users
+from loader import ctx_storage
 from vkbottle.bot import Message
 
 
@@ -19,6 +18,5 @@ async def stat(event: Message, peer_obj, params) -> None:
         memory_usage = {memory_percent}%
         cpu_usage = {cpu_usage}%
         threads = {threads}
-        peers_in_memory = {len(peers_objs)}
-        users_in_memory = {len(cached_users)}
+        objects_in_memory = {len(ctx_storage.storage)}
     """)

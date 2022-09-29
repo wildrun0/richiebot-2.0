@@ -1,6 +1,8 @@
 from handlers import LoggingHandler
 from vkbottle.bot import Bot
+from vkbottle import CtxStorage
 
+ctx_storage = CtxStorage()
 lh = LoggingHandler(name="RICHIEBOT")
 
 from settings.config import BOT_TOKEN

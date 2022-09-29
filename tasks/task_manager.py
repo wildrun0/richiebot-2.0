@@ -2,6 +2,7 @@ import logging
 from vkbottle import LoopWrapper
 from tasks.functions import BackupManger
 from settings.config import BACKUP_TIME
+from loader import ctx_storage
 
 """
 Хочу оправдаться за этот мерзкий дизайн ход - я хочю чтобы все фоновые процессы
@@ -27,12 +28,8 @@ class TaskManager():
 
     async def onshutdown():
         logging.info("Shutting down...")
-        from methods.decorators.peer_manager import peers_objs
-        from datatypes.user.get_user import cached_users
-        for peer_object in peers_objs.values():
-            await peer_object.save()
-        for user_object in cached_users.values():
-            await user_object.save()
+        for objs in ctx_storage.storage.values():
+            await objs.save()
         logging.info("BYE :'(")
 
 
