@@ -6,6 +6,7 @@ from settings.config import DEBUG_STATUS
 
 
 class CustomFormatter(logging.Formatter):
+    __slots__ = 'grey', 'yellow', 'red', 'blue', 'bold_red', 'reset', 'format_str'
     def __init__(self, name):
         grey = "\x1b[38;20m"
         yellow = "\x1b[33;20m"
@@ -30,6 +31,7 @@ class CustomFormatter(logging.Formatter):
         return formatter.format(record)
 
 class LoggingHandler():
+    __slots__ = 'log_name', 'logs_folder', 'log_path', 'logs_folder', 'log_level', 'customformat', 'filehandler', 'console_stream'
     def __init__(self, name):
         self.log_name = "richiebot.log"
         self.logs_folder = Path("logs")

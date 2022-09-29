@@ -34,5 +34,5 @@ async def set_user(user_id: int, peer_id: str|int = None, name_case: str = 'nom'
             peer_join_date = datetime.fromtimestamp(join_date, tz).strftime(TIME_FORMAT),
         )
     if not do_not_save: # Иногда, нужно получить объект User с измененным name_case, но не сохранять его
-        user_datatype.save()
+        await user_datatype.save()
     return user_datatype

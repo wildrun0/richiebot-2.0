@@ -1,6 +1,7 @@
 import msgspec
 
 from pathlib import Path
+from aiopathlib import AsyncPath
 from datatypes.peer import peers_folder
 
 NAME_TEMPLATE = "[%s%d|%s %s]"
@@ -29,9 +30,9 @@ class User(msgspec.Struct, omit_defaults=True):
     peers:      dict[str, peers_struct] = {}
 
 
-    def save(self):
-        fp = Path(users_folder, f"{self.id}.json")
-        fp.write_bytes(msgspec.json.encode(self))
+    async def save(self):
+        fp = AsyncPath(users_folder, f"{self.id}.json")
+        await fp.async_write(msgspec.json.encode(self))
 
     
     def get_nickname(self, peer_id: str|int) -> str:

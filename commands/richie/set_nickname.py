@@ -13,5 +13,5 @@ async def set_nickname(event: Message, peer_obj: PeerObject, params: tuple[User,
         else:
             nickname_id = NAME_TEMPLATE % ("club" if user.id < 0 else "id", user.id, nickname_candidate, "")
             user.peers[str(peer_obj.peer_id)].nickname = nickname_id.replace(' ', '')
-            user.save()
+            await user.save()
             await event.answer(f"{user.get_nickname(event.peer_id)}, ✅Кличка добавлена", disable_mentions=True)

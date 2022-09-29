@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 
 
 class BackupManger():
+    __slots__ = 'last_backup', 'dirs_to_backup', 'default_folder', 'date_format', 'frequency_days', 'startup_date'
     def __init__(self):
         self.last_backup = None
         self.dirs_to_backup = ["peers"]

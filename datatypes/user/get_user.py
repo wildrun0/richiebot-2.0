@@ -26,5 +26,5 @@ async def get_user(user_id: int, peer_id: int) -> User:
         data.peers[str(peer_id)] = peers_struct(
             peer_join_date = datetime.fromtimestamp(join_date, tz).strftime(TIME_FORMAT)
         )
-        data.save()
+        await data.save()
     return data
