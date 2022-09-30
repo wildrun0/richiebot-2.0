@@ -15,12 +15,11 @@ async def get_command_arguments(
     msg_candidate: str,
     peer_object: PeerObject,
     user_id: int
-) -> tuple[str, tuple[User|None, list[str]]]:
+) -> tuple[User|None, list[str]|str]:
     for command in regex_list:
         if matches := re.findall(command, msg_candidate):
             raw_args = list(*matches) if isinstance(*matches, tuple) else matches
             args = list(filter(None, map(str.strip, raw_args))) # removing blank strings in list
-            print(args)
             if UID_REGEX in command or URL_UID_REGEX in command:
                 try:
                     if re.search(URL_UID_REGEX, msg_candidate) and (
