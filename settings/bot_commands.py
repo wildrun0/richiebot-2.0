@@ -4,6 +4,16 @@ UID_REGEX = "(?:\[(?:(id|club))(\d+)\|.+\])"
 URL_UID_REGEX = "(?:https:\/\/vk.com\/(?:(id|club)?(\d+))?([^\s]+)?)"
 CATCH_ALL_REGEX = "([\s\S]*)"
 
+#   Параметры в неполных командах в ивентах будут приходить
+#   по порядку их регекса       
+#   т.е. например команда "мут @id0101010 5 лет" придет в параметрах как
+#   UserDataType цифра срок
+#   т.е. 010101 5 лет
+
+#   "ричи передать 150 ричсонов @id010101"
+#   придет как 150 UserDataType
+
+
 administrative_commands_notfull = {
     f"ричи добавить приветствие {CATCH_ALL_REGEX}":             commands.admin.add_greetings,
     f"ричи добавить правила {CATCH_ALL_REGEX}":                 commands.admin.add_rules,

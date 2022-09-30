@@ -2,11 +2,23 @@ import re
 from aiocache import cached
 
 from datatypes import User, PeerObject
-from datatypes.user import set_user, get_user
+from datatypes.user import get_user
 
-from settings.bot_commands import UID_REGEX, URL_UID_REGEX
+from settings.bot_commands import URL_UID_REGEX
 from settings.config import BOT_ID
 from loader import bot
+
+
+async def get_group_id(nickname: str) -> int:
+    return -(await bot.api.groups.get_by_id(
+        group_id=nickname
+    ))[0].id
+
+
+async def get_user_id(nickname: str) -> int:
+    return (await bot.api.users.get(
+        user_ids=nickname
+    ))[0].id
 
 
 @cached(ttl=300)
@@ -18,6 +30,7 @@ async def get_command_arguments(
 ) -> tuple[User|None, list[str]|str]:
     for command in regex_list:
         if matches := re.findall(command, msg_candidate):
+            if not matches: return command, [None] # если пусто то может быть event.reply_message
             raw_args = list(*matches) if isinstance(*matches, tuple) else matches
             args = list(filter(None, map(str.strip, raw_args))) # removing blank strings in list
             procceded_ids = []
@@ -32,10 +45,9 @@ async def get_command_arguments(
                         args[enum] = await get_user(id, peer_object.peer_id)
                     else:
                         args[enum] = None
-            if not args: return command, [None]
             if is_url := re.findall(URL_UID_REGEX, msg_candidate):
                 nickname_url = list(filter(None, list(*is_url)))
-                nickname_type = "id"
+                nickname_type = None
                 if 'club' in nickname_url:
                     nickname_type = "club"
                     nickname_url.remove("club")
@@ -46,14 +58,13 @@ async def get_command_arguments(
                     except: pass
                     usr_index = args.index(nickname)
                     if nickname_type == "club":
-                        user_id = (await bot.api.groups.get_by_id(
-                                group_id=nickname
-                            ))[0].id
+                        user_id = await get_group_id(nickname)
                     else:
-                        user_id = (await bot.api.users.get(
-                            user_ids=nickname
-                        ))[0].id
-                    if user_id in peer_users:
+                        try:
+                            user_id = await get_user_id(nickname)
+                        except IndexError:
+                            user_id = await get_group_id(nickname)
+                    if user_id in peer_users and user_id != BOT_ID:
                         args[usr_index] = await get_user(
                             user_id,
                             peer_object.peer_id
