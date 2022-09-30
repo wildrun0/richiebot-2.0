@@ -12,7 +12,7 @@ administrative_commands_notfull = {
     f"разбанить (?:{UID_REGEX}|{URL_UID_REGEX})":               commands.admin.unban,
     f"варн\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":                 commands.admin.warn,
     f"снять варны\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":          commands.admin.unwarn,
-    f"мут {UID_REGEX}?\s?(\d+) (год|лет|мес|нед|час|мин|сек)":  commands.admin.mute,
+    f"мут (?:{UID_REGEX}|{URL_UID_REGEX})?\s?(\d+) (год|лет|мес|нед|час|мин|сек)":  commands.admin.mute,
     f"размутить\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":            commands.admin.unmute
 }
 
@@ -30,13 +30,13 @@ default_commands_notfull = {
     f"ричи кого\s?{CATCH_ALL_REGEX}":           commands.richie.who,
     f"ричи добавить кличку {CATCH_ALL_REGEX}":  commands.richie.set_nickname,
     f"ричи инфа\s?{CATCH_ALL_REGEX}":           commands.richie.infa,
-    "ричи свадьба":                             commands.richie.marry,
+    f"ричи свадьба\s?с?\s?{UID_REGEX}":            commands.richie.marry,
 
     f"ричи баланс\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":      commands.economy.balance,
     f"ричи инвентарь\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":   commands.economy.inventory,
-    "ричи передать":                commands.economy.transfer_richiecoins,
+    f"ричи передать (\d+)\s?(?:ричсонов|ричкоинов)?{UID_REGEX}":commands.economy.transfer_richiecoins,
 
-    "ричи дуэль":                   commands.clan.solo_duel,
+    f"ричи дуэль\s?с?\s?{UID_REGEX}":           commands.clan.solo_duel,
     "ричи создать клан":            commands.clan.create,
     "ричи завербовать":             commands.clan.invite,
     "ричи пригласить":              commands.clan.invite,

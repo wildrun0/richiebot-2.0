@@ -20,34 +20,45 @@ async def get_command_arguments(
         if matches := re.findall(command, msg_candidate):
             raw_args = list(*matches) if isinstance(*matches, tuple) else matches
             args = list(filter(None, map(str.strip, raw_args))) # removing blank strings in list
-            if UID_REGEX in command or URL_UID_REGEX in command:
-                try:
-                    if re.search(URL_UID_REGEX, msg_candidate) and (
-                        (str_id := args[0]) not in ["club", 'id']
-                    ):
-                        try:
-                            id = (await bot.api.users.get(
-                                user_ids=str_id
-                            ))[0].id
-                        except IndexError:
-                            id = -(await bot.api.groups.get_by_id(
-                                group_id=str_id
-                            ))[0].id
-                        args.insert(0, '')
-                        # чтобы соответсвовать коду ниже, где args имеют вид (0,1,2,3,4)
+            procceded_ids = []
+            peer_users = peer_object.data.users
+            for enum, i in enumerate(args):
+                if i == "id" or i == 'club':
+                    id_str = args[enum+1]
+                    id = -int(id_str) if i == "club" else int(id_str)
+                    args.remove(id_str)
+                    if id in peer_users and id != BOT_ID:
+                        procceded_ids.append(id)
+                        args[enum] = await get_user(id, peer_object.peer_id)
                     else:
-                        id = -int(args[1]) if args[0] == "club" else int(args[1])
-                    if id in peer_object.data.users and id != BOT_ID:
-                        args = (await get_user(id, peer_object.peer_id), args[2:])
+                        args[enum] = None
+            if not args: return command, [None]
+            if is_url := re.findall(URL_UID_REGEX, msg_candidate):
+                nickname_url = list(filter(None, list(*is_url)))
+                nickname_type = "id"
+                if 'club' in nickname_url:
+                    nickname_type = "club"
+                    nickname_url.remove("club")
+                for nickname in nickname_url:
+                    try:
+                        if int(nickname) in procceded_ids: continue
+                        if -int(nickname) in procceded_ids: continue
+                    except: pass
+                    usr_index = args.index(nickname)
+                    if nickname_type == "club":
+                        user_id = (await bot.api.groups.get_by_id(
+                                group_id=nickname
+                            ))[0].id
                     else:
-                        args = (None, args[2:])
-                except (ValueError, IndexError):
-                    args.insert(0, '')
-                    pass
-            else:       # хз кто ета
-                if user_id in peer_object.data.users: 
-                    user = await get_user(user_id, peer_object.peer_id)
-                else:
-                    user = set_user(user_id, peer_object.peer_id, do_not_save = True)
-                args = (user, *args)
+                        user_id = (await bot.api.users.get(
+                            user_ids=nickname
+                        ))[0].id
+                    if user_id in peer_users:
+                        args[usr_index] = await get_user(
+                            user_id,
+                            peer_object.peer_id
+                        )
+                    else: args[usr_index] = None
+            if not any(filter(lambda x: type(x) is User, args)) and not None in args:
+                args.insert(0, await get_user(user_id, peer_object.peer_id))
             return command, args

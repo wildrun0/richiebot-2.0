@@ -15,15 +15,14 @@ time_seconds = {
 }
 
 
-async def mute(event: Message, peer_obj: PeerObject, params: tuple[User, tuple[int, str]]):
-    to_mute, unmute_date_raw = params
+async def mute(event: Message, peer_obj: PeerObject, params: tuple[User, int, str]):
+    to_mute, unmute_date_multiplier, unmute_date_timedelta = params
     if len(peer_obj.data.mute) > 0:
         mute_users, mute_lasting = zip(*peer_obj.data.mute)
         if to_mute.id in mute_users:
             await event.answer("Пользователь уже в муте!")
             return
-    unmute_date_multiplier, unmute_date_timedelta = int(unmute_date_raw[0]), unmute_date_raw[1]
-    unmute_date_timestamp = unmute_date_multiplier * time_seconds[unmute_date_timedelta]
+    unmute_date_timestamp = int(unmute_date_multiplier) * time_seconds[unmute_date_timedelta]
     unmute_date = event.date + unmute_date_timestamp
     try:
         unmute_date_humanized = datetime.fromtimestamp(unmute_date, tz).strftime(TIME_FORMAT)
