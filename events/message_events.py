@@ -70,7 +70,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
 
         if command_args and not command_args[0]:
             if onreply := event.reply_message:
-                command_args = await user.get_user(onreply.from_id, event.peer_id), command_args[2:]
+                command_args = await user.get_user(onreply.from_id, event.peer_id), command_args[1:]
             else: return
 
         def_func = bot_commands.default_commands_notfull[command_name]
@@ -78,7 +78,6 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     if isinstance(def_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")
     else:
-        event.text = event.text.replace(command_name, "").lstrip()
         await def_func(event, peer_obj, command_args)
 
 
@@ -95,18 +94,15 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
             bot_commands.admin_commands_notfull, 
             adm_function_name, peer_obj, event.from_id
         )
-
         if command_args and not command_args[0]:
             if onreply := event.reply_message:
-                command_args = await user.get_user(onreply.from_id, event.peer_id), command_args[2:]
+                command_args = (await user.get_user(onreply.from_id, event.peer_id), command_args[1:])
             else: return
-
         adm_func = bot_commands.administrative_commands_notfull[command_name]
 
     if isinstance(adm_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")
     else:
-        event.text = event.text.replace(command_name, "").lstrip()
         await adm_func(event, peer_obj, command_args)
 
 

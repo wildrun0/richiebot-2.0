@@ -1,17 +1,18 @@
 import commands
 
 UID_REGEX = "(?:\[(?:(id|club))(\d+)\|.+\])"
+URL_UID_REGEX = "(?:https:\/\/vk.com\/(?:(id|club)?(\d+))?([^\s]+)?)"
 CATCH_ALL_REGEX = "([\s\S]*)"
 
 administrative_commands_notfull = {
     f"ричи добавить приветствие {CATCH_ALL_REGEX}":   commands.admin.add_greetings,
     f"ричи добавить правила {CATCH_ALL_REGEX}":       commands.admin.add_rules,
     f"!kick\s?{UID_REGEX}":                       commands.admin.kick,
-    f"забанить\s?{UID_REGEX}?":                    commands.admin.ban,
-    f"разбанить {UID_REGEX}":                   commands.admin.unban,
+    f"забанить\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":                    commands.admin.ban,
+    f"разбанить (?:{UID_REGEX}|{URL_UID_REGEX})":                   commands.admin.unban,
     f"варн\s?{UID_REGEX}":                        commands.admin.warn,
     f"снять варны\s?{UID_REGEX}":                 commands.admin.unwarn,
-    f"мут {UID_REGEX}?\s?(\d+) (год|лет|мес|нед|час|мин|сек)": commands.admin.mute,
+    f"мут {UID_REGEX}?{URL_UID_REGEX}?\s?(\d+) (год|лет|мес|нед|час|мин|сек)": commands.admin.mute,
     f"размутить\s?{UID_REGEX}":                   commands.admin.unmute
 }
 
@@ -25,7 +26,7 @@ administrative_commands_full = {
 }
 
 default_commands_notfull = {
-    "ричи кто":                     commands.richie.who,
+    f"ричи кто {CATCH_ALL_REGEX}":  commands.richie.who,
     "ричи кого":                    commands.richie.who,
     f"ричи добавить кличку {CATCH_ALL_REGEX}":         commands.richie.set_nickname,
     "ричи инфа":                    commands.richie.infa,
