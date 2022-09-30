@@ -4,7 +4,7 @@ from vkbottle.bot import Message
 from vkbottle.dispatch.rules import ABCRule
 
 
-class LowerCaseRegexRule(ABCRule[Message]):
+class NoCaseRegexRule(ABCRule[Message]):
     def __init__(self, regexp: str | list[str] | Pattern | list[Pattern]):
         if isinstance(regexp, Pattern):
             regexp = [regexp]
@@ -17,7 +17,7 @@ class LowerCaseRegexRule(ABCRule[Message]):
 
     async def check(self, event: Message) -> dict[str, tuple] | bool:
         for regexp in self.regexp:
-            match = re.match(regexp, event.text.lower())
+            match = re.match(regexp, event.text, re.IGNORECASE)
             if match:
                 return {"match": match.groups()}
         return False

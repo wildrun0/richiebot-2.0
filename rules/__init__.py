@@ -1,2 +1,2 @@
 from .check_admin import IsAdmin
-from .lower_regex_rule import LowerCaseRegexRule
+from .no_case_regex_rule import NoCaseRegexRule

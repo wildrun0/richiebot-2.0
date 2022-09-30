@@ -4,13 +4,13 @@ from types import ModuleType
 from vkbottle.bot import Message
 from vkbottle_types.objects import MessagesMessageActionStatus
 from settings import bot_commands
-from rules import IsAdmin, LowerCaseRegexRule
+from rules import IsAdmin, NoCaseRegexRule
 from loader import bot, logger
 from methods import decorators
 from datatypes import PeerObject, user
 
 bot.labeler.custom_rules["is_admin"] = IsAdmin
-bot.labeler.custom_rules["regex"] = LowerCaseRegexRule
+bot.labeler.custom_rules["regex"] = NoCaseRegexRule
 
 FULL_COMMAND_REGEX = "^%s$"
 non_adm_commands = (
