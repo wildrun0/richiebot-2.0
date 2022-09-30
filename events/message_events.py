@@ -3,14 +3,14 @@ import methods
 from types import ModuleType
 from vkbottle.bot import Message
 from vkbottle_types.objects import MessagesMessageActionStatus
-
 from settings import bot_commands
-from rules import IsAdmin
+from rules import IsAdmin, LowerCaseRegexRule
 from loader import bot, logger
 from methods import decorators
 from datatypes import PeerObject, user
 
 bot.labeler.custom_rules["is_admin"] = IsAdmin
+bot.labeler.custom_rules["regex"] = LowerCaseRegexRule
 
 FULL_COMMAND_REGEX = "^%s$"
 non_adm_commands = (
@@ -54,7 +54,7 @@ async def invite_event(event: Message, peer_obj: PeerObject) -> None:
         await peer_obj.save()
 
 
-@bot.on.chat_message(regexp=non_adm_commands)
+@bot.on.chat_message(regex=non_adm_commands)
 @decorators.peer_manager
 async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     def_function_name = event.text.lower()
@@ -79,7 +79,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
         await def_func(event, peer_obj, command_args)
 
 
-@bot.on.chat_message(regexp=adm_commands, is_admin=True)
+@bot.on.chat_message(regex=adm_commands, is_admin=True)
 @decorators.peer_manager
 async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
     adm_function_name = event.text.lower()

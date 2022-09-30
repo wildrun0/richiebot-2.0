@@ -8,7 +8,7 @@ from settings.config import MAX_NICKNAME_LENGTH
 async def set_nickname(event: Message, peer_obj: PeerObject, params: tuple[User, str]) -> None:
     user, nickname_candidate = params
     if await check.length(event, nickname_candidate, MAX_NICKNAME_LENGTH):
-        if re.search("\[(id|club)(\d+)\|.+\]", nickname_candidate):
+        if re.search("\[(id|club)(\d+)\|.+\]", nickname_candidate) or nickname_candidate in ["@all", "@online"]:
             await event.answer("🚫Нельзя указывать пользователей в кличке!")
         else:
             nickname_id = NAME_TEMPLATE % ("club" if user.id < 0 else "id", user.id, nickname_candidate, "")

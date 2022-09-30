@@ -45,8 +45,8 @@ async def get_command_arguments(
                         args[enum] = await get_user(id, peer_object.peer_id)
                     else:
                         args[enum] = None
-            if is_url := re.findall(URL_UID_REGEX, msg_candidate):
-                nickname_url = list(filter(None, list(*is_url)))
+            if is_url := re.findall(URL_UID_REGEX, msg_candidate): # ссылки типа vk.com/durov
+                nickname_url = list(filter(None, list(*is_url)))   # т.е. где вместо id - display_name
                 nickname_type = None
                 if 'club' in nickname_url:
                     nickname_type = "club"
