@@ -36,22 +36,14 @@ async def invite_event(event: Message, peer_obj: PeerObject) -> None:
         if member_id == -group_id:
             logger.info("BOT INVITED",id=peer_id)
             await event.answer(f"""
-                👋Всем привет! Я - ричи, чатбот созданный для удобного администрирования бесед ВКонтакте! 
+                👋Всем привет! Я - Ричи, чатбот созданный для удобного администрирования бесед ВКонтакте! 
                 (не забудьте назначить бота администратором беседы, иначе он не работает)
                 Список команд - https://vk.com/@richie_bot-richi-komandy-ver3
                 Или используйте "ричи команды"
             """)
         else:
-            peer_obj.data.users.append(member_id)
             if (greeting := peer_obj.data.greeting):
                 await event.answer(greeting)
-            await peer_obj.save()
-    else:
-        peer_obj.data.users.remove(member_id)
-        if member_id in peer_obj.data.admins:
-            peer_obj.data.admins.remove(member_id)
-        
-        await peer_obj.save()
 
 
 @bot.on.chat_message(regex=non_adm_commands)

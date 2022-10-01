@@ -31,16 +31,27 @@ def peer_manager(func):
                 )
                 return None # чтобы бот не реагировал
             except (VKAPIError[15], VKAPIError[917]): pass
-        if event.action and event.action.type != MessagesMessageActionStatus.CHAT_KICK_USER:
-            if peer_obj.data.ban_list.get(member_id := str(event.action.member_id)):
-                try:
-                    await event.ctx_api.messages.remove_chat_user(
-                        chat_id = event.chat_id,
-                        member_id = member_id
-                    )
-                    await event.answer("Пользователь находится в бане")
-                    return None
-                except VKAPIError[925]: pass
+        if event.action:
+            member_id = event.action.member_id
+            if event.action.type != MessagesMessageActionStatus.CHAT_KICK_USER:
+                if peer_obj.data.ban_list.get(str(member_id)):
+                    try:
+                        await event.ctx_api.messages.remove_chat_user(
+                            chat_id = event.chat_id,
+                            member_id = member_id
+                        )
+                        await event.answer("Пользователь находится в бане")
+                        return None
+                    except VKAPIError[925]: pass
+                else:
+                    peer_obj.data.users.append(member_id)
+                    if member_id == peer_obj.data.owner_id: 
+                        peer_obj.data.admins.append(member_id)
+            else:
+                peer_obj.data.users.remove(member_id)
+                if member_id in peer_obj.data.admins:
+                    peer_obj.data.admins.remove(member_id)
+            await peer_obj.save()
         f = await func(*context_event, peer_obj, **kwargs)
         return f
     return wrapper

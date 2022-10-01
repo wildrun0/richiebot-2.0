@@ -1,9 +1,8 @@
 import re
-from aiocache import cached
 
+from aiocache import cached
 from datatypes import User, PeerObject
 from datatypes.user import get_user
-
 from settings.bot_commands import URL_UID_REGEX
 from settings.config import BOT_ID
 from loader import bot
@@ -23,11 +22,11 @@ async def get_user_id(nickname: str) -> int:
 
 @cached(ttl=300)
 async def get_command_arguments(
-    regex_list: list[str],
-    msg_candidate: str,
-    peer_object: PeerObject,
-    user_id: int
-) -> tuple[User|None, list[str]|str]:
+    regex_list:     list[str],
+    msg_candidate:  str,
+    peer_object:    PeerObject,
+    user_id:        int
+) -> tuple[str, tuple[User, ...]|list[None]]:
     for command in regex_list:
         if matches := re.findall(command, msg_candidate):
             if not matches: return command, [None] # если пусто то может быть event.reply_message

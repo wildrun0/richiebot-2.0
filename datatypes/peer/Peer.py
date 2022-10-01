@@ -30,6 +30,7 @@ class commands_timeouts_struct(msgspec.Struct):
 
 
 class PeerClass(msgspec.Struct, omit_defaults=True):
+    owner_id:           int|None = None
     greeting:           str|None = None
     rules:              str|None = None
     admins:             list[int] = []

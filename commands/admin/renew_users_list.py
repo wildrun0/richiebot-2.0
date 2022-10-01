@@ -23,10 +23,12 @@ async def renew_users_list(
         return [], []
 
     users = [user.member_id for user in chat_users]
+    owner_id = [user.member_id for user in chat_users if user.is_owner][0]
     adms = [user.member_id for user in chat_users if user.is_admin == True]
 
     peers_obj.data.users = users
     peers_obj.data.admins = adms
+    peers_obj.data.owner_id = owner_id
 
     await peers_obj.save()
     if params: await event.answer("Пользователи обновлены")
