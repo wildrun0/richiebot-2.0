@@ -9,7 +9,7 @@ from loader import logger
 peers_folder = Path("peers")
 peers_folder.mkdir(exist_ok=True)
 
-# в этом классе используем msgpack для экономии занимаемого места
+
 class PeerObject:
     __slots__ = 'peer_id', 'data', 'obj_file', 'messages'
     def __init__(self, peer_id: int, obj_file: AsyncPath, data: PeerClass, messages: MessagesObj):

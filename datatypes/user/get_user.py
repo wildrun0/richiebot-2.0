@@ -19,7 +19,7 @@ async def get_user(user_id: int, peer_id: int) -> User:
 
     if str(peer_id) not in data.peers:
         peer_users = (await bot.api.messages.get_conversation_members(peer_id)).items
-        join_date = [date for date in [user.member_id == user_id and user.join_date for user in peer_users] if date != False][0]
+        join_date = [user.join_date for user in peer_users if user.member_id == user_id][0]
         data.peers[str(peer_id)] = peers_struct(
             peer_join_date = datetime.fromtimestamp(join_date, tz).strftime(TIME_FORMAT)
         )

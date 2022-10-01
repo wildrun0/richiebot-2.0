@@ -39,7 +39,8 @@ async def get_command_arguments(
                     id_str = args[enum+1]
                     id = -int(id_str) if i == "club" else int(id_str)
                     args.remove(id_str)
-                    if id in peer_users and id != BOT_ID:
+                    if (id in peer_users and
+                        id != BOT_ID):
                         procceded_ids.append(id)
                         args[enum] = await get_user(id, peer_object.peer_id)
                     else:
