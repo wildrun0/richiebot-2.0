@@ -1,7 +1,7 @@
 from typing import Callable
 
-from vkbottle.bot import Message
 from vkbottle import VKAPIError
+from vkbottle.bot import Message
 from vkbottle_types.objects import MessagesMessageActionStatus
 
 from datatypes import PeerObject

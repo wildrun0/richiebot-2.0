@@ -12,4 +12,5 @@ from .reset_bot_peer import *
 from .clear_msgs import *
 from .del_rules import *
 from .ban_list import *
-from .stat import *
+from .debug_info import *
+from .stats import *

@@ -11,11 +11,11 @@ from settings.config import DEBUG_STATUS
 
 # в этом классе используем msgpack для экономии занимаемого места
 class MessagesObj:
-    __slots__ = 'peer_id', 'default_location', 'messages'
-    def __init__(self, peer_id: str, default_location: AsyncPath, messages: MessagesClass):
+    __slots__ = 'peer_id', 'default_location', 'data'
+    def __init__(self, peer_id: str, default_location: AsyncPath, data: MessagesClass):
         self.peer_id = peer_id
         self.default_location = default_location
-        self.messages = messages
+        self.data = data
 
 
     @classmethod
@@ -35,8 +35,8 @@ class MessagesObj:
 
 
     def _check_user(self, user_id: str):
-        if user_id not in self.messages.users:
-            self.messages.users[user_id] = UserProfile()
+        if user_id not in self.data.users:
+            self.data.users[user_id] = UserProfile()
 
 
     async def write(self, message_text: str, cmid: int, user_id: str, date: int, user: User):
@@ -47,11 +47,11 @@ class MessagesObj:
             compression_percent = round((abs(compressed_str_size - og_string_size) / og_string_size) * 100.0, 2)
             logging.debug(f"String compressed {og_string_size} -> {compressed_str_size} ({compression_percent}%)")
 
-        self.messages.users[user_id].messages.append(
+        self.data.users[user_id].messages.append(
             UserMessage(compressed_str, cmid, date)
         )
         user.peers[self.peer_id].total_messages += 1
         await user.save()
-        self.messages.messages_count += 1
+        self.data.messages_count += 1
 
-        await self.default_location.async_write(msgspec.msgpack.encode(self.messages))
+        await self.default_location.async_write(msgspec.msgpack.encode(self.data))

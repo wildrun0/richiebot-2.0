@@ -1,5 +1,6 @@
 import re
 from typing import Pattern
+from loader import bot
 from vkbottle.bot import Message
 from vkbottle.dispatch.rules import ABCRule
 
@@ -21,3 +22,5 @@ class NoCaseRegexRule(ABCRule[Message]):
             if match:
                 return {"match": match.groups()}
         return False
+
+bot.labeler.custom_rules["regex"] = NoCaseRegexRule

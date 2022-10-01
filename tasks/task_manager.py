@@ -1,4 +1,3 @@
-import logging
 from vkbottle import LoopWrapper
 from tasks.functions import BackupManger
 from settings.config import BACKUP_TIME

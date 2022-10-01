@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from loader import bot, daily_tasks
 import events
 

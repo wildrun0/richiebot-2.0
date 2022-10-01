@@ -32,7 +32,8 @@ administrative_commands_full = {
     "ричи очистка":                 commands.admin.clear_msgs,
     "ричи удалить правила":         commands.admin.del_rules,
     "ричи список забаненных":       commands.admin.ban_list,
-    "ричи статистика":              commands.admin.stat
+    "ричи отладка":                 commands.admin.debug_info,
+    "ричи статистика":              commands.admin.stats
 }
 
 default_commands_notfull = {

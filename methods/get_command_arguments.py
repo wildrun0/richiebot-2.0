@@ -28,7 +28,7 @@ async def get_command_arguments(
     user_id:        int
 ) -> tuple[str, tuple[User, ...]|list[None]]:
     for command in regex_list:
-        if matches := re.findall(command, msg_candidate):
+        if matches := re.findall(command, msg_candidate, re.IGNORECASE):
             if not matches: return command, [None] # если пусто то может быть event.reply_message
             raw_args = list(*matches) if isinstance(*matches, tuple) else matches
             args = list(filter(None, map(str.strip, raw_args))) # removing blank strings in list
@@ -45,7 +45,7 @@ async def get_command_arguments(
                         args[enum] = await get_user(id, peer_object.peer_id)
                     else:
                         args[enum] = None
-            if is_url := re.findall(URL_UID_REGEX, msg_candidate): # ссылки типа vk.com/durov
+            if is_url := re.findall(URL_UID_REGEX, msg_candidate, re.IGNORECASE): # ссылки типа vk.com/durov
                 nickname_url = list(filter(None, list(*is_url)))   # т.е. где вместо id - display_name
                 nickname_type = None
                 if 'club' in nickname_url:

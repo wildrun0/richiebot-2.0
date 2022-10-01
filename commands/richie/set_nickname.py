@@ -5,6 +5,7 @@ from datatypes import PeerObject, User
 from datatypes.user import NAME_TEMPLATE
 from settings.config import MAX_NICKNAME_LENGTH
 
+
 async def set_nickname(event: Message, peer_obj: PeerObject, params: tuple[User, str]) -> None:
     user, nickname_candidate = params
     if await check.length(event, nickname_candidate, MAX_NICKNAME_LENGTH):
