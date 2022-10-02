@@ -24,8 +24,7 @@ async def get_user_id(nickname: str) -> int:
 async def get_command_arguments(
     regex_list:     list[str],
     msg_candidate:  str,
-    peer_object:    PeerObject,
-    user_id:        int
+    peer_object:    PeerObject
 ) -> tuple[str, tuple[User, ...]|list[None]]:
     for command in regex_list:
         if matches := re.findall(command, msg_candidate, re.IGNORECASE):
@@ -34,7 +33,9 @@ async def get_command_arguments(
             args = list(filter(None, map(str.strip, raw_args))) # removing blank strings in list
             procceded_ids = []
             peer_users = peer_object.data.users
-            if displayname := re.findall("(?:https:\/\/vk.com\/(?!id|club)([^\s]+))", msg_candidate):
+            if (displayname := re.findall("(?:https:\/\/vk.com\/(?!id|club)([^\s]+))", msg_candidate) and (
+                (URL_UID_REGEX in command) or 
+                (UID_REGEX in command))):
                 for nick in displayname:
                     index = args.index(nick)
                     try:

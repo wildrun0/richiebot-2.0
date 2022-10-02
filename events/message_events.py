@@ -55,7 +55,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     except KeyError:
         command_name, command_args = await methods.get_command_arguments(
             bot_commands.all_commands_notfull, 
-            event.text, peer_obj, event.from_id
+            event.text, peer_obj
         )
         if onreply := event.reply_message:
             index = 0
@@ -83,7 +83,7 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
     except KeyError:
         command_name, command_args = await methods.get_command_arguments(
             bot_commands.admin_commands_notfull, 
-            event.text, peer_obj, event.from_id
+            event.text, peer_obj
         )
         if onreply := event.reply_message:
             index = 0
