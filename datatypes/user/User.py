@@ -18,8 +18,9 @@ class peers_struct(msgspec.Struct, omit_defaults=True):
     peer_join_date: str
     voice_messages: int = 0
     total_messages: int = 0
+    total_warns:    int = 0
     photos_sent:    int = 0
-    achievments:    peer_achievments = {}
+    achievments:    peer_achievments = peer_achievments()
     nickname:       str = "" # [id1|Пашок]
 
 

@@ -1,5 +1,7 @@
 import textwrap
 from types import ModuleType
+from vkbottle_types.objects import MessagesMessageActionStatus
+from vkbottle.bot import Message
 
 import commands
 import methods
@@ -7,8 +9,6 @@ from datatypes import PeerObject, user
 from loader import bot, logger
 from methods import decorators
 from settings import bot_commands
-from vkbottle.bot import Message
-from vkbottle_types.objects import MessagesMessageActionStatus
 
 FULL_COMMAND_REGEX = "^%s$"
 non_adm_commands = (
@@ -38,7 +38,7 @@ async def invite_event(event: Message, peer_obj: PeerObject) -> None:
             Или используйте "ричи команды"
             """))
         else:
-            if (greeting := peer_obj.data.greeting):
+            if greeting := peer_obj.data.greeting:
                 await event.answer(greeting)
 
 
@@ -91,8 +91,8 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
                     index = enum
             command_args[index] = await user.get_user(onreply.from_id, event.peer_id)
         else:
-            print(adm_func is commands.admin.kick)
             if (None in command_args) and (
+            # Нужно получать сырые id т.к. их нет в беседе
             (not (adm_func is commands.admin.unban)) and
             (not (adm_func is commands.admin.kick))): return
     if isinstance(adm_func, ModuleType):

@@ -5,6 +5,7 @@
     "admins": [],
     "clans": {},
     "ban_list": {
+        // banned user:  [admin that banned, timestamp of ban]
         // "320750004":  [397717739, ban_timestamp]
     },
     "commands_timeouts":{

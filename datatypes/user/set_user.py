@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from loader import bot, TIME_FORMAT, tz
 from datatypes.user import NAME_TEMPLATE, User, peers_struct
+from loader import TIME_FORMAT, bot, tz
 
 
 async def set_user(user_id: int, peer_id: str|int = None, name_case: str = 'nom', do_not_save: bool = False) -> User:
@@ -13,8 +13,9 @@ async def set_user(user_id: int, peer_id: str|int = None, name_case: str = 'nom'
 
     if not usersget_data:
         bot_name = (await bot.api.groups.get_by_id(group_id=abs(user_id)))[0].name
+        botname = NAME_TEMPLATE % ("club", abs(user_id), bot_name, "")
         user_datatype = User(
-            name = NAME_TEMPLATE % ("club", abs(user_id), bot_name, ""),
+            name = botname[0:-2]+"]",
             sex = 0,
             id = user_id
         )

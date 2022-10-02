@@ -8,7 +8,6 @@ from vkbottle.bot import Message
 
 async def ban(event: Message, peer_obj: PeerObject, params: list[User]):
     usr_to_ban = params[0]
-    # print(usr_to_ban)
     if str(usr_to_ban.id) in peer_obj.data.ban_list:
         status = "🚫Пользователь уже забанен!"
     else:
