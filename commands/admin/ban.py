@@ -1,8 +1,9 @@
-from vkbottle.bot import Message
 from datetime import datetime
-from loader import tz, TIME_FORMAT
-from datatypes import User, PeerObject
+
+from datatypes import PeerObject, User
+from loader import TIME_FORMAT, tz
 from vkbottle import VKAPIError
+from vkbottle.bot import Message
 
 
 async def ban(event: Message, peer_obj: PeerObject, params: list[User]):

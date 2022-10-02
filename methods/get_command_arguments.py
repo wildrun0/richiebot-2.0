@@ -1,26 +1,14 @@
 import re
 
-from aiocache import cached
-from datatypes import User, PeerObject
+from datatypes import PeerObject, User
 from datatypes.user import get_user
 from settings.bot_commands import UID_REGEX, URL_UID_REGEX
 from settings.config import BOT_ID
-from loader import bot
+
+from methods.get_group_id import get_group_id
+from methods.get_user_id import get_user_id
 
 
-async def get_group_id(nickname: str) -> int:
-    return -(await bot.api.groups.get_by_id(
-        group_id=nickname
-    ))[0].id
-
-
-async def get_user_id(nickname: str) -> int:
-    return (await bot.api.users.get(
-        user_ids=nickname
-    ))[0].id
-
-
-@cached(ttl=300)
 async def get_command_arguments(
     regex_list:     list[str],
     msg_candidate:  str,
@@ -33,17 +21,19 @@ async def get_command_arguments(
             args = list(filter(None, map(str.strip, raw_args))) # removing blank strings in list
             procceded_ids = []
             peer_users = peer_object.data.users
-            if (displayname := re.findall("(?:https:\/\/vk.com\/(?!id|club)([^\s]+))", msg_candidate) and (
+            if (displayname := re.findall("(?:https:\/\/vk.com\/(?!id|club)([^\s]+))", msg_candidate)) and (
                 (URL_UID_REGEX in command) or 
-                (UID_REGEX in command))):
+                (UID_REGEX in command)):
                 for nick in displayname:
                     index = args.index(nick)
                     try:
-                        user = await get_user_id(nick)
-                        if not user:
+                        try:
+                            user = await get_user_id(nick)
+                            if not user:
+                                user = await get_group_id(nick)
+                        except:
                             user = await get_group_id(nick)
-                    except:
-                        user = await get_group_id(nick)
+                    except: user = 0 # заглушка чтобы выбить None
                     if (user in peer_users and
                         user != BOT_ID):
                         args[index] = await get_user(user, peer_object.peer_id)

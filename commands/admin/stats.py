@@ -1,8 +1,9 @@
 import textwrap
-from vkbottle.bot import Message
-from vkbottle_types.codegen.objects import MessagesConversation
+
 from datatypes import PeerObject
 from datatypes.user import get_user
+from vkbottle.bot import Message
+from vkbottle_types.codegen.objects import MessagesConversation
 
 
 async def stats(event: Message, peer_obj: PeerObject, param: None):

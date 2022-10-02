@@ -1,7 +1,8 @@
-from vkbottle.bot import Message
-from datatypes import User, PeerObject
 from datetime import datetime
-from loader import tz, TIME_FORMAT
+
+from datatypes import PeerObject, User
+from loader import TIME_FORMAT, tz
+from vkbottle.bot import Message
 
 time_seconds = {
     "год": 31536000,

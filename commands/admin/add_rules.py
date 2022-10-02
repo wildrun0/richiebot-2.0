@@ -1,6 +1,6 @@
-from settings.config import MAX_RULES_LENGTH
-from methods import check
 from datatypes import PeerObject
+from methods import check
+from settings.config import MAX_RULES_LENGTH
 from vkbottle.bot import Message
 
 

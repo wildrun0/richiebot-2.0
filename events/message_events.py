@@ -1,16 +1,14 @@
 import textwrap
+from types import ModuleType
+
+import commands
 import methods
-
-from vkbottle.bot import Message
-from vkbottle_types.objects import MessagesMessageActionStatus
-
-from settings import bot_commands
+from datatypes import PeerObject, user
 from loader import bot, logger
 from methods import decorators
-from datatypes import PeerObject, user
-from datatypes import User
-
-from types import ModuleType
+from settings import bot_commands
+from vkbottle.bot import Message
+from vkbottle_types.objects import MessagesMessageActionStatus
 
 FULL_COMMAND_REGEX = "^%s$"
 non_adm_commands = (
@@ -85,6 +83,7 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
             bot_commands.admin_commands_notfull, 
             event.text, peer_obj
         )
+        adm_func = bot_commands.administrative_commands_notfull[command_name]
         if onreply := event.reply_message:
             index = 0
             for enum, i in enumerate(command_args):
@@ -92,8 +91,10 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
                     index = enum
             command_args[index] = await user.get_user(onreply.from_id, event.peer_id)
         else:
-            if None in command_args: return
-        adm_func = bot_commands.administrative_commands_notfull[command_name]
+            print(adm_func is commands.admin.kick)
+            if (None in command_args) and (
+            (not (adm_func is commands.admin.unban)) and
+            (not (adm_func is commands.admin.kick))): return
     if isinstance(adm_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")
     else:

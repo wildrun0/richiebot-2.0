@@ -5,7 +5,7 @@
     "admins": [],
     "clans": {},
     "ban_list": {
-        // "397717739":  [320750004, ban_timestamp]
+        // "320750004":  [397717739, ban_timestamp]
     },
     "commands_timeouts":{
         "richie_who_whom":  300,

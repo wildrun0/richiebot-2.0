@@ -1,7 +1,7 @@
-from settings.config import MAX_GREETING_LENGTH
-from methods import check
-from vkbottle.bot import Message
 from datatypes import PeerObject
+from methods import check
+from settings.config import MAX_GREETING_LENGTH
+from vkbottle.bot import Message
 
 
 async def add_greetings(event: Message, peer_object: PeerObject, params: list[str]) -> None:

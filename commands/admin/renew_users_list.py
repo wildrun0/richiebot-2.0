@@ -1,7 +1,7 @@
-from loader import logger
-from vkbottle.bot import Message
 from datatypes import PeerObject
+from loader import logger
 from vkbottle import VKAPIError
+from vkbottle.bot import Message
 
 
 async def renew_users_list(
