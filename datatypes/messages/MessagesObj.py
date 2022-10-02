@@ -3,8 +3,7 @@ import zlib
 import logging
 import msgspec
 
-from pathlib import Path
-from aiopathlib import AsyncPath
+from anyio import Path
 from datatypes.user import User
 from datatypes.messages import MessagesClass, UserProfile, UserMessage
 from settings.config import DEBUG_STATUS
@@ -12,7 +11,7 @@ from settings.config import DEBUG_STATUS
 # в этом классе используем msgpack для экономии занимаемого места
 class MessagesObj:
     __slots__ = 'peer_id', 'default_location', 'data'
-    def __init__(self, peer_id: str, default_location: AsyncPath, data: MessagesClass):
+    def __init__(self, peer_id: str, default_location: Path, data: MessagesClass):
         self.peer_id = peer_id
         self.default_location = default_location
         self.data = data
@@ -22,7 +21,7 @@ class MessagesObj:
     async def init(self, peer_id: str, peer_location: Path):
         logging.debug(f"{peer_id} - INIT MESSAGES")
         message_filename = "messages.dat"
-        default_location = AsyncPath(peer_location, message_filename)
+        default_location = Path(peer_location, message_filename)
         if not await default_location.exists():
             messages = MessagesClass()
         else:
@@ -54,4 +53,4 @@ class MessagesObj:
         await user.save()
         self.data.messages_count += 1
 
-        await self.default_location.async_write(msgspec.msgpack.encode(self.data))
+        await self.default_location.write_bytes(msgspec.msgpack.encode(self.data))

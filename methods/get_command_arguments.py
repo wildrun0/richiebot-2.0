@@ -3,7 +3,7 @@ import re
 from aiocache import cached
 from datatypes import User, PeerObject
 from datatypes.user import get_user
-from settings.bot_commands import URL_UID_REGEX
+from settings.bot_commands import UID_REGEX, URL_UID_REGEX
 from settings.config import BOT_ID
 from loader import bot
 
@@ -34,42 +34,34 @@ async def get_command_arguments(
             args = list(filter(None, map(str.strip, raw_args))) # removing blank strings in list
             procceded_ids = []
             peer_users = peer_object.data.users
+            if displayname := re.findall("(?:https:\/\/vk.com\/(?!id|club)([^\s]+))", msg_candidate):
+                for nick in displayname:
+                    index = args.index(nick)
+                    try:
+                        user = await get_user_id(nick)
+                        if not user:
+                            user = await get_group_id(nick)
+                    except:
+                        user = await get_group_id(nick)
+                    if (user in peer_users and
+                        user != BOT_ID):
+                        args[index] = await get_user(user, peer_object.peer_id)
+                    else:
+                        args[index] = None
             for enum, i in enumerate(args):
                 if i == "id" or i == 'club':
                     id_str = args[enum+1]
                     id = -int(id_str) if i == "club" else int(id_str)
                     args.remove(id_str)
+                    procceded_ids.append(id)
                     if (id in peer_users and
                         id != BOT_ID):
-                        procceded_ids.append(id)
                         args[enum] = await get_user(id, peer_object.peer_id)
                     else:
                         args[enum] = None
-            if is_url := re.findall(URL_UID_REGEX, msg_candidate, re.IGNORECASE): # ссылки типа vk.com/durov
-                nickname_url = list(filter(None, list(*is_url)))   # т.е. где вместо id - display_name
-                nickname_type = None
-                if 'club' in nickname_url:
-                    nickname_type = "club"
-                    nickname_url.remove("club")
-                for nickname in nickname_url:
-                    try:
-                        if int(nickname) in procceded_ids: continue
-                        if -int(nickname) in procceded_ids: continue
-                    except: pass
-                    usr_index = args.index(nickname)
-                    if nickname_type == "club":
-                        user_id = await get_group_id(nickname)
-                    else:
-                        try:
-                            user_id = await get_user_id(nickname)
-                        except IndexError:
-                            user_id = await get_group_id(nickname)
-                    if user_id in peer_users and user_id != BOT_ID:
-                        args[usr_index] = await get_user(
-                            user_id,
-                            peer_object.peer_id
-                        )
-                    else: args[usr_index] = None
-            if not any(filter(lambda x: type(x) is User, args)) and not None in args:
-                args.insert(0, await get_user(user_id, peer_object.peer_id))
+            have_user = any(isinstance(val, User) for val in args)
+            if not have_user and (URL_UID_REGEX in command or UID_REGEX in command):
+                insert_index = raw_args.index('')
+                raw_args[insert_index] = None
+                args = [x for x in raw_args if not x == '']
             return command, args

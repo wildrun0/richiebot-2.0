@@ -1,18 +1,18 @@
 import msgspec
 
-from pathlib import Path
-from aiopathlib import AsyncPath
+from pathlib import Path as SyncPath
+from anyio import Path
 from datatypes.messages import MessagesObj
 from datatypes.peer import PeerClass
 from loader import logger
 
-peers_folder = Path("peers")
+peers_folder = SyncPath("peers")
 peers_folder.mkdir(exist_ok=True)
 
 
 class PeerObject:
     __slots__ = 'peer_id', 'data', 'obj_file', 'messages'
-    def __init__(self, peer_id: int, obj_file: AsyncPath, data: PeerClass, messages: MessagesObj):
+    def __init__(self, peer_id: int, obj_file: Path, data: PeerClass, messages: MessagesObj):
         self.peer_id = peer_id
         self.data = data
         self.obj_file = obj_file
@@ -23,13 +23,13 @@ class PeerObject:
     async def init(self, peer_id: int):
         logger.info("LOAD PEER SETTINGS", id=peer_id)
         peer_json_name = "main.json"
-        peer_location = AsyncPath(peers_folder, str(peer_id))
-        obj_file = AsyncPath(peer_location, peer_json_name)
+        peer_location = Path(peers_folder, str(peer_id))
+        obj_file = Path(peer_location, peer_json_name)
 
         if not (await peer_location.exists()):
             await peer_location.mkdir()
             data = PeerClass()
-            await obj_file.async_write(
+            await obj_file.write_bytes(
                 msgspec.json.encode(data)
             )
         else:
@@ -41,5 +41,5 @@ class PeerObject:
 
     async def save(self):
         peer_class = msgspec.json.encode(self.data)
-        await self.obj_file.async_write(peer_class)
+        await self.obj_file.write_bytes(peer_class)
         logger.info("PEER SETTINGS SAVED", id=self.peer_id)

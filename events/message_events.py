@@ -8,6 +8,7 @@ from settings import bot_commands
 from loader import bot, logger
 from methods import decorators
 from datatypes import PeerObject, user
+from datatypes import User
 
 from types import ModuleType
 
@@ -25,8 +26,8 @@ logger.debug(f"Regex ({FULL_COMMAND_REGEX}) set for 'full' commands")
 @bot.on.chat_message(action=["chat_invite_user", "chat_kick_user"])
 @decorators.peer_manager
 async def invite_event(event: Message, peer_obj: PeerObject) -> None:
+    action = event.action
     if action.type != MessagesMessageActionStatus.CHAT_KICK_USER:
-        action = event.action
         group_id = event.group_id
         if not action or not group_id:
             return
@@ -57,9 +58,13 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
             event.text, peer_obj, event.from_id
         )
         if onreply := event.reply_message:
-            command_args[0] = await user.get_user(onreply.from_id, event.peer_id)
+            index = 0
+            for enum, i in enumerate(command_args):
+                if i is None:
+                    index = enum
+            command_args[index] = await user.get_user(onreply.from_id, event.peer_id)
         else: 
-            if command_args[0] is None: return
+            if None in command_args: return
         def_func = bot_commands.default_commands_notfull[command_name]
     if isinstance(def_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")
@@ -81,9 +86,13 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
             event.text, peer_obj, event.from_id
         )
         if onreply := event.reply_message:
-            command_args[0] = await user.get_user(onreply.from_id, event.peer_id)
+            index = 0
+            for enum, i in enumerate(command_args):
+                if i is None:
+                    index = enum
+            command_args[index] = await user.get_user(onreply.from_id, event.peer_id)
         else:
-            if command_args[0] is None: return
+            if None in command_args: return
         adm_func = bot_commands.administrative_commands_notfull[command_name]
     if isinstance(adm_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")

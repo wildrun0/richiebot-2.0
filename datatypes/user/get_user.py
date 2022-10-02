@@ -1,6 +1,6 @@
 import msgspec
 
-from aiopathlib import AsyncPath
+from anyio import Path
 from datetime import datetime
 from loader import TIME_FORMAT, tz, bot, ctx_storage
 from datatypes.user import User, set_user, users_folder, peers_struct
@@ -8,7 +8,7 @@ from datatypes.user import User, set_user, users_folder, peers_struct
 
 async def get_user(user_id: int, peer_id: int) -> User:
     if user_id == 0: return None
-    user_data = AsyncPath(users_folder, f"{user_id}.json")
+    user_data = Path(users_folder, f"{user_id}.json")
     data = ctx_storage.get(user_id)
     if not data:
         if await user_data.is_file():

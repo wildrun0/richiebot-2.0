@@ -1,13 +1,15 @@
 import os
 import logging
-import aioshutil
+import shutil
 
+from aiofiles.os import wrap
 from pathlib import Path
 from loader import logger
 from typing import Literal
 from datetime import datetime, timedelta
 
 
+copytree = wrap(shutil.copytree)
 class BackupManger:
     __slots__ = 'last_backup', 'dirs_to_backup', 'default_folder', 'date_format', 'frequency_days', 'startup_date'
     def __init__(self):
@@ -33,7 +35,9 @@ class BackupManger:
         new_backup_folder = Path(self.default_folder, backup_folder_name)
 
         for folder in self.dirs_to_backup:
-            await aioshutil.copytree(Path(folder), Path(new_backup_folder, folder))
+            src = Path(folder)
+            dst = Path(new_backup_folder, folder)
+            await copytree(src, dst)
 
         end_time = datetime.timestamp(datetime.now())
         logging.warning(f"backup done, elapsed time: {end_time - start_time:.2f} sec.")
@@ -55,9 +59,9 @@ class BackupManger:
                     key=lambda x: Path.stat(x).st_mtime, reverse=True
                 )
                 self.last_backup = datetime.fromtimestamp(backups_sorted[0].stat().st_mtime)
-        logging.debug(f"Checking last backup time: {self.last_backup.strftime(self.date_format)}")
+        logging.info(f"Checking last backup time: {self.last_backup.strftime(self.date_format)}")
         backup_gap = (self.startup_date - self.last_backup)
         if (backup_gap.total_seconds() >= gap_seconds):
             await self._backup()
         else:
-            logging.debug("No backup needed")
+            logging.info("No backup needed")

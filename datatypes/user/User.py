@@ -1,7 +1,7 @@
 import msgspec
 
-from pathlib import Path
-from aiopathlib import AsyncPath
+from pathlib import Path as SyncPath
+from anyio import Path
 from datatypes.peer import peers_folder
 
 NAME_TEMPLATE = "[%s%d|%s %s]"
@@ -31,8 +31,8 @@ class User(msgspec.Struct, omit_defaults=True):
 
 
     async def save(self):
-        fp = AsyncPath(users_folder, f"{self.id}.json")
-        await fp.async_write(msgspec.json.encode(self))
+        fp = Path(users_folder, f"{self.id}.json")
+        await fp.write_bytes(msgspec.json.encode(self))
 
     
     def get_nickname(self, peer_id: str|int) -> str:
@@ -41,7 +41,7 @@ class User(msgspec.Struct, omit_defaults=True):
         else: return self.name
 
 
-users_folder = Path(peers_folder, DEFAULT_FOLDER)
+users_folder = SyncPath(peers_folder, DEFAULT_FOLDER)
 
 if not users_folder.exists():
     import logging
