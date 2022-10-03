@@ -67,6 +67,8 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
     if isinstance(def_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")
     else:
+        if peer_obj.data.commands_timeouts.__getattribute__(def_func.__name__):
+            def_func = decorators.timeout_manager(def_func)
         await def_func(event, peer_obj, command_args)
 
 

@@ -14,7 +14,7 @@ class peer_achievments(msgspec.Struct, omit_defaults=True):
     duels_winned:   int = 0
 
 
-class timeout(msgspec.Struct, omit_defaults=True):
+class timeout_struct(msgspec.Struct, omit_defaults=True):
     due_date: int
     shadowbanned: bool = False
 
@@ -25,7 +25,7 @@ class peers_struct(msgspec.Struct, omit_defaults=True):
     total_messages: int = 0
     total_warns:    int = 0
     photos_sent:    int = 0
-    timeouts:       dict[str, timeout] = {}
+    timeouts:       dict[str, timeout_struct] = {}
     achievments:    peer_achievments = peer_achievments()
     nickname:       str = "" # [id1|Пашок]
 

@@ -24,7 +24,4 @@ async def get_user(user_id: int, peer_id: int) -> User:
             peer_join_date = datetime.fromtimestamp(join_date, tz).strftime(TIME_FORMAT)
         )
         await data.save()
-    if len(timeouts := data.peers[speer_id].timeouts) > 0:
-        timeouts.clear()
-        await data.save()
     return data
