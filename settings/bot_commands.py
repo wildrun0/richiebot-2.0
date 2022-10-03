@@ -18,18 +18,18 @@ administrative_commands_notfull = {
     f"ричи добавить приветствие {CATCH_ALL_REGEX}":             commands.admin.add_greetings,
     f"ричи добавить правила {CATCH_ALL_REGEX}":                 commands.admin.add_rules,
     f"!kick\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":                commands.admin.kick,
-    f"^забанить\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":             commands.admin.ban,
-    f"^разбанить (?:{UID_REGEX}|{URL_UID_REGEX})":               commands.admin.unban,
-    f"^варн\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":                 commands.admin.warn,
-    f"^снять варны\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":          commands.admin.unwarn,
+    f"^забанить\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":            commands.admin.ban,
+    f"^разбанить (?:{UID_REGEX}|{URL_UID_REGEX})":              commands.admin.unban,
+    f"^варн\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":                commands.admin.warn,
+    f"^снять варны\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":         commands.admin.unwarn,
     f"^мут (?:{UID_REGEX}|{URL_UID_REGEX})?\s?(\d+) (год|лет|мес|нед|час|мин|сек)":  commands.admin.mute,
-    f"^размутить\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":            commands.admin.unmute   # todo
+    f"^размутить\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":           commands.admin.unmute
 }
 
 administrative_commands_full = {
     "ричи обновить пользователей":  commands.admin.renew_users_list,
     "ричи сброс":                   commands.admin.reset_bot_peer,
-    "ричи очистка":                 commands.admin.clear_msgs,
+    "ричи очистка":                 commands.admin.clear_msgs,  # todo
     "ричи удалить правила":         commands.admin.del_rules,
     "ричи список забаненных":       commands.admin.ban_list,
     "ричи отладка":                 commands.admin.debug_info,
@@ -65,6 +65,7 @@ default_commands_full = {
     "ричи актив":                   commands.richie.peer_active,
     "ричи правила":                 commands.richie.view_rules,
     "ричи браки":                   commands.richie.marry_list,
+    "ричи казино":                  commands.richie.casino,
 
     "ричи бросить кости":           commands.game.kosti,
     "ричи кости":                   commands.game.kosti,
@@ -82,7 +83,7 @@ default_commands_full = {
     "ричи о клане":                 commands.clan.about,
     "ричи раздать жалованье":       commands.clan.cash_handout,
     "ричи топ кланов":              commands.clan.top,
-    "ричи дуэль кланов":            commands.clan.duel
+    "ричи дуэль кланов":            commands.clan.clan_duel
 }
 
 

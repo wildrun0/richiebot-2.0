@@ -14,4 +14,4 @@ from .status_down import *
 
 from .solo_duel import *
 from .random_solo_duel import *
-from .duel import *
+from .clan_duel import *

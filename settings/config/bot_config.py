@@ -12,6 +12,8 @@ if not config.sections():
     config['SETTINGS']['ID'] = '-id'
     config['SETTINGS']['BACKUP_TIME'] = 'daily'
     config["SETTINGS"]["; = Принимаемые значения: 'hourly', 'daily', 'weekly', 'monthly'"] = ""
+    config["SETTINGS"]["PEERS_DEFAULT_FOLDER"] = "peers/"
+    config["SETTINGS"]["; = Папка, где будут хранится основные профили бесед"] = ""
     
     config.add_section("LIMITS")
     config['LIMITS']["MAX_GREETING_LENGTH"] = "140"
@@ -39,7 +41,12 @@ else:
         exit()
     
     BOT_ID = config.getint("SETTINGS", "ID")
+    if BOT_ID == "-id":
+        logging.critical("Прежде чем использовать бота, необходимо ввести BOT_ID= (отрицательное число)")
+        exit()
+
     BACKUP_TIME = config.get("SETTINGS", "BACKUP_TIME")
+    PEERS_DEFAULT_FOLDER = config.get("SETTINGS", "PEERS_DEFAULT_FOLDER")
     
     DEBUG_STATUS = config.getboolean("DEBUG", "ENABLED")
     

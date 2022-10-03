@@ -1,32 +1,44 @@
 import msgspec
 
 
-class warns_struct(msgspec.Struct):
+class warns_struct(msgspec.Struct, omit_defaults=True):
     max_warns: int = 5
     users: dict[str, int] = {}
 
 
-class voteban_struct(msgspec.Struct):
-    bans_pending:   list[tuple[int, int, list[int]]] = []
+class ban_pending(msgspec.Struct):
+    usr_to_ban: int
+    votes:      int
+    voted_users:list
+
+
+class voteban_struct(msgspec.Struct, omit_defaults=True):
+    bans_pending:   list[ban_pending] = []
     min_ban_votes:  int = 10
 
 
-class marriages_struct(msgspec.Struct):
+class marriage_pending(msgspec.Struct):
+    user1: int
+    user2: int
+    offer_start_date: int
+
+
+class marriages_struct(msgspec.Struct, omit_defaults=True):
     marriages_timeout:  int = 180
-    marriages_pending:  list[int] = []
+    marriages_pending:  list[marriage_pending] = []
     couples:            list[int] = []
 
 
-class commands_timeouts_struct(msgspec.Struct):
-    richie_clan_duel:int = 300
-    richie_roulette:int = 300
-    richie_who_whom:int = 300
-    richie_infa:    int = 300
-    richie_kosti:   int = 300
-    richie_casino:  int = 300
-    richie_song:    int = 300
-    richie_primer:  int = 300
-    richie_duel:    int = 300
+class commands_timeouts_struct(msgspec.Struct, omit_defaults=True):
+    clan_duel:int = 300
+    roulette:int = 300
+    who:     int = 300
+    infa:    int = 300
+    kosti:   int = 300
+    casino:  int = 300
+    song:    int = 300
+    math:    int = 300
+    duel:    int = 300
 
 
 class PeerClass(msgspec.Struct, omit_defaults=True):
@@ -35,11 +47,11 @@ class PeerClass(msgspec.Struct, omit_defaults=True):
     rules:              str|None = None
     admins:             list[int] = []
     users:              list[int] = []
-    clans:              dict[str, dict] = {}
+    clans:              dict[str, dict]  = {}
     ban_list:           dict[str, tuple[int, str]] = {}
-    commands_timeouts:  commands_timeouts_struct = {}
-    marriages:          marriages_struct = marriages_struct()
-    voteban:            voteban_struct = voteban_struct()
-    last_kicked:        list[int] = []
-    warns:              warns_struct = warns_struct()
-    mute:               list[tuple[int, int]] = []
+    commands_timeouts:  commands_timeouts_struct = commands_timeouts_struct()
+    marriages:          marriages_struct         = marriages_struct()
+    voteban:            voteban_struct           = voteban_struct()
+    warns:              warns_struct             = warns_struct()
+    last_kicked:        list[int]                = []
+    mute:               list[tuple[int, int]]    = []

@@ -2,7 +2,7 @@ import msgspec
 
 from pathlib import Path as SyncPath
 from anyio import Path
-from datatypes.peer import peers_folder
+from settings.config import PEERS_DEFAULT_FOLDER
 
 NAME_TEMPLATE = "[%s%d|%s %s]"
 DEFAULT_FOLDER = "usersdata"
@@ -14,12 +14,18 @@ class peer_achievments(msgspec.Struct, omit_defaults=True):
     duels_winned:   int = 0
 
 
+class timeout(msgspec.Struct, omit_defaults=True):
+    due_date: int
+    shadowbanned: bool = False
+
+
 class peers_struct(msgspec.Struct, omit_defaults=True):
     peer_join_date: str
     voice_messages: int = 0
     total_messages: int = 0
     total_warns:    int = 0
     photos_sent:    int = 0
+    timeouts:       dict[str, timeout] = {}
     achievments:    peer_achievments = peer_achievments()
     nickname:       str = "" # [id1|Пашок]
 
@@ -42,9 +48,9 @@ class User(msgspec.Struct, omit_defaults=True):
         else: return self.name
 
 
-users_folder = SyncPath(peers_folder, DEFAULT_FOLDER)
+users_folder = SyncPath(PEERS_DEFAULT_FOLDER, DEFAULT_FOLDER)
 
 if not users_folder.exists():
     import logging
-    logging.warning(f"{peers_folder}/{DEFAULT_FOLDER} not found. Creating a new one")
+    logging.warning(f"{PEER_DEFAULT_FOLDER}/{DEFAULT_FOLDER} not found. Creating a new one")
     users_folder.mkdir()

@@ -16,12 +16,15 @@ async def get_user(user_id: int, peer_id: int) -> User:
         else:
             data = await set_user(user_id, peer_id)
         ctx_storage.set(user_id, data)
-
-    if str(peer_id) not in data.peers:
+    speer_id = str(peer_id)
+    if speer_id not in data.peers:
         peer_users = (await bot.api.messages.get_conversation_members(peer_id)).items
         join_date = [user.join_date for user in peer_users if user.member_id == user_id][0]
-        data.peers[str(peer_id)] = peers_struct(
+        data.peers[speer_id] = peers_struct(
             peer_join_date = datetime.fromtimestamp(join_date, tz).strftime(TIME_FORMAT)
         )
+        await data.save()
+    if len(timeouts := data.peers[speer_id].timeouts) > 0:
+        timeouts.clear()
         await data.save()
     return data

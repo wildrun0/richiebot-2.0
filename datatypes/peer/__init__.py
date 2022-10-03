@@ -1,2 +1,2 @@
-from .Peer import PeerClass
-from .PeerObject import peers_folder, PeerObject
+from .Peer import PeerClass, commands_timeouts_struct, ban_pending
+from .PeerObject import PeerObject

@@ -1,8 +1,9 @@
 import random
-from datatypes import User, PeerObject
-from datatypes.user import get_user
-from vkbottle.bot import Message
 
+from datatypes import PeerObject
+from datatypes.user import get_user
+from methods.decorators import timeout_manager
+from vkbottle.bot import Message
 
 answers = [
     "Я считаю что это: {}",
@@ -11,9 +12,11 @@ answers = [
     "Имхо это: {}",
     "На мой взгляд это: {}"
 ]
-async def who(event: Message, peer_obj: PeerObject, params: tuple[User, str|None]) -> None:
+
+
+async def who(event: Message, peer_obj: PeerObject, params: list[str]) -> None:
     try:
-        who_type = params[1]
+        who_type = params[0]
     except: who_type = ""
     peer_id = event.peer_id
     chosen_user = random.choice(peer_obj.data.users)

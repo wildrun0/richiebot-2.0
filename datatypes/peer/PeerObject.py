@@ -1,12 +1,13 @@
 import msgspec
 
+from settings.config import PEERS_DEFAULT_FOLDER
 from pathlib import Path as SyncPath
 from anyio import Path
 from datatypes.messages import MessagesObj
 from datatypes.peer import PeerClass
 from loader import logger
 
-peers_folder = SyncPath("peers")
+peers_folder = SyncPath(PEERS_DEFAULT_FOLDER)
 peers_folder.mkdir(exist_ok=True)
 
 

@@ -31,5 +31,6 @@ async def renew_users_list(
     peers_obj.data.owner_id = owner_id
 
     await peers_obj.save()
-    if params: await event.answer("Пользователи обновлены")
+    if event.text.lower() == "ричи обновить пользователей": 
+        await event.answer("Пользователи обновлены")
     return adms, users

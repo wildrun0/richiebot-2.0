@@ -5,8 +5,7 @@ from datatypes.user import get_user
 from settings.bot_commands import UID_REGEX, URL_UID_REGEX
 from settings.config import BOT_ID
 
-from methods.get_group_id import get_group_id
-from methods.get_user_id import get_user_id
+from methods import get_group_id, get_user_id
 
 
 async def get_command_arguments(

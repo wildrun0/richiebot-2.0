@@ -1,12 +1,13 @@
+import logging
 import sys
 import zlib
-import logging
-import msgspec
 
+import msgspec
 from anyio import Path
+from datatypes.messages import MessagesClass, UserMessage, UserProfile
 from datatypes.user import User
-from datatypes.messages import MessagesClass, UserProfile, UserMessage
 from settings.config import DEBUG_STATUS
+
 
 # в этом классе используем msgpack для экономии занимаемого места
 class MessagesObj:
@@ -49,8 +50,8 @@ class MessagesObj:
         self.data.users[user_id].messages.append(
             UserMessage(compressed_str, cmid, date)
         )
-        user.peers[self.peer_id].total_messages += 1
-        await user.save()
+        if user != None:
+            user.peers[self.peer_id].total_messages += 1
+            await user.save()
         self.data.messages_count += 1
-
         await self.default_location.write_bytes(msgspec.msgpack.encode(self.data))
