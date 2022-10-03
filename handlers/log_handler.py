@@ -9,7 +9,7 @@ class CustomAdapter(logging.LoggerAdapter):
     def process(self, msg, kwargs):
         my_context = kwargs.pop('id', self.extra['id'])
         if my_context:
-            return '%d - %s' % (my_context, msg), kwargs
+            return '%s - %s' % (my_context, msg), kwargs
         else:
             return '%s' % (msg), kwargs
 

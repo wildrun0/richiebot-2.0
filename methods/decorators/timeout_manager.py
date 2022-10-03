@@ -12,7 +12,7 @@ def timeout_manager(func):
         event: Message = args[0]
         peer_obj: PeerObject = args[1]
         peer_id = event.peer_id
-        
+
         caller = await get_user(event.from_id, peer_id)
         caller_timeouts = caller.peers[str(peer_id)].timeouts
 

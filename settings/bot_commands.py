@@ -1,4 +1,6 @@
 import commands
+from datatypes.peer import commands_timeouts_struct
+from methods.decorators import timeout_manager
 
 UID_REGEX = "(?:\[(?:(id|club))(\d+)\|.+\])"
 URL_UID_REGEX = "(?:https:\/\/vk.com\/(?:(id|club)?(\d+))?([^\s]+)?)"
@@ -92,3 +94,15 @@ admin_commands_full = [*administrative_commands_full.keys()]
 
 all_commands_notfull = [*default_commands_notfull.keys()]
 all_commands_full = [*default_commands_full.keys()]
+
+
+# Ставим декораторы на таймауты, описаные в commands_timeouts_struct
+
+funcs_with_timeout = commands_timeouts_struct.__struct_fields__
+for k, v in default_commands_notfull.items():
+    if v.__name__ in funcs_with_timeout:
+        default_commands_notfull[k] = timeout_manager(v)
+        
+for k, v in default_commands_full.items():
+    if v.__name__ in funcs_with_timeout:
+        default_commands_full[k] = timeout_manager(v)

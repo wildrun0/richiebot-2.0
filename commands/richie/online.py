@@ -1,10 +1,9 @@
-from vkbottle.bot import Message
 from datetime import datetime
 
 from datatypes import PeerObject
 from datatypes.user import get_user
 from loader import tz
-
+from vkbottle.bot import Message
 
 online_status = {
     6121396: "📱VK Admin",

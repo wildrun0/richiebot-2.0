@@ -51,6 +51,6 @@ class User(msgspec.Struct, omit_defaults=True):
 users_folder = SyncPath(PEERS_DEFAULT_FOLDER, DEFAULT_FOLDER)
 
 if not users_folder.exists():
-    import logging
-    logging.warning(f"{PEER_DEFAULT_FOLDER}/{DEFAULT_FOLDER} not found. Creating a new one")
+    from loader import logger
+    logger.warning(f"{PEERS_DEFAULT_FOLDER}/{DEFAULT_FOLDER} not found. Creating a new one")
     users_folder.mkdir()

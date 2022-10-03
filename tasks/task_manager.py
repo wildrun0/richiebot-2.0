@@ -1,21 +1,12 @@
-from vkbottle import LoopWrapper
-from tasks.functions import BackupManger
+from loader import bot, ctx_storage, logger
 from settings.config import BACKUP_TIME
-from loader import ctx_storage, logger
 
-"""
-Хочу оправдаться за этот мерзкий дизайн ход - я хочю чтобы все фоновые процессы
-которые должны исполнятся по расписанию, имели свой "центр" откуда они запускаются
-поэтому вот както так.....
-"""
+from tasks.functions import BackupManger
 
 backupmanager = BackupManger()
-
+lw = bot.loop_wrapper
 
 class TaskManager:
-    lw = LoopWrapper()
-
-
     @lw.interval(seconds=3600) # every hour scanning for backups
     async def run_backups():
         await backupmanager.check_for_backup(frequency=BACKUP_TIME)
@@ -26,9 +17,15 @@ class TaskManager:
 
 
     async def onshutdown():
-        logger.info("Shutting down...")
-        for objs in ctx_storage.storage.values():
-            await objs.save()
+        from datatypes import User
+        logger.warning("Shutting down...")
+        for obj in ctx_storage.storage.values():
+            if isinstance(obj, User):
+                # убираем тайм-ауты, т.к. ключи являются хэшами
+                # которые не будут актуальны при следующем запуске
+                for peer_instance in obj.peers.values():
+                    peer_instance.timeouts.clear()
+            await obj.save()
         logger.info("BYE :'(")
 
 

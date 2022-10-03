@@ -1,4 +1,3 @@
-import logging
 import sys
 import zlib
 
@@ -6,6 +5,7 @@ import msgspec
 from anyio import Path
 from datatypes.messages import MessagesClass, UserMessage, UserProfile
 from datatypes.user import User
+from loader import logger
 from settings.config import DEBUG_STATUS
 
 
@@ -20,7 +20,7 @@ class MessagesObj:
 
     @classmethod
     async def init(self, peer_id: str, peer_location: Path):
-        logging.debug(f"{peer_id} - INIT MESSAGES")
+        logger.debug("INIT MESSAGES",id=peer_id)
         message_filename = "messages.dat"
         default_location = Path(peer_location, message_filename)
         if not await default_location.exists():
@@ -30,7 +30,7 @@ class MessagesObj:
                 await default_location.read_bytes(), 
                 type=MessagesClass
             )
-        logging.debug(f"{peer_id} - INIT MESSAGES DONE")
+        logger.debug("INIT MESSAGES DONE",id=peer_id)
         return MessagesObj(peer_id, default_location, messages)
 
 
@@ -45,7 +45,7 @@ class MessagesObj:
         if DEBUG_STATUS:
             og_string_size, compressed_str_size = sys.getsizeof(message_text), sys.getsizeof(compressed_str)
             compression_percent = round((abs(compressed_str_size - og_string_size) / og_string_size) * 100.0, 2)
-            logging.debug(f"String compressed {og_string_size} -> {compressed_str_size} ({compression_percent}%)")
+            logger.debug(f"String compressed {og_string_size} -> {compressed_str_size} ({compression_percent}%)")
 
         self.data.users[user_id].messages.append(
             UserMessage(compressed_str, cmid, date)

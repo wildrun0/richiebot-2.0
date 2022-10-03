@@ -8,14 +8,15 @@ lh = LoggingHandler(name="RICHIEBOT")
 logger = lh.logger
 
 from settings.config import BOT_TOKEN
-from tasks import TaskManager
 from datetime import timedelta, timezone
 
 tz = timezone(timedelta(hours=3), name='МСК')
 TIME_FORMAT = "%d.%m.%y %H:%M:%S"
 
-daily_tasks = TaskManager()
 bot = Bot(token=BOT_TOKEN)
+
+from tasks import TaskManager
+task_manager = TaskManager()
 
 # functions execution logging
 from anyio import Path

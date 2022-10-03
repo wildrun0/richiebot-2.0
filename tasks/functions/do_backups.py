@@ -1,5 +1,4 @@
 import os
-import logging
 import shutil
 
 from aiofiles.os import wrap
@@ -40,7 +39,7 @@ class BackupManger:
             await copytree(src, dst)
 
         end_time = datetime.timestamp(datetime.now())
-        logging.warning(f"backup done, elapsed time: {end_time - start_time:.2f} sec.")
+        logger.warning(f"backup done, elapsed time: {end_time - start_time:.2f} sec.")
         self.last_backup = datetime.now()
 
 
@@ -50,7 +49,7 @@ class BackupManger:
         self.date_format = '%d.%m.%Y %H-%M' if gap_seconds < 86400 else self.date_format
         if not self.last_backup:
             if not next(os.scandir(self.default_folder), None):
-                logging.warning("No backups found!")
+                logger.warning("No backups found!")
                 gap = timedelta(seconds=gap_seconds)
                 self.last_backup = self.startup_date - gap # типа вчера был бэкап, нада новый будет!!
             else:
@@ -59,9 +58,9 @@ class BackupManger:
                     key=lambda x: Path.stat(x).st_mtime, reverse=True
                 )
                 self.last_backup = datetime.fromtimestamp(backups_sorted[0].stat().st_mtime)
-        logging.info(f"Checking last backup time: {self.last_backup.strftime(self.date_format)}")
+        logger.info(f"Checking last backup time: {self.last_backup.strftime(self.date_format)}")
         backup_gap = (self.startup_date - self.last_backup)
         if (backup_gap.total_seconds() >= gap_seconds):
             await self._backup()
         else:
-            logging.info("No backup needed")
+            logger.info("No backup needed")
