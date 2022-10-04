@@ -9,7 +9,6 @@ from .mute import *
 from .unmute import *
 from .renew_users_list import *
 from .reset_bot_peer import *
-from .clear_msgs import *
 from .del_rules import *
 from .ban_list import *
 from .debug_info import *

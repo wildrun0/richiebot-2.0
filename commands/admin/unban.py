@@ -1,5 +1,6 @@
 from datatypes import PeerObject, User
-from methods import get_group_id, get_user_id
+from methods.get_group_id import get_group_id
+from methods.get_user_id import get_user_id
 from vkbottle.bot import Message
 
 
@@ -7,7 +8,9 @@ async def unban(event: Message, peer_obj: PeerObject, param: tuple[None|User, st
     if isinstance(param[0], User): # юзер приходит только если пользователь в беседе
         await event.answer("Пользователь в беседе... он не забанен..ты што делаеш...")
         return
-    raw_id = param[1]
+    if param[1] in ["id", "club"]:
+        raw_id = param[2]
+    else: raw_id = param[1]
     if raw_id.isdigit():
         raw_id = int(raw_id) if param[0] == "id" else -int(raw_id)
     else:

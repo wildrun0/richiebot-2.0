@@ -31,7 +31,6 @@ administrative_commands_notfull = {
 administrative_commands_full = {
     "ричи обновить пользователей":  commands.admin.renew_users_list,
     "ричи сброс":                   commands.admin.reset_bot_peer,
-    "ричи очистка":                 commands.admin.clear_msgs,  # todo
     "ричи удалить правила":         commands.admin.del_rules,
     "ричи список забаненных":       commands.admin.ban_list,
     "ричи отладка":                 commands.admin.debug_info,
@@ -43,11 +42,12 @@ default_commands_notfull = {
     f"ричи кого\s?{CATCH_ALL_REGEX}":           commands.richie.who,
     f"ричи добавить кличку {CATCH_ALL_REGEX}":  commands.richie.set_nickname,
     f"ричи инфа\s?{CATCH_ALL_REGEX}":           commands.richie.infa,
+    # -- done --
     f"ричи свадьба\s?с?\s?{UID_REGEX}?":        commands.richie.marry,
 
-    f"ричи баланс\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":      commands.economy.balance,
-    f"ричи инвентарь\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":   commands.economy.inventory,
-    f"ричи передать (\d+)\s?(?:ричсонов|ричкоинов)?{UID_REGEX}?":commands.economy.transfer_richiecoins,
+    f"ричи баланс\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":              commands.economy.balance,
+    f"ричи инвентарь\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":           commands.economy.inventory,
+    f"ричи передать (\d+)\s?(?:ричсонов|ричкоинов)?{UID_REGEX}?":   commands.economy.transfer_richiecoins,
 
     f"ричи дуэль\s?с?\s?{UID_REGEX}":commands.clan.solo_duel,
     "ричи создать клан":            commands.clan.create,
