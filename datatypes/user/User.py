@@ -1,6 +1,6 @@
-import msgspec
-
 from pathlib import Path as SyncPath
+
+import msgspec
 from anyio import Path
 from settings.config import PEERS_DEFAULT_FOLDER
 
@@ -15,20 +15,25 @@ class peer_achievments(msgspec.Struct, omit_defaults=True):
 
 
 class timeout_struct(msgspec.Struct, omit_defaults=True):
-    due_date: int
-    shadowbanned: bool = False
+    due_date:       int
+    shadowbanned:   bool = False
+
+
+class marry_struct(msgspec.Struct, omit_defaults=True):
+    partner:    int|None = None
+    start_date: int|None = None
 
 
 class peers_struct(msgspec.Struct, omit_defaults=True):
     peer_join_date: str
-    marry_with:     int|None = None
+    nickname:       str = "" # [id1|Пашок]
     voice_messages: int = 0
     total_messages: int = 0
     total_warns:    int = 0
     photos_sent:    int = 0
     timeouts:       dict[str, timeout_struct] = {}
+    marry_with:     marry_struct     = marry_struct()
     achievments:    peer_achievments = peer_achievments()
-    nickname:       str = "" # [id1|Пашок]
 
 
 class User(msgspec.Struct, omit_defaults=True):

@@ -26,7 +26,7 @@ async def marry(event: Message, peer_obj: PeerObject, params: list[User]):
         else:
             await event.answer("🚫Вы уже запросили брак.\nНельзя подавать несколько запросов!")
             return
-    if not marry_user.peers[speer_id].marry_with:
+    if not marry_user.peers[speer_id].marry_with.partner:
         pend_req = marriage_pending(
                 user1 = event.from_id,
                 user2 =  marry_user.id,

@@ -122,8 +122,14 @@ async def handle_marry(event: Message, peer_obj: PeerObject) -> None:
         if event.payload == '{"marriage":true}':
             spid = str(pid)
 
-            u1.peers[spid].marry_with = u2.id
-            u2.peers[spid].marry_with = u1.id
+            u1_marry = u1.peers[spid].marry_with
+            u2_marry = u2.peers[spid].marry_with
+
+            u1_marry.partner = u2.id
+            u1_marry.start_date = event.date
+            u2_marry.partner = u1.id
+            u2_marry.start_date = event.date
+            
             await u1.save()
             await u2.save()
 
