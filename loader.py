@@ -15,7 +15,7 @@ logger = lh.logger
 peers_folder = SyncPath(PEERS_DEFAULT_FOLDER)
 peers_folder.mkdir(exist_ok=True)
 
-tz = timezone(timedelta(hours=3), name='МСК')
+tz = timezone(timedelta(hours=3), name='МСК') # UTC + 3H
 TIME_FORMAT = "%d.%m.%y %H:%M:%S"
 
 bot = Bot(token=BOT_TOKEN)
@@ -26,7 +26,7 @@ task_manager = TaskManager()
 # functions execution logging
 if DEBUG_STATUS:
     from anyio import Path
-    from vkbottle.tools.dev.mini_types.base import BaseMessageMin
+    from vkbottle.bot import Message
 
     Path.write_bytes = lh.listen_func(Path.write_bytes)
-    BaseMessageMin.answer = lh.listen_func(BaseMessageMin.answer)
+    Message.answer = lh.listen_func(Message.answer)

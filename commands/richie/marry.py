@@ -11,8 +11,6 @@ from vkbottle.bot import Message
 
 
 async def marry(event: Message, peer_obj: PeerObject, params: list[User]):
-    marry_user = params[0]
-    speer_id = str(event.peer_id)
     are_already_in = [
         pending
         for pending in peer_obj.data.marriages.marriages_pending
@@ -26,16 +24,23 @@ async def marry(event: Message, peer_obj: PeerObject, params: list[User]):
         else:
             await event.answer("🚫Вы уже запросили брак.\nНельзя подавать несколько запросов!")
             return
-    if not marry_user.peers[speer_id].marry_with.partner:
+    speer_id = str(event.peer_id)
+    caller = await get_user(event.from_id, event.peer_id)
+    if caller.peers[speer_id].marry_with.partner:
+        await event.answer("🚫Вы уже находитесь в браке!")
+        return
+    marry_user = params[0]
+    if marry_user.peers[speer_id].marry_with.partner:
+        await event.answer("😢Пользователь уже состоит в браке!")
+    else:
         pend_req = marriage_pending(
-                user1 = event.from_id,
-                user2 =  marry_user.id,
-                offer_start_date = event.date
-            )
+            user1 = event.from_id,
+            user2 =  marry_user.id,
+            offer_start_date = event.date
+        )
         peer_obj.data.marriages.marriages_pending.append(
             pend_req
         )
-        caller = await get_user(event.from_id, event.peer_id)
         if not (u1_nick := caller.peers[speer_id].nickname):
             u1_nick = await methods.display_nicknames(caller.id, 'ins')
         u2_nick = marry_user.get_nickname(speer_id)
@@ -46,5 +51,3 @@ async def marry(event: Message, peer_obj: PeerObject, params: list[User]):
         """), keyboard=marry_keyboard)
 
         bot.loop.create_task(check_marry(event.peer_id, marry_timeout, pend_req))
-    else:
-        await event.answer("😢Пользователь уже состоит в браке!")

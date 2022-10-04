@@ -32,10 +32,10 @@ async def invite_event(event: Message, peer_obj: PeerObject) -> None:
         if action.member_id == -group_id:
             logger.info("BOT INVITED",id=event.peer_id)
             await event.answer(textwrap.dedent("""
-            👋Всем привет! Я - Ричи, чатбот созданный для удобного администрирования бесед ВКонтакте! 
-            (не забудьте назначить бота администратором беседы, иначе он не работает)
-            Список команд - https://vk.com/@richie_bot-richi-komandy-ver3
-            Или используйте "ричи команды"
+                👋Всем привет! Я - Ричи, чатбот созданный для удобного администрирования бесед ВКонтакте! 
+                (не забудьте назначить бота администратором беседы, иначе он не работает)
+                Список команд - https://vk.com/@richie_bot-richi-komandy-ver3
+                Или используйте "ричи команды"
             """))
         else:
             if greeting := peer_obj.data.greeting:
@@ -122,14 +122,12 @@ async def handle_marry(event: Message, peer_obj: PeerObject) -> None:
         if event.payload == '{"marriage":true}':
             spid = str(pid)
 
-            u1_marry = u1.peers[spid].marry_with
-            u2_marry = u2.peers[spid].marry_with
+            u1_marry_obj = u1.peers[spid].marry_with
+            u2_marry_obj = u2.peers[spid].marry_with
 
-            u1_marry.partner = u2.id
-            u1_marry.start_date = event.date
-            u2_marry.partner = u1.id
-            u2_marry.start_date = event.date
-            
+            u1_marry_obj.partner,    u2_marry_obj.partner    = u2.id, u1.id
+            u1_marry_obj.start_date, u2_marry_obj.start_date = event.date, event.date
+
             await u1.save()
             await u2.save()
 
