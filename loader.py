@@ -1,4 +1,4 @@
-from handlers import LoggingHandler
+from settings import LoggingHandler
 from vkbottle.bot import Bot
 from vkbottle import CtxStorage
 

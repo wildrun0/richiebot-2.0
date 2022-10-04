@@ -5,7 +5,6 @@ from vkbottle.bot import Message
 
 import commands
 import methods
-from datatypes.peer import PeerClass
 from datatypes import PeerObject, user
 from loader import bot, logger
 from methods import decorators
@@ -100,6 +99,42 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
         await event.answer("Команда есть. Не реализована.")
     else:
         await adm_func(event, peer_obj, command_args)
+
+
+@bot.on.chat_message(payload=[{"marriage": True}, {"marriage": False}])
+@decorators.peer_manager
+async def handle_marry(event: Message, peer_obj: PeerObject) -> None:
+    user2_candidate = event.from_id
+    pending_list = [
+        pending 
+        for pending in peer_obj.data.marriages.marriages_pending 
+        if pending.user2 == user2_candidate
+    ]
+    if not pending_list:
+        return
+    else:
+        pending = pending_list[0]
+        peer_obj.data.marriages.marriages_pending.remove(pending)
+        pid = event.peer_id
+
+        u1 = await user.get_user(pending.user1, pid)
+        u2 = await user.get_user(user2_candidate, pid)
+        if event.payload == '{"marriage":true}':
+            spid = str(pid)
+
+            u1.peers[spid].marry_with = u2.id
+            u2.peers[spid].marry_with = u1.id
+            await u1.save()
+            await u2.save()
+
+            await event.answer(textwrap.dedent(f"""
+                {u1.get_nickname(spid)} и {u2.get_nickname(spid)} теперь в браке!
+            """))
+        else:
+            await event.answer(textwrap.dedent(f"""
+                {u1.get_nickname(pid)}, {u2.get_nickname(pid)} отказался от свадьбы.
+                Не судьба...
+            """))
 
 
 @bot.on.chat_message()

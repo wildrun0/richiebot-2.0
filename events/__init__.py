@@ -1,2 +1,2 @@
 import rules
-from .message_events import *
+from .peer_messages import *

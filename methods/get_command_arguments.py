@@ -38,6 +38,7 @@ async def get_command_arguments(
                         user != BOT_ID):
                         args[index] = await get_user(user, peer_object.peer_id)
                     else:
+                        if user == BOT_ID: return command, [None]
                         args[index] = None
             for enum, i in enumerate(args):
                 if i == "id" or i == 'club':
@@ -49,6 +50,7 @@ async def get_command_arguments(
                         id != BOT_ID):
                         args[enum] = await get_user(id, peer_object.peer_id)
                     else:
+                        if id == BOT_ID: return command, [None]
                         args[enum] = None
             have_user = any(isinstance(val, User) for val in args)
             if not have_user and (URL_UID_REGEX in command or UID_REGEX in command):

@@ -1,5 +1,6 @@
 from datatypes import PeerObject, User
-from methods import get_group_id, get_user_id
+from methods.get_group_id import get_group_id
+from methods.get_user_id import get_user_id
 from vkbottle import VKAPIError
 from vkbottle.bot import Message
 
