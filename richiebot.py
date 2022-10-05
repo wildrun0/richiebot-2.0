@@ -2,8 +2,5 @@
 from loader import bot
 import events
 
-def main():
+if __name__ == '__main__':
     bot.run_forever()
-
-if __name__=='__main__':
-    main()

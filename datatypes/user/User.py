@@ -45,6 +45,16 @@ class peers_struct(msgspec.Struct, omit_defaults=True):
     achievments:    peer_achievments = peer_achievments()
 
 
+    def get_strength(self) -> int:
+        total_power = 0
+        inv_items = self.economic.inventory
+        for prop_name in inv_items.__struct_fields__:
+            prop = getattr(inv_items, prop_name)
+            if prop != None:
+                total_power += prop.dmg
+        return total_power
+
+
 class User(msgspec.Struct, omit_defaults=True):
     name:       str = "" # [id1|Павел Дуров]
     sex:        int = 0  # 0 = не указан, 1 - жен, 2 - муж.
@@ -66,6 +76,7 @@ class User(msgspec.Struct, omit_defaults=True):
     
     def get_peer(self, peer_id: str|int) -> peers_struct:
         return self.peers[str(peer_id)]
+
 
 
 users_folder = SyncPath(PEERS_DEFAULT_FOLDER, DEFAULT_FOLDER)

@@ -33,11 +33,12 @@ class TaskManager:
             logger.debug(f"Now sleep for {sleep_time} s.", id=__name__)
             await sleep(sleep_time)
             await give_benefits()
+            logger.info(f"Раздача пособий", id=__name__)
 
 
     async def onshutdown():
         from datatypes import User
-        logger.warning("Shutting down...", id=__name__)
+        logger.warning("Shutting down...")
         for obj in ctx_storage.storage.values():
             if isinstance(obj, User):
                 # убираем тайм-ауты, т.к. ключи являются хэшами
@@ -45,7 +46,7 @@ class TaskManager:
                 for peer_instance in obj.peers.values():
                     peer_instance.timeouts.clear()
             await obj.save()
-        logger.info("BYE :'(", id=__name__)
+        logger.info("BYE :'(")
 
 
     lw.on_startup.append(run_backups())
