@@ -2,6 +2,7 @@ from pathlib import Path as SyncPath
 
 import msgspec
 from anyio import Path
+from datatypes.clan import Inventory
 from settings.config import PEERS_DEFAULT_FOLDER
 
 NAME_TEMPLATE = "[%s%d|%s %s]"
@@ -33,6 +34,7 @@ class peers_struct(msgspec.Struct, omit_defaults=True):
     total_warns:    int = 0
     photos_sent:    int = 0
     timeouts:       dict[str, timeout_struct] = {}
+    inventory:      Inventory        = Inventory()
     marry_with:     marry_struct     = marry_struct()
     achievments:    peer_achievments = peer_achievments()
 

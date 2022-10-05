@@ -46,7 +46,6 @@ default_commands_notfull = {
 
     f"ричи баланс\s?{UID_REGEX}?":              commands.economy.balance,
     # -- done --
-    f"ричи инвентарь\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":           commands.economy.inventory,
     f"ричи передать (\d+)\s?(?:ричсонов|ричкоинов)?{UID_REGEX}?":   commands.economy.transfer_richiecoins,
 
     f"ричи дуэль\s?с?\s?{UID_REGEX}":commands.clan.solo_duel,
@@ -77,6 +76,7 @@ default_commands_full = {
 
     "ричи магазин":                 commands.economy.shop,
     "ричи топ":                     commands.economy.top,
+    "ричи инвентарь":               commands.economy.inventory,
     "ричи нужно пособие":           commands.economy.benefit,
 
     "ричи рандом дуэль":            commands.clan.random_solo_duel,

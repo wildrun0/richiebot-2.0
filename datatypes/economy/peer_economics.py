@@ -1,7 +1,7 @@
 import msgspec
-from datatypes.economy import shop_item
+from datatypes.clan import Weapon
 
 
 class economic_struct(msgspec.Struct, omit_defaults = True):
     benefit:    int = 0
-    shop_items: list[shop_item] = []
+    shop_items: list[Weapon] = []

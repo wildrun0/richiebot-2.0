@@ -64,8 +64,8 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
             command_args[index] = await user.get_user(onreply.from_id, event.peer_id)
         else: 
             if (None in command_args) and (
-            (not (def_func is commands.economy.balance))
-            ):return
+            # Нужно получать сырые id т.к. их нет в беседе
+            (not (def_func is commands.economy.balance))): return
     if isinstance(def_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")
     else:
