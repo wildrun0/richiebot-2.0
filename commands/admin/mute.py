@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from datatypes import PeerObject, User
+from datatypes.peer import mute_struct
 from loader import TIME_FORMAT, tz
 from vkbottle.bot import Message
 
@@ -21,17 +22,14 @@ async def mute(event: Message, peer_obj: PeerObject, params: tuple[User, int, st
         await event.answer("🚫Нельзя замьютить админа!")
         return
     if len(peer_obj.data.mute) > 0:
-        mute_users, mute_lasting = zip(*peer_obj.data.mute)
-        if (muted_id := to_mute.id) in mute_users:
-            index = mute_users.index(muted_id)
-            user_mute = mute_lasting[index]
-            if event.date < user_mute:
+        muted_user = [muted for muted in peer_obj.data.mute if muted.user == to_mute.id]
+        if muted_user:
+            muted_obj = muted_user[0]
+            if event.date < muted_obj.unmute_date:
                 await event.answer("🚫Пользователь уже в муте!")
                 return
             else:
-                peer_obj.data.mute.remove(
-                    (muted_id, user_mute)
-                )
+                peer_obj.data.mute.remove(muted_obj)
     unmute_date_timestamp = int(unmute_date_multiplier) * time_seconds[unmute_date_timedelta]
     unmute_date = event.date + unmute_date_timestamp
     try:
@@ -39,7 +37,9 @@ async def mute(event: Message, peer_obj: PeerObject, params: tuple[User, int, st
     except OSError:
         await event.answer("🚫Указан неправильный срок мута!")
         return
-    peer_obj.data.mute.append((to_mute.id, unmute_date))
+    peer_obj.data.mute.append(
+        mute_struct(to_mute.id, unmute_date)
+    )
     await peer_obj.save()
     usr_nickname = to_mute.get_nickname(event.peer_id)
     await event.answer(f"{usr_nickname} замьючен{'a' if to_mute.sex == 1 else ''} до {unmute_date_humanized}")

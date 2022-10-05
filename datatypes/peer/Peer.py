@@ -1,5 +1,5 @@
 import msgspec
-from datatypes.economy import economic_struct
+from datatypes.clan import Weapon
 
 
 class warns_struct(msgspec.Struct, omit_defaults=True):
@@ -42,6 +42,21 @@ class commands_timeouts_struct(msgspec.Struct, omit_defaults=True):
     duel:    int = 300
 
 
+class mute_struct(msgspec.Struct):
+    user:        int
+    unmute_date: int
+
+
+class ban_info_struct(msgspec.Struct):
+    banned_by:    int
+    ban_time_str: str
+
+
+class ban_struct(msgspec.Struct):
+    banned_uid: int
+    ban_info:   ban_info_struct
+
+
 class PeerClass(msgspec.Struct, omit_defaults=True):
     owner_id:           int|None = None
     greeting:           str|None = None
@@ -50,11 +65,11 @@ class PeerClass(msgspec.Struct, omit_defaults=True):
     users:              list[int] = []
     benefiters:         list[int] = []
     clans:              dict[str, dict]  = {}
-    ban_list:           dict[str, tuple[int, str]] = {}
+    ban_list:           list[ban_struct] = []
     commands_timeouts:  commands_timeouts_struct = commands_timeouts_struct()
     marriages:          marriages_struct         = marriages_struct()
     voteban:            voteban_struct           = voteban_struct()
     warns:              warns_struct             = warns_struct()
-    economic:           economic_struct          = economic_struct()
+    shop:               list[Weapon]             = []
     last_kicked:        list[int]                = []
-    mute:               list[tuple[int, int]]    = []
+    mute:               list[mute_struct]        = []

@@ -20,8 +20,8 @@ async def unban(event: Message, peer_obj: PeerObject, param: tuple[None|User, st
             except Exception as e:
                 raw_id = await get_group_id(raw_id)
         except: return
-    if (banned_id := str(raw_id)) in peer_obj.data.ban_list:
-        peer_obj.data.ban_list.pop(banned_id)
+    if (ban := [ban for ban in peer_obj.data.ban_list if ban.banned_uid == raw_id]):
+        peer_obj.data.ban_list.remove(ban[0])
         await peer_obj.save()
         await event.answer("✅Пользователь разбанен!")
     else:

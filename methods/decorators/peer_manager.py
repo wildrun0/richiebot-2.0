@@ -36,7 +36,7 @@ def peer_manager(func):
         if event.action:
             member_id = event.action.member_id
             if event.action.type != MessagesMessageActionStatus.CHAT_KICK_USER:
-                if peer_obj.data.ban_list.get(str(member_id)):
+                if [ban for ban in peer_obj.data.ban_list if ban.banned_uid == member_id]:
                     try:
                         await event.ctx_api.messages.remove_chat_user(
                             chat_id = event.chat_id,

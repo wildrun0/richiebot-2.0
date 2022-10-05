@@ -1,13 +1,13 @@
-from vkbottle.bot import Message
 from datatypes import PeerObject
+from vkbottle.bot import Message
 
 
 async def muted(event: Message, peer_obj: PeerObject) -> bool:
-    if event.from_id in [mute_tuple[0] for mute_tuple in peer_obj.data.mute]:
-        usr_mute_pos = [i for i, v in enumerate(peer_obj.data.mute) if v[0] == event.from_id][0]
-        timeout = peer_obj.data.mute[usr_mute_pos][1]
-        if event.date > timeout:
-            del peer_obj.data.mute[usr_mute_pos]
+    muted = [muted for muted in peer_obj.data.mute if muted.user == event.from_id]
+    if muted:
+        mute_obj = muted[0]
+        if event.date > mute_obj.unmute_date:
+            del peer_obj.data.mute[mute_obj]
             await peer_obj.save()
             return False
         else:
