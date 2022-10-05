@@ -44,8 +44,8 @@ default_commands_notfull = {
     f"ричи инфа\s?{CATCH_ALL_REGEX}":           commands.richie.infa,
     f"ричи свадьба\s?с?\s?{UID_REGEX}?":        commands.richie.marry,
 
+    f"ричи баланс\s?{UID_REGEX}?":              commands.economy.balance,
     # -- done --
-    f"ричи баланс\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":              commands.economy.balance,
     f"ричи инвентарь\s?(?:{UID_REGEX}|{URL_UID_REGEX})?":           commands.economy.inventory,
     f"ричи передать (\d+)\s?(?:ричсонов|ричкоинов)?{UID_REGEX}?":   commands.economy.transfer_richiecoins,
 

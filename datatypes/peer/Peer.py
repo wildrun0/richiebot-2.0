@@ -1,4 +1,5 @@
 import msgspec
+from datatypes.economy import economic_struct
 
 
 class warns_struct(msgspec.Struct, omit_defaults=True):
@@ -53,5 +54,6 @@ class PeerClass(msgspec.Struct, omit_defaults=True):
     marriages:          marriages_struct         = marriages_struct()
     voteban:            voteban_struct           = voteban_struct()
     warns:              warns_struct             = warns_struct()
+    economic:           economic_struct          = economic_struct()
     last_kicked:        list[int]                = []
     mute:               list[tuple[int, int]]    = []

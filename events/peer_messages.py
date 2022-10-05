@@ -55,6 +55,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
             bot_commands.all_commands_notfull, 
             event.text, peer_obj
         )
+        def_func = bot_commands.default_commands_notfull[command_name]
         if onreply := event.reply_message:
             index = 0
             for enum, i in enumerate(command_args):
@@ -62,8 +63,9 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
                     index = enum
             command_args[index] = await user.get_user(onreply.from_id, event.peer_id)
         else: 
-            if None in command_args: return
-        def_func = bot_commands.default_commands_notfull[command_name]
+            if (None in command_args) and (
+            (not (def_func is commands.economy.balance))
+            ):return
     if isinstance(def_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")
     else:

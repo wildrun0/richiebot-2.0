@@ -1,6 +1,8 @@
 # ![richiebot logo](http://109.200.123.70/files/richiebot/pic_logo.png) richiebot-2.0
 Вторая итерация бота Ричи
 
+Прогресс/Статус разработки можно [посмотреть в TODO.md](todo.md)
+
 Версия Python - `3.10+`
 
 Используемые библиотеки: 

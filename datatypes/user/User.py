@@ -27,6 +27,7 @@ class marry_struct(msgspec.Struct, omit_defaults=True):
 class peers_struct(msgspec.Struct, omit_defaults=True):
     peer_join_date: str
     nickname:       str = "" # [id1|Пашок]
+    balance:        int = 0
     voice_messages: int = 0
     total_messages: int = 0
     total_warns:    int = 0
