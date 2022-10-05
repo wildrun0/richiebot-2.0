@@ -45,9 +45,10 @@ default_commands_notfull = {
     f"ричи свадьба\s?с?\s?{UID_REGEX}?":        commands.richie.marry,
 
     f"ричи баланс\s?{UID_REGEX}?":              commands.economy.balance,
+    f"^р б\s?{UID_REGEX}?$":                    commands.economy.balance,
     f"ричи передать (\d+)\s?(?:ричсонов|ричкоинов)?{UID_REGEX}?":   commands.economy.transfer_richiecoins,
-    # -- done --
 
+    # -- done --
     f"ричи дуэль\s?с?\s?{UID_REGEX}":commands.clan.solo_duel,
     "ричи создать клан":            commands.clan.create,
     "ричи завербовать":             commands.clan.invite,

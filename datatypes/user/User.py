@@ -38,6 +38,7 @@ class peers_struct(msgspec.Struct, omit_defaults=True):
     total_messages: int = 0
     total_warns:    int = 0
     photos_sent:    int = 0
+    benefit:        bool = False
     timeouts:       dict[str, timeout_struct] = {}
     economic:       economic_struct  = economic_struct()
     marry_with:     marry_struct     = marry_struct()
@@ -48,6 +49,7 @@ class User(msgspec.Struct, omit_defaults=True):
     name:       str = "" # [id1|Павел Дуров]
     sex:        int = 0  # 0 = не указан, 1 - жен, 2 - муж.
     id:         int = 0  # 320750004
+    stamina:    float = 10.0
     peers:      dict[str, peers_struct] = {}
 
 

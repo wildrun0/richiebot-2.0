@@ -48,6 +48,7 @@ class PeerClass(msgspec.Struct, omit_defaults=True):
     rules:              str|None = None
     admins:             list[int] = []
     users:              list[int] = []
+    benefiters:         list[int] = []
     clans:              dict[str, dict]  = {}
     ban_list:           dict[str, tuple[int, str]] = {}
     commands_timeouts:  commands_timeouts_struct = commands_timeouts_struct()

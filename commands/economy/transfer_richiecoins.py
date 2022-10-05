@@ -16,7 +16,7 @@ async def transfer_richiecoins(event: Message, peer_obj: PeerObject, params: tup
     if amount > me_peer.economic.balance:
         await event.answer(f"У вас недостаточно средств для передачи! ({me_peer.economic.balance}<{amount})")
     else:
-        me_peer.economic.balance = me_peer.economic.balance - amount
+        me_peer.economic.balance -= amount
         to_user.peers[str(event.peer_id)].economic.balance += amount
 
         me_nick = me.get_nickname(event.peer_id)

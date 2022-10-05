@@ -1,10 +1,13 @@
-import logging
 import configparser
+import logging
 
 DEFAULT_SETTINGS_FILE = "settings.ini"
 
 config = configparser.ConfigParser()
 config.read(DEFAULT_SETTINGS_FILE)
+
+BENEFIT_AMOUNT = 100
+
 
 if not config.sections():
     config.add_section("SETTINGS")
