@@ -18,8 +18,8 @@ async def set_nickname(event: Message, peer_obj: PeerObject, params: list[str]) 
         elif re.search(WEB_URL_REGEX, nickname_candidate.replace(' ',''), re.IGNORECASE):
             await event.answer("🚫Нельзя указывать URL-ссылки в кличке!")
         else:
-            nickname_id = NAME_TEMPLATE % ("club" if user.id < 0 else "id", user.id, nickname_candidate, '')
-            user.peers[str(peer_obj.peer_id)].nickname = nickname_id[0:-2]+"]"
+            nickname_id = NAME_TEMPLATE % ("club" if user.id < 0 else "id", user.id, '', nickname_candidate)
+            user.peers[str(peer_obj.peer_id)].nickname = nickname_id
             await user.save()
             await event.answer(
                 f"{user.get_nickname(event.peer_id)}, ✅Кличка добавлена", disable_mentions=True

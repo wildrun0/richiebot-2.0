@@ -21,6 +21,7 @@ adm_commands = (
 )
 logger.debug(f"Regex ({FULL_COMMAND_REGEX}) set for 'full' commands")
 
+
 @bot.on.chat_message(action=["chat_invite_user", "chat_kick_user"])
 @decorators.peer_manager
 async def invite_event(event: Message, peer_obj: PeerObject) -> None:
@@ -64,7 +65,6 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
             command_args[index] = await user.get_user(onreply.from_id, event.peer_id)
         else: 
             if (None in command_args) and (
-            # Нужно получать сырые id т.к. их нет в беседе
             (not (def_func is commands.economy.balance))): return
     if isinstance(def_func, ModuleType):
         await event.answer("Команда есть. Не реализована.")
@@ -121,6 +121,7 @@ async def handle_marry(event: Message, peer_obj: PeerObject) -> None:
 
         u1 = await user.get_user(pending.user1, pid)
         u2 = await user.get_user(user2_candidate, pid)
+        u1_nick, u2_nick = u1.get_nickname(pid), u2.get_nickname(pid)
         if event.payload == '{"marriage":true}':
             spid = str(pid)
 
@@ -134,11 +135,11 @@ async def handle_marry(event: Message, peer_obj: PeerObject) -> None:
             await u2.save()
 
             await event.answer(textwrap.dedent(f"""
-                {u1.get_nickname(spid)} и {u2.get_nickname(spid)} теперь в браке!
+                {u1_nick} и {u2_nick} теперь в браке!
             """))
         else:
             await event.answer(textwrap.dedent(f"""
-                {u1.get_nickname(pid)}, {u2.get_nickname(pid)} отказался от свадьбы.
+                {u1_nick}, {u2_nick} отказался от свадьбы.
                 Не судьба...
             """))
 

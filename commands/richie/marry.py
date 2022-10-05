@@ -26,7 +26,8 @@ async def marry(event: Message, peer_obj: PeerObject, params: list[User]):
             return
     speer_id = str(event.peer_id)
     caller = await get_user(event.from_id, event.peer_id)
-    if caller.peers[speer_id].marry_with.partner:
+    caller_peer = caller.get_peer(speer_id)
+    if caller_peer.marry_with.partner:
         await event.answer("🚫Вы уже находитесь в браке!")
         return
     marry_user = params[0]
@@ -41,7 +42,7 @@ async def marry(event: Message, peer_obj: PeerObject, params: list[User]):
         peer_obj.data.marriages.marriages_pending.append(
             pend_req
         )
-        if not (u1_nick := caller.peers[speer_id].nickname):
+        if not (u1_nick := caller_peer.nickname):
             u1_nick = await methods.display_nicknames(caller.id, 'ins')
         u2_nick = marry_user.get_nickname(speer_id)
 

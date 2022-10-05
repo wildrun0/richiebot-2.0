@@ -6,7 +6,7 @@ from vkbottle.bot import Message
 
 async def balance(event: Message, peer_obj: PeerObject, param: list[User|None]):
     balance_user = param[0] or await get_user(event.from_id, event.peer_id)
-    balance = balance_user.peers[str(event.peer_id)].balance
+    balance = balance_user.peers[str(event.peer_id)].economic.balance
     if balance_user.id == event.from_id:
         await event.answer(f"Ваш баланс составляет: {display_coins(balance)}")
     else:

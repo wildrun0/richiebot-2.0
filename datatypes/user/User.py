@@ -25,16 +25,21 @@ class marry_struct(msgspec.Struct, omit_defaults=True):
     start_date: int|None = None
 
 
+class economic_struct(msgspec.Struct, omit_defaults=True):
+    balance:   int       = 0
+    exp:       int       = 0
+    inventory: Inventory = Inventory()
+
+
 class peers_struct(msgspec.Struct, omit_defaults=True):
     peer_join_date: str
     nickname:       str = "" # [id1|Пашок]
-    balance:        int = 0
     voice_messages: int = 0
     total_messages: int = 0
     total_warns:    int = 0
     photos_sent:    int = 0
     timeouts:       dict[str, timeout_struct] = {}
-    inventory:      Inventory        = Inventory()
+    economic:       economic_struct  = economic_struct()
     marry_with:     marry_struct     = marry_struct()
     achievments:    peer_achievments = peer_achievments()
 
@@ -55,6 +60,10 @@ class User(msgspec.Struct, omit_defaults=True):
         if peer_nickname := self.peers[str(peer_id)].nickname:
             return peer_nickname
         else: return self.name
+    
+    
+    def get_peer(self, peer_id: str|int) -> peers_struct:
+        return self.peers[str(peer_id)]
 
 
 users_folder = SyncPath(PEERS_DEFAULT_FOLDER, DEFAULT_FOLDER)
