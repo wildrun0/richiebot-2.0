@@ -7,7 +7,7 @@ config = configparser.ConfigParser()
 config.read(DEFAULT_SETTINGS_FILE)
 
 BENEFIT_AMOUNT = 100
-
+BENEFIT_TIME_H = 12
 
 if not config.sections():
     config.add_section("SETTINGS")
