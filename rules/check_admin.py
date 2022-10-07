@@ -1,11 +1,12 @@
 import textwrap
-from vkbottle.bot import Message
-from vkbottle.dispatch.rules import ABCRule
+
+from commands.admin import renew_users_list
 from datatypes import PeerObject
+from loader import bot
 from methods import decorators
 from settings import bot_commands
-from commands.admin import renew_users_list
-from loader import bot
+from vkbottle.bot import Message
+from vkbottle.dispatch.rules import ABCRule
 
 
 class IsAdmin(ABCRule[Message]):

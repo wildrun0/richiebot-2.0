@@ -6,18 +6,19 @@ from settings.config import BENEFIT_AMOUNT
 
 str_benefit_amount = display_coins(BENEFIT_AMOUNT)
 async def give_benefits():
-    for peer_obj in filter(lambda x: isinstance(x, PeerObject), ctx_storage.storage.values()):
-        peer_id = peer_obj.peer_id
-        speer_id = str(peer_id)
-        peer_benefiters = peer_obj.data.benefiters
-        for uid in peer_benefiters:
-            usr = await get_user(uid, peer_id)
-            usr.peers[speer_id].economic.balance += BENEFIT_AMOUNT
-            await usr.save()
-            logger.debug(f"{uid} получил пособие", id=peer_id)
-        if peer_benefiters:
-            await bot.api.messages.send(
-                peer_id = peer_id,
-                random_id = 0,
-                message = f"{len(peer_benefiters)} человек получило пособие в размере {str_benefit_amount}!"
-            )
+    for peer_obj in ctx_storage.storage.values():
+        if isinstance(PeerObject, peer_obj):
+            peer_id = peer_obj.peer_id
+            speer_id = str(peer_id)
+            peer_benefiters = peer_obj.data.benefiters
+            for uid in peer_benefiters:
+                usr = await get_user(uid, peer_id)
+                usr.peers[speer_id].economic.balance += BENEFIT_AMOUNT
+                await usr.save()
+                logger.debug(f"{uid} получил пособие", id=peer_id)
+            if peer_benefiters:
+                await bot.api.messages.send(
+                    peer_id = peer_id,
+                    random_id = 0,
+                    message = f"{len(peer_benefiters)} человек получило пособие в размере {str_benefit_amount}!"
+                )

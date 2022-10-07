@@ -7,16 +7,16 @@ from vkbottle.bot import Message
 
 online_status = {
     6121396: "📱VK Admin",
-    6287487: "🖥️vk.com",
     2685278: "📱Kate Mobile",
-    4083558: "VFeed",
-    3140623: "iOS",
+    4083558: "📱VFeed",
+    3140623: "📱iOS",
     2274003: "📱Android",
-    3682744: "iPad",
-    3697615: "🖥️Windows (ПК)",
+    3682744: "📱iPad",
     3502557: "📱Windows Phone",
+    6287487: "🖥️vk.com",
+    3697615: "🖥️Windows (ПК)",
+    None:    "🖥️ПК",
     3116505: "⚙️VK API",
-    None:    "🖥️ПК"
 }
 
 

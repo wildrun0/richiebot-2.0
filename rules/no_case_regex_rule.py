@@ -1,5 +1,6 @@
 import re
 from typing import Pattern
+
 from loader import bot
 from vkbottle.bot import Message
 from vkbottle.dispatch.rules import ABCRule

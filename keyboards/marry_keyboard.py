@@ -1,6 +1,5 @@
 from vkbottle import Keyboard, KeyboardButtonColor, Text
 
-
 marry_keyboard = (
     Keyboard(one_time=False, inline=True)
     .add(Text("Да!!!", payload={"marriage": True}),

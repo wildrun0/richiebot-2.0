@@ -1,6 +1,7 @@
 from asyncio import sleep
 from datetime import datetime
 
+from datatypes import PeerObject
 from loader import bot, ctx_storage, logger
 from settings.config import BACKUP_TIME, BENEFIT_TIME_H
 
@@ -10,9 +11,32 @@ backupmanager = BackupManger()
 lw = bot.loop_wrapper
 
 class TaskManager:
-    @lw.interval(seconds=3600) # every hour scanning for backups
+    @lw.interval(hours=1) # every hour scanning for backups
     async def run_backups():
         await backupmanager.check_for_backup(frequency=BACKUP_TIME)
+
+
+    # @lw.timer(seconds=10)
+    @lw.interval(hours=2)
+    async def cleanup_msgs():
+        """
+        Очищаем из бесед сообщения, которым больше одной недели
+        """
+        curr_timestamp = datetime.timestamp(datetime.now())
+        for obj in ctx_storage.storage.values():
+            if isinstance(obj, PeerObject):
+                peer_msgs = obj.messages.data.users
+                total_removed = 0 
+                for user in peer_msgs.values():
+                    outdated_msgs = [
+                        message 
+                        for message in user.messages 
+                        if (curr_timestamp - message.date) >= 604800
+                    ]
+                    total_removed += len(outdated_msgs)
+                    user.messages = [m for m in user.messages if m not in outdated_msgs]
+                logger.debug(f"Removed {total_removed} msgs", id=obj.peer_id)
+                total_removed and await obj.save()
 
 
     async def calc_benefit_time():

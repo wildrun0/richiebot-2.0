@@ -1,6 +1,5 @@
 import msgspec
 from datatypes.clan import Weapon
-from datatypes.clan.weapons import WeaponType
 
 
 class Inventory(msgspec.Struct, omit_defaults=True):

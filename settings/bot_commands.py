@@ -40,8 +40,9 @@ administrative_commands_full = {
 default_commands_notfull = {
     f"ричи кто\s?{CATCH_ALL_REGEX}":            commands.richie.who,
     f"ричи кого\s?{CATCH_ALL_REGEX}":           commands.richie.who,
+
     f"ричи добавить кличку {CATCH_ALL_REGEX}":  commands.richie.set_nickname,
-    f"ричи инфа\s?{CATCH_ALL_REGEX}":           commands.richie.infa,
+    f"ричи инфа\s?{CATCH_ALL_REGEX}?":          commands.richie.infa,
     f"ричи свадьба\s?с?\s?{UID_REGEX}?":        commands.richie.marry,
 
     f"ричи баланс\s?{UID_REGEX}?":              commands.economy.balance,
@@ -52,10 +53,13 @@ default_commands_notfull = {
     # -- done --
     f"ричи дуэль\s?с?\s?{UID_REGEX}":commands.clan.solo_duel,
     "ричи создать клан":            commands.clan.create,
+
     "ричи завербовать":             commands.clan.invite,
     "ричи пригласить":              commands.clan.invite,
+
     "ричи повысить":                commands.clan.status_up,
     "ричи понизить":                commands.clan.status_down,
+
     "ричи выгнать":                 commands.clan.kick,
     "ричи исключить":               commands.clan.kick
 }

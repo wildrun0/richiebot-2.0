@@ -134,6 +134,9 @@ async def handle_marry(event: Message, peer_obj: PeerObject) -> None:
             await u1.save()
             await u2.save()
 
+            peer_obj.data.marriages.couples.append([u1.id, u2.id])
+            await peer_obj.save()
+
             await event.answer(textwrap.dedent(f"""
                 {u1_nick} и {u2_nick} теперь в браке!
             """))

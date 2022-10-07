@@ -27,14 +27,12 @@ class marriage_pending(msgspec.Struct):
 class marriages_struct(msgspec.Struct, omit_defaults=True):
     marriages_timeout:  int = 180
     marriages_pending:  list[marriage_pending] = []
-    couples:            list[int] = []
+    couples:            list[tuple[int, int]] = []
 
 
 class commands_timeouts_struct(msgspec.Struct, omit_defaults=True):
     clan_duel:int = 300
     roulette:int = 300
-    who:     int = 300
-    infa:    int = 300
     kosti:   int = 300
     casino:  int = 300
     song:    int = 300
