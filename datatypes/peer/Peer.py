@@ -1,5 +1,5 @@
 import msgspec
-from datatypes.clan import Weapon
+from datatypes.economy import ShopItem
 
 
 class warns_struct(msgspec.Struct, omit_defaults=True):
@@ -68,6 +68,6 @@ class PeerClass(msgspec.Struct, omit_defaults=True):
     marriages:          marriages_struct         = marriages_struct()
     voteban:            voteban_struct           = voteban_struct()
     warns:              warns_struct             = warns_struct()
-    shop:               list[Weapon]             = []
+    shop:               list[ShopItem]           = []
     last_kicked:        list[int]                = []
     mute:               list[mute_struct]        = []

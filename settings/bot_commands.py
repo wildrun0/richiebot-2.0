@@ -66,7 +66,6 @@ default_commands_notfull = {
 
 default_commands_full = {
     "ричи привет":                  commands.richie.hello,
-    "ричи донат":                   commands.richie.donate,
     "ричи онлайн":                  commands.richie.online,
     "ричи об авторе":               commands.richie.about,
     "ричи актив":                   commands.richie.peer_active,
