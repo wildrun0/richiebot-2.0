@@ -4,8 +4,10 @@ import msgspec
 
 
 class WeaponType(Enum):
-    SHIELD     = "🛡️"
     SWORD      = '🗡️'
+    BOW        = '🏹'
+
+    SHIELD     = "🛡️"
     HELMET     = '⛑️'
     CHESTPLATE = '🦺'
     LEGGINGS   = "👖"
