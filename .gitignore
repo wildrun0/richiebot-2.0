@@ -2,6 +2,7 @@
 virtualenv/
 peers/
 logs/
+!events/peers
 backups/
 *.log
 settings.ini
