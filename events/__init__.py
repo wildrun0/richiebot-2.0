@@ -1,2 +1,2 @@
 import rules
-from .peer_messages import *
+from .peers import *

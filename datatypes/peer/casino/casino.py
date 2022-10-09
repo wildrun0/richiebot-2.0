@@ -1,9 +1,11 @@
 import msgspec
+from datatypes.peer.casino.casino_enum import CasinoColors
 
 
 class casino_bet(msgspec.Struct):
-    color:    str
+    color:    CasinoColors
     even_bet: bool
+    price:    int|None
 
 
 class casino_game(msgspec.Struct):

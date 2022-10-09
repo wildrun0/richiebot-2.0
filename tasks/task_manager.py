@@ -69,6 +69,10 @@ class TaskManager:
                 # которые не будут актуальны при следующем запуске
                 for peer_instance in obj.peers.values():
                     peer_instance.timeouts.clear()
+            else:
+                obj: PeerObject
+                obj.data.marriages.marriages_pending.clear()
+                obj.data.casino.game = None
             await obj.save()
         logger.info("BYE :'(")
 
