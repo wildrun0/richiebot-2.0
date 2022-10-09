@@ -24,11 +24,12 @@ async def kick(event: Message, peer_obj: PeerObject, param: list[User]):
         await event.answer("🚫Нельзя исключить админа!")
     else:
         try:
+            if uid in peer_obj.data.users:
+                peer_obj.data.users.remove(uid)
             await event.ctx_api.messages.remove_chat_user(
                 chat_id=event.chat_id,
                 member_id=uid
             )
-            peer_obj.data.users.remove(uid)
             await peer_obj.save()
             await event.answer("✅Пользователь исключен!")
         except VKAPIError[935]:

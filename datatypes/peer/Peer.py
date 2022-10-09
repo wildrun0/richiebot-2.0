@@ -1,33 +1,11 @@
 import msgspec
 from datatypes.economy import ShopItem
-
-
-class warns_struct(msgspec.Struct, omit_defaults=True):
-    max_warns: int = 5
-    users: dict[str, int] = {}
-
-
-class ban_pending(msgspec.Struct):
-    usr_to_ban: int
-    votes:      int
-    voted_users:list
-
-
-class voteban_struct(msgspec.Struct, omit_defaults=True):
-    bans_pending:   list[ban_pending] = []
-    min_ban_votes:  int = 10
-
-
-class marriage_pending(msgspec.Struct):
-    user1: int
-    user2: int
-    offer_start_date: int
-
-
-class marriages_struct(msgspec.Struct, omit_defaults=True):
-    marriages_timeout:  int = 180
-    marriages_pending:  list[marriage_pending] = []
-    couples:            list[tuple[int, int]] = []
+from datatypes.peer.bans import *
+from datatypes.peer.casino import *
+from datatypes.peer.marriages import *
+from datatypes.peer.mutes import *
+from datatypes.peer.votebans import *
+from datatypes.peer.warns import *
 
 
 class commands_timeouts_struct(msgspec.Struct, omit_defaults=True):
@@ -40,21 +18,7 @@ class commands_timeouts_struct(msgspec.Struct, omit_defaults=True):
     duel:    int = 300
 
 
-class mute_struct(msgspec.Struct):
-    user:        int
-    unmute_date: int
-
-
-class ban_info_struct(msgspec.Struct):
-    banned_by:    int
-    ban_time_str: str
-
-
-class ban_struct(msgspec.Struct):
-    banned_uid: int
-    ban_info:   ban_info_struct
-
-
+### MAIN STRUCT
 class PeerClass(msgspec.Struct, omit_defaults=True):
     owner_id:           int|None = None
     greeting:           str|None = None
@@ -68,6 +32,7 @@ class PeerClass(msgspec.Struct, omit_defaults=True):
     marriages:          marriages_struct         = marriages_struct()
     voteban:            voteban_struct           = voteban_struct()
     warns:              warns_struct             = warns_struct()
+    casino:             casino_struct            = casino_struct()
     shop:               list[ShopItem]           = []
     last_kicked:        list[int]                = []
     mute:               list[mute_struct]        = []

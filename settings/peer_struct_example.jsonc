@@ -45,5 +45,9 @@
     },
     "mute":[
         //[39717739, до скольки мут(timestamp)]
-    ]
+    ],
+    "casino":{
+        // usrs_to_start: int = 10
+        // game: dict 
+    }
 }
