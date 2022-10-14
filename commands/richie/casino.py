@@ -18,17 +18,11 @@ async def casino(event: Message, peer_obj: PeerObject, params: None):
             even_bet = bool(getrandbits(1)),
             price = None
         )
-        game = casino_game(
-            win_bet = win_bet,
-        )
-        peer_obj.data.casino.game = game
-
+        peer_obj.data.casino.game = casino_game(win_bet)
         casino_timeout = peer_obj.data.casino.playtime
-
         bot.loop.create_task(
             check_casino(event.peer_id, casino_timeout)
         )
-
         await event.answer(textwrap.dedent(f"""
         Добро пожаловать в казино!
         Принимаются ставки: черное/красное/зеленое чет/нечет *сумма*

@@ -1,15 +1,16 @@
 import textwrap
 from types import ModuleType
+from vkbottle.bot import Message
+from vkbottle_types.objects import MessagesMessageActionStatus
 
 import commands
 import methods
 from datatypes import PeerObject, user
-from events.peers import do_marriage, casino_play
+from datatypes.peer.casino import CasinoColors, casino_bet
+from events.peers import casino_play, do_marriage
 from loader import bot, logger
 from methods import decorators
 from settings import bot_commands
-from vkbottle.bot import Message
-from vkbottle_types.objects import MessagesMessageActionStatus
 
 FULL_COMMAND_REGEX = "^%s$"
 non_adm_commands = (
@@ -103,7 +104,6 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
         await adm_func(event, peer_obj, command_args)
 
 
-from datatypes.peer.casino import CasinoColors, casino_bet
 @bot.on.chat_message(payload_map=[("color", str), ("even_bet", bool), ("price", int)])
 @decorators.peer_manager
 async def handle_casino(event: Message, peer_obj: PeerObject) -> None:
