@@ -4,7 +4,7 @@ from datatypes import PeerObject, User
 async def unmute(event: Message, peer_obj: PeerObject, params: list[User]):
     user = params[0]
     uid = user.id
-    uid_in_list = [i for i in peer_obj.data.mute if uid in i]
+    uid_in_list = [i for i in peer_obj.data.mute if i.user == uid]
     if uid_in_list:
         mute_tuple = uid_in_list[0]
         peer_obj.data.mute.remove(mute_tuple)
