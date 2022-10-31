@@ -7,7 +7,8 @@ async def muted(event: Message, peer_obj: PeerObject) -> bool:
     if muted:
         mute_obj = muted[0]
         if event.date > mute_obj.unmute_date:
-            del peer_obj.data.mute[mute_obj]
+            obj_index = peer_obj.data.mute.index(mute_obj)
+            del peer_obj.data.mute[obj_index]
             await peer_obj.save()
             return False
         else:
