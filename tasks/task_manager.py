@@ -47,12 +47,20 @@ class TaskManager:
         while 1:
             curr_time = datetime.now()
             day_gap = 0 if curr_time.hour < BENEFIT_TIME_H else 1
-            elasted = datetime(
-                curr_time.year, 
-                curr_time.month, 
-                curr_time.day + day_gap, 
-                BENEFIT_TIME_H, 0, 0
-            )
+            try:
+                elasted = datetime(
+                    curr_time.year, 
+                    curr_time.month, 
+                    curr_time.day + day_gap, 
+                    BENEFIT_TIME_H, 0, 0
+                )
+            except ValueError:
+                 elasted = datetime(
+                    curr_time.year, 
+                    curr_time.month + 1, 
+                    1, 
+                    BENEFIT_TIME_H, 0, 0
+                )
             sleep_time = (elasted - curr_time).seconds
             logger.debug(f"Now sleep for {sleep_time} s.", id=__name__)
             await sleep(sleep_time)
