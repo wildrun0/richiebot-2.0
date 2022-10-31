@@ -7,7 +7,7 @@ from settings.config import BENEFIT_AMOUNT
 str_benefit_amount = display_coins(BENEFIT_AMOUNT)
 async def give_benefits():
     for peer_obj in ctx_storage.storage.values():
-        if isinstance(PeerObject, peer_obj):
+        if isinstance(peer_obj, PeerObject):
             peer_id = peer_obj.peer_id
             speer_id = str(peer_id)
             peer_benefiters = peer_obj.data.benefiters
