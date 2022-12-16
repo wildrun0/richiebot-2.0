@@ -1,4 +1,4 @@
-# ![richiebot logo](http://109.200.123.70/files/richiebot/pic_logo.png) richiebot-2.0
+richiebot-2.0
 Вторая итерация бота Ричи
 
 Прогресс/Статус разработки можно [посмотреть в TODO.md](todo.md)
@@ -19,8 +19,3 @@ msgspec - для быстрых операций с большой JSON/MSGPACK 
 
 ## richiebot.com
 Когда-то у бота присутствовал сайт, но в связи с ситуацией, дальнейшее содержание домена было невозможно. В связи с этим, сайта у бота больше нет.
-Но когда был, выглядел он так:
-
-Мобильная версия           |  Главная страница | Личный кабинет
-:-------------------------:|:-------------------------:|:-------------------------:
-![mobile_richiebotcom](http://109.200.123.70/files/richiebot/website_promo.jpg) | ![desktop_richiebotcom](http://109.200.123.70/files/richiebot/website_promo2.jpg) | ![desktop2_richiebotcom](http://109.200.123.70/files/richiebot/website_promo3.jpg)
