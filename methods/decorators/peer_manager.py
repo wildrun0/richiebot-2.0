@@ -48,9 +48,10 @@ def peer_manager(func):
                 else:
                     logger.info(f"invited {member_id}",id=event.peer_id)
                     if not already_renewed:
-                        peer_obj.data.users.append(member_id)
-                        if member_id == peer_obj.data.owner_id: 
-                            peer_obj.data.admins.append(member_id)
+                        if member_id is not None:
+                            peer_obj.data.users.append(member_id)
+                            if member_id == peer_obj.data.owner_id: 
+                                peer_obj.data.admins.append(member_id)
             else:
                 logger.info(f"kicked {member_id}",id=event.peer_id)
                 if not already_renewed:

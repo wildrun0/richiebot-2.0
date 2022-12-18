@@ -12,7 +12,7 @@ async def marry_list(event: Message, peer_obj: PeerObject, param: None):
     if not marry_list:
         await event.answer("Браков нет! :(")
         return
-    marry_str = '%s и %s в браке уже %s'
+    marry_str = '%s и %s в браке уже %s\n'
     to_send = ''
     curr_date = datetime.now(tz)
     for i in marry_list:

@@ -72,6 +72,7 @@ default_commands_full = {
     "ричи правила":                 commands.richie.view_rules,
     "ричи браки":                   commands.richie.marry_list,
     "ричи казино":                  commands.richie.casino,
+    "ричи развод":                  commands.richie.unmarry,
 
     "ричи бросить кости":           commands.game.kosti,
     "ричи кости":                   commands.game.kosti,
