@@ -36,6 +36,7 @@ class PeerObject:
 
 
     async def save(self):
+        self.data.users = [i for i in self.data.users if i is not None]
         peer_class = msgspec.json.encode(self.data)
         await self.obj_file.write_bytes(peer_class)
         logger.info("PEER SETTINGS SAVED", id=self.peer_id)
