@@ -6,7 +6,8 @@ from settings.config import BENEFIT_AMOUNT
 
 str_benefit_amount = display_coins(BENEFIT_AMOUNT)
 async def give_benefits():
-    for peer_obj in ctx_storage.storage.values():
+    ctx_storage_copy = ctx_storage.storage.copy()
+    for peer_obj in ctx_storage_copy.values():
         if isinstance(peer_obj, PeerObject):
             peer_id = peer_obj.peer_id
             speer_id = str(peer_id)

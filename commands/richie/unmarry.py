@@ -12,8 +12,9 @@ async def unmarry(event: Message, peer_obj: PeerObject, params: None):
     if (partner_id := caller_peer.marry_with.partner):
         partner = await get_user(partner_id, event.peer_id)
         partner_peer = partner.get_peer(speer_id)
+
         partner_peer.marry_with = marry_struct()
-        caller_peer = marry_struct()
+        caller_peer.marry_with = marry_struct()
 
         for marriages in peer_obj.data.marriages.couples:
             if caller.id in marriages:
