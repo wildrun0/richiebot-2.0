@@ -2,7 +2,7 @@ from asyncio import sleep
 from datetime import datetime
 
 from datatypes import PeerObject
-from loader import bot, ctx_storage, logger
+from loader import bot, ctx_storage, log
 from settings.config import BACKUP_TIME, BENEFIT_TIME_H
 
 from tasks.functions import BackupManger, give_benefits
@@ -26,22 +26,22 @@ class TaskManager:
         for obj in ctx_storage.storage.values():
             if isinstance(obj, PeerObject):
                 peer_msgs = obj.messages.data.users
-                total_removed = 0 
+                total_removed = 0
                 for user in peer_msgs.values():
                     outdated_msgs = [
-                        message 
-                        for message in user.messages 
+                        message
+                        for message in user.messages
                         if (curr_timestamp - message.date) >= 604800
                     ]
                     total_removed += len(outdated_msgs)
                     user.messages = [m for m in user.messages if m not in outdated_msgs]
-                logger.debug(f"Removed {total_removed} msgs", id=obj.peer_id)
+                log.debug(f"Removed {total_removed} msgs", id=obj.peer_id)
                 total_removed and await obj.save()
 
 
     async def calc_benefit_time():
         """
-        Считаем секунды от инициализации до назначенного часа для 
+        Считаем секунды от инициализации до назначенного часа для
         раздачи пособий
         """
         while 1:
@@ -49,28 +49,28 @@ class TaskManager:
             day_gap = 0 if curr_time.hour < BENEFIT_TIME_H else 1
             try:
                 elasted = datetime(
-                    curr_time.year, 
-                    curr_time.month, 
-                    curr_time.day + day_gap, 
+                    curr_time.year,
+                    curr_time.month,
+                    curr_time.day + day_gap,
                     BENEFIT_TIME_H, 0, 0
                 )
             except ValueError:
                  elasted = datetime(
-                    curr_time.year, 
-                    curr_time.month + 1, 
-                    1, 
+                    curr_time.year,
+                    curr_time.month + 1,
+                    1,
                     BENEFIT_TIME_H, 0, 0
                 )
             sleep_time = (elasted - curr_time).seconds
-            logger.debug(f"Now sleep for {sleep_time} s.", id=__name__)
+            log.debug(f"Now sleep for {sleep_time} s.", id=__name__)
             await sleep(sleep_time)
             await give_benefits()
-            logger.info(f"Раздача пособий", id=__name__)
+            log.info(f"Раздача пособий", id=__name__)
 
 
     async def onshutdown():
         from datatypes import User
-        logger.warning("Shutting down...")
+        log.warning("Shutting down...")
         for obj in ctx_storage.storage.values():
             if isinstance(obj, User):
                 # убираем тайм-ауты, т.к. ключи являются хэшами
@@ -82,7 +82,7 @@ class TaskManager:
                 obj.data.marriages.marriages_pending.clear()
                 obj.data.casino.game = None
             await obj.save()
-        logger.info("BYE :'(")
+        log.info("BYE :'(")
 
 
     lw.on_startup.append(run_backups())

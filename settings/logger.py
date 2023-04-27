@@ -1,4 +1,6 @@
 import logging
+
+from loguru import logger
 import logging.handlers as handlers
 
 from pathlib import Path
@@ -47,27 +49,27 @@ class LoggingHandler:
         self.logs_folder = Path("logs")
         self.log_path = Path(self.logs_folder, self.log_name)
         self.logs_folder.mkdir(exist_ok=True)
-        
+
         log_level = DEBUG_STATUS and logging.DEBUG or logging.INFO
         customformat = CustomFormatter(name)
-        
-        logging.getLogger("vkbottle").setLevel(logging.INFO)
+
+        logger.disable("vkbottle")
         logging.getLogger("aiocache").setLevel(logging.INFO)
-        
+
         self.logger = logging.getLogger(__name__)
         self.logger = CustomAdapter(self.logger, {"id": ''})
 
         logging.getLogger().handlers.clear()
-        
+
         filehandler = handlers.TimedRotatingFileHandler(self.log_path, when="midnight", interval=1, encoding="utf8", delay=DEBUG_STATUS)
         filehandler.suffix = "%Y-%m-%d"
         filehandler.setFormatter(
             logging.Formatter(customformat.format_str)
         )
-        
+
         console_stream = logging.StreamHandler()
         console_stream.setFormatter(customformat)
-        
+
         logging.basicConfig(encoding='utf-8', level=log_level, handlers=[
             console_stream,
             filehandler
@@ -79,7 +81,7 @@ class LoggingHandler:
     def listen_func(func):
         async def wrapper(*args, **kwargs):
             f_name = func.__name__
-            f = await func(*args, **kwargs)            
+            f = await func(*args, **kwargs)
             if f_name == "answer":
                 log_arg = repr(args[1])
             else:

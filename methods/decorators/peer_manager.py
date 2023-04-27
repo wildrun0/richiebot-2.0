@@ -6,7 +6,7 @@ from vkbottle_types.objects import MessagesMessageActionStatus
 
 from datatypes import PeerObject
 from methods import check
-from loader import ctx_storage, logger
+from loader import ctx_storage, log
 from commands.admin import renew_users_list
 
 
@@ -27,7 +27,7 @@ def peer_manager(func):
         if await check.muted(event, peer_obj):
             try:
                 await event.ctx_api.messages.delete(
-                    cmids = event.message_id, 
+                    cmids = event.message_id,
                     peer_id = peer_id,
                     delete_for_all = True
                 )
@@ -46,14 +46,14 @@ def peer_manager(func):
                         return None
                     except VKAPIError[925]: pass
                 else:
-                    logger.info(f"invited {member_id}",id=event.peer_id)
+                    log.info(f"invited {member_id}",id=event.peer_id)
                     if not already_renewed:
                         if member_id is not None:
                             peer_obj.data.users.append(member_id)
-                            if member_id == peer_obj.data.owner_id: 
+                            if member_id == peer_obj.data.owner_id:
                                 peer_obj.data.admins.append(member_id)
             else:
-                logger.info(f"kicked {member_id}",id=event.peer_id)
+                log.info(f"kicked {member_id}",id=event.peer_id)
                 if not already_renewed:
                     peer_obj.data.users.remove(member_id)
                     if member_id in peer_obj.data.admins:

@@ -3,7 +3,7 @@ import msgspec
 from anyio import Path
 from datatypes.messages import MessagesObj
 from datatypes.peer import PeerClass
-from loader import logger, peers_folder
+from loader import log, peers_folder
 
 
 class PeerObject:
@@ -17,7 +17,7 @@ class PeerObject:
 
     @classmethod
     async def init(self, peer_id: int):
-        logger.info("LOAD PEER SETTINGS", id=peer_id)
+        log.info("LOAD PEER SETTINGS", id=peer_id)
         peer_json_name = "main.json"
         peer_location = Path(peers_folder, str(peer_id))
         obj_file = Path(peer_location, peer_json_name)
@@ -31,7 +31,7 @@ class PeerObject:
         else:
             data = msgspec.json.decode(await obj_file.read_bytes(), type=PeerClass)
         messages = await MessagesObj.init(str(peer_id), peer_location)
-        logger.info("PEER SETTINGS LOADED", id=peer_id)
+        log.info("PEER SETTINGS LOADED", id=peer_id)
         return PeerObject(peer_id, obj_file, data, messages)
 
 
@@ -39,4 +39,4 @@ class PeerObject:
         self.data.users = [i for i in self.data.users if i is not None]
         peer_class = msgspec.json.encode(self.data)
         await self.obj_file.write_bytes(peer_class)
-        logger.info("PEER SETTINGS SAVED", id=self.peer_id)
+        log.info("PEER SETTINGS SAVED", id=self.peer_id)

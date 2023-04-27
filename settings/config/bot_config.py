@@ -17,7 +17,7 @@ if not config.sections():
     config["SETTINGS"]["; = Принимаемые значения: 'hourly', 'daily', 'weekly', 'monthly'"] = ""
     config["SETTINGS"]["PEERS_DEFAULT_FOLDER"] = "peers/"
     config["SETTINGS"]["; = Папка, где будут хранится основные профили бесед"] = ""
-    
+
     config.add_section("LIMITS")
     config['LIMITS']["MAX_GREETING_LENGTH"] = "140"
     config["LIMITS"]["; = Макс. длина(символов) в приветствиях"] = ""
@@ -29,7 +29,7 @@ if not config.sections():
     config["LIMITS"]["; = Макс.длина(символов) в кличках"] = ""
 
     config.add_section("DEBUG")
-    config['DEBUG']["ENABLED"] = "False"    
+    config['DEBUG']["ENABLED"] = "False"
 
     with open(DEFAULT_SETTINGS_FILE, 'w', encoding="utf8") as configfile:
         config.write(configfile)
@@ -42,7 +42,7 @@ else:
     if BOT_TOKEN == "token":
         logging.critical("Прежде чем использовать бота, необходимо ввести токен в BOT_TOKEN= и BOT_ID=")
         exit()
-    
+
     BOT_ID = config.getint("SETTINGS", "ID")
     if BOT_ID == "-id":
         logging.critical("Прежде чем использовать бота, необходимо ввести BOT_ID= (отрицательное число)")
@@ -50,9 +50,9 @@ else:
 
     BACKUP_TIME = config.get("SETTINGS", "BACKUP_TIME")
     PEERS_DEFAULT_FOLDER = config.get("SETTINGS", "PEERS_DEFAULT_FOLDER")
-    
+
     DEBUG_STATUS = config.getboolean("DEBUG", "ENABLED")
-    
+
     MAX_GREETING_LENGTH = config.getint("LIMITS", "MAX_GREETING_LENGTH")
     MAX_RULES_LENGTH = config.getint("LIMITS", "MAX_RULES_LENGTH")
     MAX_NICKNAME_LENGTH = config.getint("LIMITS", "MAX_NICKNAME_LENGTH")

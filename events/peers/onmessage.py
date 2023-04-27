@@ -8,20 +8,20 @@ import methods
 from datatypes import PeerObject, user
 from datatypes.peer.casino import CasinoColors, casino_bet
 from events.peers import casino_play, do_marriage
-from loader import bot, logger
+from loader import bot, log
 from methods import decorators
 from settings import bot_commands
 
 FULL_COMMAND_REGEX = "^%s$"
 non_adm_commands = (
-    *(FULL_COMMAND_REGEX % i for i in bot_commands.all_commands_full), 
+    *(FULL_COMMAND_REGEX % i for i in bot_commands.all_commands_full),
     *bot_commands.all_commands_notfull
 )
 adm_commands = (
     *(FULL_COMMAND_REGEX % i for i in bot_commands.admin_commands_full),
     *bot_commands.admin_commands_notfull
 )
-logger.debug(f"Regex ({FULL_COMMAND_REGEX}) set for 'full' commands")
+log.debug(f"Regex ({FULL_COMMAND_REGEX}) set for 'full' commands")
 
 @bot.on.chat_message(action=["chat_invite_user", "chat_kick_user"])
 @decorators.peer_manager
@@ -32,9 +32,9 @@ async def invite_event(event: Message, peer_obj: PeerObject) -> None:
         if not action or not group_id:
             return
         if action.member_id == -group_id:
-            logger.info("BOT INVITED",id=event.peer_id)
+            log.info("BOT INVITED",id=event.peer_id)
             await event.answer(textwrap.dedent("""
-                👋Всем привет! Я - Ричи, чатбот созданный для удобного администрирования бесед ВКонтакте! 
+                👋Всем привет! Я - Ричи, чатбот созданный для удобного администрирования бесед ВКонтакте!
                 (не забудьте назначить бота администратором беседы, иначе он не работает)
                 Список команд - https://vk.com/@richie_bot-richi-komandy-ver3
                 Или используйте "ричи команды"
@@ -54,7 +54,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
         command_args = None
     except KeyError:
         command_name, command_args = await methods.get_command_arguments(
-            bot_commands.all_commands_notfull, 
+            bot_commands.all_commands_notfull,
             event.text, peer_obj
         )
         def_func = bot_commands.default_commands_notfull[command_name]
@@ -64,7 +64,7 @@ async def use_default_commands(event: Message, peer_obj: PeerObject) -> None:
                 if i is None:
                     index = enum
             command_args[index] = await user.get_user(onreply.from_id, event.peer_id)
-        else: 
+        else:
             if (None in command_args) and (
             (not (def_func is commands.economy.balance))): return
     if isinstance(def_func, ModuleType):
@@ -83,7 +83,7 @@ async def use_admin_commands(event: Message, peer_obj: PeerObject) -> None:
         command_args = None
     except KeyError:
         command_name, command_args = await methods.get_command_arguments(
-            bot_commands.admin_commands_notfull, 
+            bot_commands.admin_commands_notfull,
             event.text, peer_obj
         )
         adm_func = bot_commands.administrative_commands_notfull[command_name]
@@ -126,8 +126,8 @@ async def handle_casino(event: Message, peer_obj: PeerObject) -> None:
 @decorators.peer_manager
 async def handle_marry(event: Message, peer_obj: PeerObject) -> None:
     pending_list = [
-        pending 
-        for pending in peer_obj.data.marriages.marriages_pending 
+        pending
+        for pending in peer_obj.data.marriages.marriages_pending
         if pending.user2 == event.from_id
     ]
     if not pending_list:
@@ -141,7 +141,7 @@ async def handle_marry(event: Message, peer_obj: PeerObject) -> None:
 @decorators.peer_manager
 async def log_message(event: Message, peer_obj: PeerObject) -> None:
     await peer_obj.messages.write(
-        message_text = event.text, 
+        message_text = event.text,
         user_id = str(event.from_id),
         cmid = event.message_id,
         date = event.date,

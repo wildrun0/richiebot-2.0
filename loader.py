@@ -1,16 +1,17 @@
 from datetime import timedelta, timezone
 from pathlib import Path as SyncPath
 
-from vkbottle import CtxStorage
-from vkbottle.bot import Bot
-
 from settings import LoggingHandler
 from settings.config import BOT_TOKEN, DEBUG_STATUS, PEERS_DEFAULT_FOLDER
 
+lh = LoggingHandler(name="RICHIEBOT")
+log = lh.logger
+
+from vkbottle import CtxStorage
+from vkbottle.bot import Bot
+
 ctx_storage = CtxStorage()
 
-lh = LoggingHandler(name="RICHIEBOT")
-logger = lh.logger
 
 peers_folder = SyncPath(PEERS_DEFAULT_FOLDER)
 peers_folder.mkdir(exist_ok=True)
