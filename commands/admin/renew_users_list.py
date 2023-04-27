@@ -1,5 +1,5 @@
 from datatypes import PeerObject
-from loader import log
+from loader import logger
 from vkbottle import VKAPIError
 from vkbottle.bot import Message
 
@@ -10,7 +10,7 @@ async def renew_users_list(
     params: None = None
 ) -> tuple[list[int], list[int]]:
     peer_id = event.peer_id
-    log.info("USER LIST RENEWAL IN PEER", id=peer_id)
+    logger.info("USER LIST RENEWAL IN PEER", id=peer_id)
     try:
         chat = await event.ctx_api.messages.get_conversation_members(
             peer_id = peer_id,
@@ -19,11 +19,13 @@ async def renew_users_list(
         )
         chat_users = chat.items
     except VKAPIError[917]:
-        log.info("Не могу получить админов в беседе", id=peer_id)
+        logger.info("Не могу получить админов в беседе", id=peer_id)
         return [], []
 
     users = [user.member_id for user in chat_users]
-    owner_id = [user.member_id for user in chat_users if user.is_owner][0]
+    try:
+        owner_id = [user.member_id for user in chat_users if user.is_owner][0]
+    except: owner_id = 0
     adms = [user.member_id for user in chat_users if user.is_admin == True]
 
     peers_obj.data.users = users
