@@ -1,6 +1,7 @@
 import os
 import shutil
 
+from settings.config import BACKUPS_AMOUNT
 from aiofiles.os import wrap
 from pathlib import Path
 from loader import log
@@ -27,6 +28,12 @@ class BackupManger:
         log.info("BackupManager initialized")
 
 
+    def _del_last(self):
+        oldest_backup = min(self.default_folder.resolve().glob('**/*'), key=os.path.getctime)
+        log.warning(f"Deleting oldest backup '{oldest_backup}'")
+        shutil.rmtree(oldest_backup)
+
+
     async def _backup(self):
         start_time = datetime.timestamp(datetime.now())
         log.info("backup in process..")
@@ -41,6 +48,9 @@ class BackupManger:
         end_time = datetime.timestamp(datetime.now())
         log.warning(f"backup done, elapsed time: {end_time - start_time:.2f} sec.")
         self.last_backup = datetime.now()
+        backups_in_folder = len(list(self.default_folder.glob('*')))
+        if backups_in_folder > BACKUPS_AMOUNT:
+            self._del_last()
 
 
     async def check_for_backup(self, frequency: Literal["monthly", "weekly", "daily", "hourly"] = "daily"):
