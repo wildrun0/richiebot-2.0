@@ -2,8 +2,8 @@ from datatypes.peer.casino import CasinoColors, casino_bet
 
 def get_casino_ratio(bet: casino_bet) -> int:
     ratio = 1
-    even = casino_bet.even_bet
-    match casino_bet.color:
+    even = bet.even_bet
+    match bet.color:
         case CasinoColors.GREEN:
             ratio = 10 and even or 3
         case CasinoColors.RED:
