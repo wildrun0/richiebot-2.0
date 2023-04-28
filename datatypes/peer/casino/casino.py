@@ -14,6 +14,6 @@ class casino_game(msgspec.Struct):
 
 
 class casino_struct(msgspec.Struct):
-    usrs_to_start: int = 10
+    usrs_to_start: int = 2
     playtime:      int = 300
     game:          casino_game|None = None
