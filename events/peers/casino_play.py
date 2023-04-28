@@ -23,3 +23,5 @@ async def casino_play(event: Message, peer_obj: PeerObject):
     await event.answer(
         f"Выпадает комбинация: {win_bet.color.value} {'чет' if win_bet.even_bet else 'нечет'}\n\n{win_str}"
     )
+    peer_obj.data.casino.game = None
+    await peer_obj.save()

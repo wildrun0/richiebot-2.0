@@ -116,10 +116,9 @@ async def handle_casino(event: Message, peer_obj: PeerObject) -> None:
                 await event.answer(f"🚫Недостаточно средств {bet.price} > {balance}")
             else:
                 casino.users[uid] = bet
-                if len(casino.users) == (usrs := peer_obj.data.casino.usrs_to_start):
+                await event.answer(f"Ставка принята! [{len(casino.users)}/{usrs}]")
+                if len(casino.users) >= (usrs := peer_obj.data.casino.usrs_to_start):
                     await casino_play(event, peer_obj)
-                else:
-                    await event.answer(f"Ставка принята! [{len(casino.users)}/{usrs}]")
 
 
 @bot.on.chat_message(payload_map=[("marriage", bool)])
