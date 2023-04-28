@@ -116,24 +116,24 @@ async def handle_casino(event: Message, peer_obj: PeerObject) -> None:
                 await event.answer(f"🚫Недостаточно средств {bet.price} > {balance}")
             else:
                 casino.users[uid] = bet
+                usrs = peer_obj.data.casino.usrs_to_start
                 await event.answer(f"Ставка принята! [{len(casino.users)}/{usrs}]")
-                if len(casino.users) >= (usrs := peer_obj.data.casino.usrs_to_start):
+                if len(casino.users) == usrs:
                     await casino_play(event, peer_obj)
 
 
 @bot.on.chat_message(payload_map=[("marriage", bool)])
 @decorators.peer_manager
 async def handle_marry(event: Message, peer_obj: PeerObject) -> None:
+    if not peer_obj.data.marriages.marriages_pending:
+        return
     pending_list = [
         pending
         for pending in peer_obj.data.marriages.marriages_pending
         if pending.user2 == event.from_id
     ]
-    if not pending_list:
-        return
-    else:
-        pending = pending_list[0]
-        await do_marriage(event, peer_obj, pending)
+    pending = pending_list[0]
+    await do_marriage(event, peer_obj, pending)
 
 
 @bot.on.chat_message()
