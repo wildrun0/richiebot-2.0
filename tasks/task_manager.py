@@ -1,4 +1,3 @@
-from asyncio import sleep
 from datetime import datetime
 
 from datatypes import PeerObject
@@ -16,8 +15,7 @@ class TaskManager:
         await backupmanager.check_for_backup(frequency=BACKUP_TIME)
 
 
-    # @lw.timer(seconds=10)
-    @lw.interval(hours=2)
+    @lw.interval(hours=12)
     async def cleanup_msgs():
         """
         Очищаем из бесед сообщения, которым больше одной недели
@@ -39,36 +37,10 @@ class TaskManager:
                 total_removed and await obj.save()
 
 
+    @lw.interval(hours=24)
     async def calc_benefit_time():
-        """
-        Считаем секунды от инициализации до назначенного часа для
-        раздачи пособий
-        """
-        try:
-            while 1:
-                    curr_time = datetime.now()
-                    day_gap = 0 if curr_time.hour < BENEFIT_TIME_H else 1
-                    try:
-                        elasted = datetime(
-                            curr_time.year,
-                            curr_time.month,
-                            curr_time.day + day_gap,
-                            BENEFIT_TIME_H, 0, 0
-                        )
-                    except ValueError:
-                        elasted = datetime(
-                            curr_time.year,
-                            curr_time.month + 1,
-                            1,
-                            BENEFIT_TIME_H, 0, 0
-                        )
-                    sleep_time = (elasted - curr_time).seconds
-                    log.debug(f"Now sleep for {sleep_time} s.", id=__name__)
-                    await sleep(sleep_time)
-                    await give_benefits()
-                    log.info(f"Раздача пособий", id=__name__)
-        except KeyboardInterrupt:
-            log.info("Shutting down benefit loop")
+        log.debug("BENEFITS")
+        await give_benefits()
 
 
     async def onshutdown():

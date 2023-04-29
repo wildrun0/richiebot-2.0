@@ -7,18 +7,15 @@ from settings.config import BENEFIT_AMOUNT, BENEFIT_LIMIT
 str_benefit_amount = display_coins(BENEFIT_AMOUNT)
 async def give_benefits():
     ctx_storage_copy = ctx_storage.storage.copy()
-    passed_peers = []
     for peer_obj in ctx_storage_copy.values():
         if isinstance(peer_obj, PeerObject):
             peer_id = peer_obj.peer_id
-            if peer_id in passed_peers: continue
-            passed_peers.append(peer_id)
             speer_id = str(peer_id)
             peer_benefiters = peer_obj.data.benefiters
             for uid in peer_benefiters:
                 usr = await get_user(uid, peer_id)
                 usr_balance = usr.peers[speer_id].economic.balance
-                if usr_balance > BENEFIT_LIMIT:
+                if usr_balance >= BENEFIT_LIMIT:
                     peer_benefiters.remove(uid)
                     log.debug(f"{uid} снят с пособия", id=peer_id)
                     continue

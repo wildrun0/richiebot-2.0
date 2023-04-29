@@ -118,7 +118,7 @@ async def handle_casino(event: Message, peer_obj: PeerObject) -> None:
                 casino.users[uid] = bet
                 usrs = peer_obj.data.casino.usrs_to_start
                 await event.answer(f"Ставка принята! [{len(casino.users)}/{usrs}]")
-                if len(casino.users) == usrs:
+                if len(casino.users) >= usrs:
                     await casino_play(event, peer_obj)
 
 
