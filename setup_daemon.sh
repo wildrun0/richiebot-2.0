@@ -26,13 +26,21 @@ Description=Richiebot VK daemon service
 User=root
 WorkingDirectory=$SCRIPTPATH
 ExecStart=$SCRIPTPATH/.venv/bin/python richiebot.py
-Restart=always
 
 [Install]
 WantedBy=multi-user.target" | sudo tee --append /etc/systemd/system/richiebot.service
 
 echo Reloading systemctl daemon
 sudo systemctl daemon-reload
+
+while true; do
+    read -p "Do you wish to enable richiebot at every system boot? " yn
+    case $yn in
+        [Yy]* ) sudo systemctl enable richiebot.service; break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
 
 echo Starting a richiebot service
 sudo systemctl start richiebot.service
