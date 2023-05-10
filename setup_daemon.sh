@@ -22,7 +22,9 @@ $SCRIPTPATH/.venv/bin/python -m pip install -r $SCRIPTPATH/req.txt
 echo Creating richiebot service daemon
 echo "[Unit]
 Description=Richiebot VK daemon service
+
 [Service]
+Type=idle
 User=root
 WorkingDirectory=$SCRIPTPATH
 ExecStart=$SCRIPTPATH/.venv/bin/python richiebot.py
