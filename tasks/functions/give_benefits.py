@@ -15,6 +15,7 @@ async def give_benefits():
             for uid in peer_benefiters:
                 usr = await get_user(uid, peer_id)
                 usr_balance = usr.peers[speer_id].economic.balance
+                log.info(f"{uid}, {usr_balance} > {BENEFIT_LIMIT} ? {usr_balance>=BENEFIT_LIMIT}")
                 if usr_balance >= BENEFIT_LIMIT:
                     peer_benefiters.remove(uid)
                     log.debug(f"{uid} снят с пособия", id=peer_id)
