@@ -20,9 +20,9 @@ async def give_benefits():
                     peer_benefiters.remove(uid)
                     log.debug(f"{uid} снят с пособия", id=peer_id)
                     continue
-                usr_balance += BENEFIT_AMOUNT
+                usr.peers[speer_id].economic.balance += BENEFIT_AMOUNT
                 await usr.save()
-                log.debug(f"{uid} получил пособие", id=peer_id)
+                log.info(f"{uid} получил пособие, {usr_balance}", id=peer_id)
             if peer_benefiters:
                 await bot.api.messages.send(
                     peer_id = peer_id,
